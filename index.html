@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Şantiye Hesaplayıcı</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        
+        /* Arama Kutusu Stilleri */
+        .search-container { position: relative; margin-bottom: 20px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #3498db; box-shadow: 0 0 5px rgba(52,152,219,0.3); }
+        
+        /* Arama Sonuçları Listesi */
+        .search-results { 
+            position: absolute; width: 100%; background: white; border: 1px solid #ddd; 
+            border-top: none; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; 
+            z-index: 1000; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 14px; }
+        .search-item:hover { background-color: #f8f9fa; color: #3498db; }
+        .search-item strong { display: block; color: #333; }
+        .search-item small { color: #666; }
+
+        /* Seçilen Ürün Kartı */
+        .selected-item-card { background: #e8f4fc; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; margin-bottom: 20px; display: none; }
+        .selected-item-card h3 { margin: 0 0 5px 0; font-size: 18px; color: #2980b9; }
+        .selected-item-card p { margin: 0; color: #555; }
+
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 600; color: #555; }
+        button { width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; margin-top: 20px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #218838; }
+
+        .result-box { margin-top: 20px; padding: 20px; background-color: #333; color: #fff; border-radius: 8px; text-align: center; display: none; }
+        .total-price { font-size: 2em; color: #2ecc71; font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>DQE Hesaplayıcı</h2>
+
+    <label>İş Kalemi Ara (Kod veya İsim):</label>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Örn: C.3.1 veya Déblai..." onkeyup="filterItems()">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div id="selectedCard" class="selected-item-card">
+        <h3 id="selectedCode">Kod</h3>
+        <p id="selectedName">Tanım</p>
+        <p>Birim Fiyat: <strong id="selectedPrice">0</strong> DZD / <span id="selectedUnit">Birim</span></p>
+    </div>
+
+    <div id="calculationArea" style="opacity: 0.5; pointer-events: none;">
+        <label for="quantity">Miktar Giriniz:</label>
+        <input type="number" id="quantity" placeholder="Metraj girin..." oninput="calculateRealTime()">
+        
+        <div class="result-box" id="resultBox">
+            <span>TOPLAM TUTAR</span>
+            <div class="total-price" id="totalPrice">0 DZD</div>
+            <small>Euro Karşılığı: ~<span id="euroPrice">0</span> €</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    // VERİTABANI: Buraya görseldeki listeyi ekliyoruz.
+    // İleride tüm listeyi buraya doldurabilirsin.
+    const database = [
+        { code: "A.1", name: "Installation et repliement de chantier", unit: "Forfait", price: 1041277760.00 },
+        { code: "C.1", name: "Décapage de la terre végétale", unit: "m3", price: 128.62 },
+        { code: "C.3.1", name: "Déblai meuble mis en remblai", unit: "m3", price: 257.24 },
+        { code: "C.3.2", name: "Déblai terre des mis en remblai", unit: "m3", price: 480.93 },
+        { code: "C.3.3", name: "Déblai rocheur dur mis en remblai", unit: "m3", price: 1308.96 },
+        { code: "C.4.1", name: "Déblai meuble mis en dépôt", unit: "m3", price: 148.16 },
+        { code: "C.4.3", name: "Déblai rocheur dur mis en dépôt", unit: "m3", price: 893.10 },
+        { code: "D.1.1", name: "Fossé trapézoïdal non revêtu type A", unit: "ml", price: 495.86 },
+        { code: "D.2.1", name: "Bétonnage de fossé de type A", unit: "ml", price: 4448.37 },
+        { code: "E.1.1", name: "Grave non traitée (GNT 0/31.5)", unit: "m3", price: 1922.64 },
+        { code: "E.2.2", name: "Grave Bitume (GB) 0/14", unit: "Tonne", price: 3390.32 },
+        { code: "E.3.1", name: "Couche de roulement BB 0/14", unit: "Tonne", price: 4337.90 },
+        { code: "G.1.1", name: "Panneau de types A, AB, B, C, CE", unit: "u", price: 52000.00 }
+    ];
+
+    let currentPrice = 0;
+    let currentEuroRate = 270; // Yaklaşık kur, dinamik değil sabit örnek.
+
+    function filterItems() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toLowerCase();
+        const resultsDiv = document.getElementById("searchResults");
+        
+        resultsDiv.innerHTML = ""; // Önceki sonuçları temizle
+
+        if (filter.length < 1) {
+            resultsDiv.style.display = "none";
+            return;
+        }
+
+        // Hem kodda (code) hem de isimde (name) arama yap
+        const filteredData = database.filter(item => 
+            item.code.toLowerCase().includes(filter) || 
+            item.name.toLowerCase().includes(filter)
+        );
+
+        if (filteredData.length > 0) {
+            filteredData.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "search-item";
+                div.innerHTML = `<strong>${item.code} - ${item.name}</strong><small>${item.price.toLocaleString('tr-TR')} DZD / ${item.unit}</small>`;
+                div.onclick = function() { selectItem(item); };
+                resultsDiv.appendChild(div);
+            });
+            resultsDiv.style.display = "block";
+        } else {
+            resultsDiv.style.display = "none";
+        }
+    }
+
+    function selectItem(item) {
+        // Seçilen verileri ekrana doldur
+        document.getElementById("searchInput").value = item.code + " - " + item.name;
+        document.getElementById("searchResults").style.display = "none";
+        
+        document.getElementById("selectedCode").innerText = item.code;
+        document.getElementById("selectedName").innerText = item.name;
+        document.getElementById("selectedPrice").innerText = item.price.toLocaleString('tr-TR');
+        document.getElementById("selectedUnit").innerText = item.unit;
+
+        // Kartı göster ve hesaplama alanını aktif et
+        document.getElementById("selectedCard").style.display = "block";
+        document.getElementById("calculationArea").style.opacity = "1";
+        document.getElementById("calculationArea").style.pointerEvents = "auto";
+        
+        currentPrice = item.price;
+        document.getElementById("quantity").value = ""; // Miktarı sıfırla
+        document.getElementById("resultBox").style.display = "none";
+        document.getElementById("quantity").focus();
+    }
+
+    function calculateRealTime() {
+        const quantity = parseFloat(document.getElementById("quantity").value);
+        
+        if (quantity > 0 && currentPrice > 0) {
+            const total = quantity * currentPrice;
+            const totalEuro = total / currentEuroRate; // Temsili kur hesabı
+
+            document.getElementById("totalPrice").innerText = total.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + " DZD";
+            document.getElementById("euroPrice").innerText = totalEuro.toLocaleString('tr-TR', {maximumFractionDigits: 2});
+            document.getElementById("resultBox").style.display = "block";
+        } else {
+            document.getElementById("resultBox").style.display = "none";
+        }
+    }
+
+    // Arama kutusu dışında bir yere tıklanırsa listeyi kapat
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.search-container')) {
+            document.getElementById("searchResults").style.display = "none";
+        }
+    });
+</script>
+
+</body>
+</html>
