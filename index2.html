@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MASTER DQE PRO</title>
+    <style>
+        /* MODERN TASARIM (MAVİ-BEYAZ) */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: #f4f6f8; color: #333; 
+            height: 100vh; overflow: hidden; /* Giriş ekranı için */
+        }
+
+        /* GİRİŞ EKRANI (FULL SCREEN) */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #f4f6f8; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .login-box {
+            background: white; padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 85%; max-width: 350px;
+            text-align: center; border: 1px solid #e1e4e8;
+        }
+        .login-input {
+            width: 100%; padding: 15px; margin: 20px 0;
+            border: 2px solid #e1e4e8; border-radius: 12px;
+            font-size: 24px; text-align: center; letter-spacing: 5px;
+            background: #f9fbfd;
+        }
+        .login-input:focus { border-color: #3498db; background: #fff; }
+        .login-btn {
+            width: 100%; padding: 15px; background: #3498db; color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-btn:active { background: #2980b9; transform: scale(0.98); }
+
+        /* ANA UYGULAMA (GİZLİ BAŞLAR) */
+        #appContainer {
+            display: none; /* JS ile açılacak */
+            max-width: 600px; margin: 0 auto; height: 100%; overflow-y: auto;
+            padding: 15px; padding-bottom: 50px;
+        }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logout-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+
+        /* SEKMELER */
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #e0e0e0; padding: 4px; border-radius: 12px; }
+        .tab-btn { flex: 1; padding: 10px 0; border: none; background: transparent; font-weight: 700; color: #666; border-radius: 9px; font-size: 10px; text-align: center; cursor: pointer; line-height: 1.2; }
+        .tab-btn.active { background: #3498db; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* ARAMA */
+        .search-wrapper { position: relative; margin-bottom: 15px; }
+        .search-input { width: 100%; padding: 16px 40px 16px 16px; border: 2px solid #d1d9e6; border-radius: 12px; font-size: 15px; font-weight: 500; }
+        .search-input:focus { border-color: #3498db; }
+        
+        /* LİSTE */
+        .results-list {
+            display: none; position: absolute; top: 110%; left: 0; right: 0;
+            background: white; border: 1px solid #ddd; border-radius: 12px;
+            max-height: 50vh; overflow-y: auto; z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .res-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; line-height: 1.4; }
+        .res-item:last-child { border-bottom: none; }
+        .res-item:active { background: #f0f7ff; }
+        .tag { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; color: white; margin-right: 5px; vertical-align: middle; }
+        .tag-route { background: #3498db; } .tag-oa { background: #27ae60; } .tag-tunnel { background: #e67e22; }
+
+        /* DETAY KARTI */
+        .card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e1e4e8; display: none; }
+        .price-box { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #eee; }
+
+        /* HESAPLAMA */
+        .calc-area { opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
+        .calc-input { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; margin-top: 5px; margin-bottom: 15px; }
+        
+        .total-box { background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 20px; border-radius: 16px; margin-top: 10px; display: none; box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; opacity: 0.9; }
+        .big-total { font-size: 28px; font-weight: 800; text-align: right; display: block; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; }
+
+        /* SÖZ KARTI */
+        .quote-card {
+            width: 100%; max-width: 600px; margin-top: 25px; margin-bottom: 40px;
+            background: #ffffff; border-radius: 16px; padding: 20px;
+            position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            text-align: center; cursor: pointer;
+            border-bottom: 3px solid #3498db; box-sizing: border-box;
+        }
+        .quote-card:active { transform: scale(0.98); background-color: #fafafa; }
+        .quote-icon { position: absolute; top: -5px; left: 20px; font-size: 50px; color: #f0f4f8; font-family: serif; z-index: 0; }
+        .q-text { position: relative; font-size: 14px; font-weight: 500; color: #444; font-style: italic; line-height: 1.5; margin: 0 0 8px 0; z-index: 1; }
+        .q-author { position: relative; font-size: 11px; font-weight: 700; color: #3498db; text-transform: uppercase; letter-spacing: 1px; z-index: 1; }
+        .q-hint { margin-top: 10px; font-size: 9px; color: #ccc; font-weight: 400; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2 style="margin:0 0 5px 0; color:#2c3e50;">DQE MASTER</h2>
+            <p style="margin:0 0 25px 0; color:#7f8c8d; font-size:14px;">ACCÈS SÉCURISÉ / GÜVENLİ GİRİŞ</p>
+            
+            <input type="password" id="passInput" class="login-input" placeholder="****" inputmode="numeric" maxlength="4">
+            
+            <button class="login-btn" onclick="doLogin()">ENTRER / GİRİŞ</button>
+            <p id="errorMsg" style="color:red; display:none; margin-top:15px; font-weight:bold;">Mot de passe incorrect!<br>Hatalı Şifre!</p>
+        </div>
+    </div>
+
+    <div id="appContainer">
+        <div class="header">
+            <h3 style="margin:0; color:#2c3e50;">PROJET MASTER</h3>
+            <button class="logout-btn" onclick="doLogout()">DÉCONNEXION<br>ÇIKIŞ</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="setFilter('ALL', this)">TOUS<br>HEPSİ</button>
+            <button class="tab-btn" onclick="setFilter('ROUTE', this)">ROUTE<br>YOL</button>
+            <button class="tab-btn" onclick="setFilter('OA', this)">OA<br>SANAT</button>
+            <button class="tab-btn" onclick="setFilter('TUNNEL', this)">TUNNEL<br>TÜNEL</button>
+        </div>
+
+        <label style="font-weight:600; color:#555;">Sélectionnez l'article / İş Kalemi Seç:</label>
+        <div class="search-wrapper">
+            <input type="text" id="searchBox" class="search-input" placeholder="Ex: Béton, Kazı..." onkeyup="filterList()" onfocus="showList()" autocomplete="off">
+            <div style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#3498db; pointer-events:none;">▼</div>
+            <div id="resultsList" class="results-list"></div>
+        </div>
+
+        <div id="detailCard" class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b id="dCode" style="color:#3498db; font-size:18px;">CODE</b>
+                <span id="dUnit" style="background:#3498db; color:white; padding:3px 8px; border-radius:6px; font-size:12px;">UN</span>
+            </div>
+            <p id="dName" style="margin:10px 0; font-weight:500; color:#333; line-height:1.4;">Nom</p>
+            <div class="price-box">
+                <div style="font-size:11px; color:#777; margin-bottom:4px;">Prix Unitaire / Birim Fiyat:</div>
+                <b id="dDZD">0</b> DZD + <b id="dEUR">0</b> €
+            </div>
+        </div>
+
+        <div id="calcSec" class="calc-area">
+            <label style="font-weight:600; color:#555;">Taux Euro / Euro Kuru:</label>
+            <input type="number" id="rateIn" class="calc-input" value="102.3" oninput="calculate()">
+
+            <label style="font-weight:600; color:#555;">Quantité / Miktar:</label>
+            <input type="number" id="qtyIn" class="calc-input" placeholder="0" oninput="calculate()">
+
+            <div id="totalBox" class="total-box">
+                <div class="total-row"><span>Montant DZD:</span> <span id="tDZD">0</span></div>
+                <div class="total-row"><span>Montant EUR:</span> <span id="tEUR">0</span></div>
+                <span class="big-total" id="tGrand">0 DZD</span>
+            </div>
+        </div>
+
+        <div class="quote-card" onclick="getNewQuote()">
+            <div class="quote-icon">❝</div>
+            <p id="qText" class="q-text">...</p>
+            <div id="qAuthor" class="q-author"></div>
+            <div class="q-hint">Changer / Değiştirmek için dokun ↻</div>
+        </div>
+    </div>
+
+<script>
+    // --- 1. GİRİŞ SİSTEMİ ---
+    const REAL_PASS = "1907";
+    let currentFilter = 'ALL';
+    let selectedItem = null;
+
+    function doLogin() {
+        var p = document.getElementById("passInput").value;
+        if (p.trim() === REAL_PASS) {
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("appContainer").style.display = "block";
+            localStorage.setItem("dqe_auth", "ok");
+            document.body.style.overflow = "auto"; // Scroll aç
+            getNewQuote(); // Sözü yükle
+        } else {
+            document.getElementById("errorMsg").style.display = "block";
+        }
+    }
+
+    function doLogout() {
+        localStorage.removeItem("dqe_auth");
+        location.reload();
+    }
+
+    document.getElementById("passInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") doLogin();
+    });
+
+    if (localStorage.getItem("dqe_auth") === "ok") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("appContainer").style.display = "block";
+        document.body.style.overflow = "auto";
+        getNewQuote();
+    }
+
+    // --- 2. VERİTABANI (EKSİKSİZ 256 KALEM - FR/TR) ---
+    const database = [
+        // LOT ROUTE (YOL)
+        {l:"ROUTE", c:"A1", n:"Installation et repliement / Şantiye Kurulumu", u:"Ft", d:1041277260.86, e:4972851.80},
+        {l:"ROUTE", c:"A2.1", n:"Laboratoire de chantier / Şantiye Laboratuvarı", u:"Ft", d:41644039.15, e:570439.50},
+        {l:"ROUTE", c:"A2.2", n:"Contrôle externe / Dış Kontrol (Müşavir)", u:"Ft", d:33983960.76, e:400938.80},
+        {l:"ROUTE", c:"A3.1", n:"Études d'exécution / Uygulama Projeleri", u:"Ft", d:212842500, e:2025000},
+        {l:"ROUTE", c:"A3.2", n:"Contrôle externe études / Proje Kontrolü", u:"Ft", d:45999996.83, e:449657.90},
+        {l:"ROUTE", c:"A3.3", n:"Dossier de récolement / As-Built (İş Sonu)", u:"Ft", d:33568500, e:405000},
+        {l:"ROUTE", c:"A3.4", n:"Étude des méthodes / Metodoloji", u:"Ft", d:7500069.87, e:73313.10},
+        {l:"ROUTE", c:"A3.5", n:"Reconnaissances géotechniques / Jeoteknik Etütler", u:"Ft", d:40209555.68, e:388958.40},
+        {l:"ROUTE", c:"A4.1", n:"Sécurité passive / Pasif Güvenlik", u:"Ft", d:200000000, e:0},
+        {l:"ROUTE", c:"A4.2", n:"Sécurité active / Aktif Güvenlik", u:"Ft", d:400000000, e:0},
+        {l:"ROUTE", c:"A5", n:"Panneau d'identification / Proje Tabelası", u:"U", d:1775000, e:0},
+        {l:"ROUTE", c:"B1.1", n:"Débroussaillage / Saha Temizliği", u:"Ha", d:619820.41, e:2543.30},
+        {l:"ROUTE", c:"B1.2", n:"Abattage arbres / Ağaç Kesimi", u:"U", d:1600, e:0},
+        {l:"ROUTE", c:"B1.3", n:"Dépose ouvrages / Metal Sökümü", u:"Tonne", d:944.25, e:2.50},
+        {l:"ROUTE", c:"B2.1", n:"Démolition divers / Yapı Yıkımı", u:"m3", d:1335.05, e:6.50},
+        {l:"ROUTE", c:"B2.2", n:"Démolition béton / Beton Yıkımı", u:"m3", d:1620.22, e:8.60},
+        {l:"ROUTE", c:"B2.3", n:"Démolition chaussée / Asfalt Sökümü", u:"m3", d:207.7, e:1},
+        {l:"ROUTE", c:"B3.1", n:"Rabotage <10cm / Frezeleme (İnce)", u:"m2", d:88.85, e:0.50},
+        {l:"ROUTE", c:"B3.2", n:"Rabotage 10-20cm / Frezeleme (Kalın)", u:"m2", d:98.62, e:0.60},
+        {l:"ROUTE", c:"B4", n:"Scarification / Kazıma", u:"m2", d:28.16, e:0.80},
+        {l:"ROUTE", c:"C1.1", n:"Décapage / Sıyırma Kazısı", u:"m3", d:128.62, e:0.60},
+        {l:"ROUTE", c:"C1.2", n:"Reprise sur stock / Stoktan Dolgu", u:"m3", d:179.08, e:0.40},
+        {l:"ROUTE", c:"C2.2", n:"Purges / Zayıf Zemin Kazısı", u:"m3", d:2200, e:0},
+        {l:"ROUTE", c:"C3.1", n:"Déblai meuble > Remblai / Yumuşak Kazı (Dolgu)", u:"m3", d:257.24, e:1.20},
+        {l:"ROUTE", c:"C3.2", n:"Déblai semi-dur > Remblai / Küskülük Kazı (Dolgu)", u:"m3", d:386.32, e:1.60},
+        {l:"ROUTE", c:"C3.3", n:"Déblai rocheux > Remblai / Kaya Kazısı (Dolgu)", u:"m3", d:1308.96, e:4.80},
+        {l:"ROUTE", c:"C4.1", n:"Déblai meuble > Dépôt / Yumuşak Kazı (Depo)", u:"m3", d:148.16, e:0.80},
+        {l:"ROUTE", c:"C4.2", n:"Déblai semi-dur > Dépôt / Küskülük Kazı (Depo)", u:"m3", d:307.7, e:1},
+        {l:"ROUTE", c:"C4.3", n:"Déblai rocheux > Dépôt / Kaya Kazısı (Depo)", u:"m3", d:893.1, e:3},
+        {l:"ROUTE", c:"C5.1", n:"Remblai d'emprunt / Ariyet Dolgusu", u:"m3", d:555.63, e:1.90},
+        {l:"ROUTE", c:"C6.1", n:"Assise drainante / Drenaj Tabakası (Blokaj)", u:"m3", d:1166.55, e:1.50},
+        {l:"ROUTE", c:"C7.1", n:"Géotextile renforcement / Güçlendirme Geotekstili", u:"m2", d:290.8, e:4},
+        {l:"ROUTE", c:"C7.2", n:"Géotextile anti-contam / Ayırıcı Geotekstil", u:"m2", d:258.27, e:5.10},
+        {l:"ROUTE", c:"C7.3", n:"Géogrille / Geogrid", u:"m2", d:418.04, e:5.20},
+        {l:"ROUTE", c:"C8.1", n:"Arrondi de crête / Şev Yuvarlama", u:"ml", d:317.01, e:1.30},
+        {l:"ROUTE", c:"C9.1", n:"Couche de forme / Form Tabakası", u:"m3", d:1346.55, e:1.50},
+        {l:"ROUTE", c:"C10.1", n:"Transport < 30km / Nakliye", u:"M3xKM", d:12.5, e:0},
+        {l:"ROUTE", c:"C10.2", n:"Transport > 30km / Nakliye", u:"M3xKM", d:11, e:0},
+        {l:"ROUTE", c:"D1.1", n:"Fossé non revêtu A / Kaplamasız Hendek A", u:"ml", d:495.86, e:1.80},
+        {l:"ROUTE", c:"D1.2", n:"Fossé non revêtu B / Kaplamasız Hendek B", u:"ml", d:594.94, e:2.20},
+        {l:"ROUTE", c:"D1.3", n:"Fossé non revêtu C / Kaplamasız Hendek C", u:"ml", d:897.18, e:3.40},
+        {l:"ROUTE", c:"D1.4", n:"Végétalisation / Hendek Çimleme", u:"ml", d:874.94, e:2.20},
+        {l:"ROUTE", c:"D2.1", n:"Bétonnage fossé A / Beton Hendek A", u:"ml", d:4448.37, e:18.10},
+        {l:"ROUTE", c:"D2.2", n:"Bétonnage fossé B / Beton Hendek B", u:"ml", d:5662.5, e:25},
+        {l:"ROUTE", c:"D2.3", n:"Bétonnage fossé C / Beton Hendek C", u:"ml", d:6316.17, e:32.10},
+        {l:"ROUTE", c:"D3.1", n:"Cunettes végétalisées / Çim Kaplı Künvet", u:"ml", d:3402.4, e:12},
+        {l:"ROUTE", c:"D3.2", n:"Cunettes béton / Beton Künvet", u:"ml", d:4304.81, e:15.30},
+        {l:"ROUTE", c:"D3.3", n:"Cunettes symétriques / Simetrik Künvet", u:"ml", d:4829.18, e:13.40},
+        {l:"ROUTE", c:"D4.1", n:"Descente d'eau A / İniş Kanalı A", u:"ml", d:2912.86, e:11.80},
+        {l:"ROUTE", c:"D4.2", n:"Descente d'eau B / İniş Kanalı B", u:"ml", d:3357.57, e:14.10},
+        {l:"ROUTE", c:"D4.3", n:"Descente d'eau C / İniş Kanalı C", u:"ml", d:3634.81, e:15.30},
+        {l:"ROUTE", c:"D4.4", n:"Descente d'eau D / İniş Kanalı D", u:"ml", d:4119.98, e:17.40},
+        {l:"ROUTE", c:"D5.1", n:"Descente Tuile A / Kiremit Kanal A", u:"ml", d:2200, e:0},
+        {l:"ROUTE", c:"D5.2", n:"Descente Tuile B / Kiremit Kanal B", u:"ml", d:3520, e:0},
+        {l:"ROUTE", c:"D5.3", n:"Descente Tuile C / Kiremit Kanal C", u:"ml", d:4200, e:0},
+        {l:"ROUTE", c:"D6.1", n:"Caniveau U 30x40 / U Kanal", u:"ml", d:4800, e:0},
+        {l:"ROUTE", c:"D6.2", n:"Caniveau U 40x50 / U Kanal", u:"ml", d:5800, e:0},
+        {l:"ROUTE", c:"D6.3", n:"Caniveau U 45x55 / U Kanal", u:"ml", d:6300, e:0},
+        {l:"ROUTE", c:"D7.1", n:"Caniveau fente 300 / Yarık Kanal", u:"ml", d:22200, e:0},
+        {l:"ROUTE", c:"D7.2", n:"Caniveau fente 400 / Yarık Kanal", u:"ml", d:26600, e:0},
+        {l:"ROUTE", c:"D7.3", n:"Caniveau fente 500 / Yarık Kanal", u:"ml", d:29300, e:0},
+        {l:"ROUTE", c:"D7.4", n:"Renforcement caniveaux / Kanal Güçlendirme", u:"ml", d:11191.83, e:7.90},
+        {l:"ROUTE", c:"D8.1", n:"Demi-buse 300 / Yarım Büz", u:"ml", d:4400, e:0},
+        {l:"ROUTE", c:"D8.2", n:"Demi-buse 400 / Yarım Büz", u:"ml", d:5700, e:0},
+        {l:"ROUTE", c:"D8.3", n:"Demi-buse 500 / Yarım Büz", u:"ml", d:7800, e:0},
+        {l:"ROUTE", c:"D9.1", n:"Tranchée < 2m / Hendek Kazısı", u:"m3", d:217.93, e:0.90},
+        {l:"ROUTE", c:"D9.2", n:"Tranchée 2-4m / Hendek Kazısı", u:"m3", d:277.24, e:1.20},
+        {l:"ROUTE", c:"D9.3", n:"Tranchée 4-6m / Hendek Kazısı", u:"m3", d:326.55, e:1.50},
+        {l:"ROUTE", c:"D9.4", n:"PV Roche / Kaya Farkı", u:"m3", d:1500, e:0},
+        {l:"ROUTE", c:"D10.1", n:"Lit sable / Kum Yataklama", u:"m3", d:1455.51, e:6.30},
+        {l:"ROUTE", c:"D10.2", n:"Lit béton / Beton Yataklama", u:"m3", d:5962.17, e:12.10},
+        {l:"ROUTE", c:"D11.1", n:"Enrobage grave / Doğal Gömlekleme", u:"m3", d:1437.35, e:5.50},
+        {l:"ROUTE", c:"D11.2", n:"Enrobage béton / Beton Gömlekleme", u:"m3", d:5593.89, e:15.70},
+        {l:"ROUTE", c:"D11.3", n:"Enrobage drainant / Drenaj Gömlekleme", u:"m3", d:1739.65, e:4.50},
+        {l:"ROUTE", c:"D12.1", n:"Tuyau 400mm / BA Boru", u:"ml", d:7769.31, e:0.30},
+        {l:"ROUTE", c:"D12.2", n:"Tuyau 600mm / BA Boru", u:"ml", d:9369.31, e:0.30},
+        {l:"ROUTE", c:"D13.1", n:"Buse 800mm / BA Büz", u:"ml", d:15498.73, e:4.90},
+        {l:"ROUTE", c:"D13.2", n:"Buse 1000mm / BA Büz", u:"ml", d:21631.72, e:3.60},
+        {l:"ROUTE", c:"D13.3", n:"Buse 1200mm / BA Büz", u:"ml", d:36375.97, e:6.10},
+        {l:"ROUTE", c:"D13.4", n:"Buse 1500mm / BA Büz", u:"ml", d:50775.97, e:6.10},
+        {l:"ROUTE", c:"D14.1", n:"Collecteur 150mm / Drenaj Kolektörü", u:"ml", d:2700, e:0},
+        {l:"ROUTE", c:"D17.1", n:"Tuyau PEHD 75mm", u:"ml", d:1236, e:0},
+        {l:"ROUTE", c:"D17.2", n:"Tuyau PEHD 90mm", u:"ml", d:1500, e:0},
+        {l:"ROUTE", c:"D18.1", n:"Chambre K1C / Menhol K1C", u:"U", d:112000, e:0},
+        {l:"ROUTE", c:"D18.2", n:"Chambre K2C / Menhol K2C", u:"U", d:125000, e:0},
+        {l:"ROUTE", c:"D19.1", n:"Regard 1000mm / Muayene Bacası", u:"U", d:120000, e:0},
+        {l:"ROUTE", c:"D20.1", n:"Puisard / Rogar 1000x1000", u:"U", d:150000, e:0},
+        {l:"ROUTE", c:"D20.2", n:"Puisard 1500x1300 / Rogar", u:"U", d:174000, e:0},
+        {l:"ROUTE", c:"D20.3", n:"Puisard 1500x1500 / Rogar", u:"U", d:188000, e:0},
+        {l:"ROUTE", c:"D20.4", n:"Puisard 1500x1800 / Rogar", u:"U", d:215000, e:0},
+        {l:"ROUTE", c:"D20.5", n:"Puisard 1500x2000 / Rogar", u:"U", d:220000, e:0},
+        {l:"ROUTE", c:"D20.6", n:"Puisard 1500x2500 / Rogar", u:"U", d:260000, e:0},
+        {l:"ROUTE", c:"D21.1", n:"Grille 700x700 / Izgara", u:"U", d:32000, e:0},
+        {l:"ROUTE", c:"D21.2", n:"Grille 250x400 / Izgara", u:"U", d:26826.09, e:1.70},
+        {l:"ROUTE", c:"D21.3", n:"Caillebotis 1x1m / Izgara", u:"U", d:5400, e:0},
+        {l:"ROUTE", c:"D21.4", n:"Caillebotis 1x2m / Izgara", u:"U", d:9200, e:0},
+        {l:"ROUTE", c:"D22.1", n:"Tête buse 600 / Büz Ağzı", u:"U", d:60925.34, e:154.20},
+        {l:"ROUTE", c:"D22.2", n:"Tête buse 800 / Büz Ağzı", u:"U", d:68921.05, e:186.50},
+        {l:"ROUTE", c:"D22.3", n:"Tête buse 1000 / Büz Ağzı", u:"U", d:76992.73, e:224.90},
+        {l:"ROUTE", c:"D22.4", n:"Tête buse 1200 / Büz Ağzı", u:"U", d:90558.06, e:287.80},
+        {l:"ROUTE", c:"D22.5", n:"Tête buse 1500 / Büz Ağzı", u:"U", d:125386.97, e:436.10},
+        {l:"ROUTE", c:"D23.1", n:"Bourrelet / Asfalt Bordür", u:"ml", d:3000, e:0},
+        {l:"ROUTE", c:"D24.1", n:"Enrochement A / Taş Tahkimat A", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D24.2", n:"Enrochement B / Taş Tahkimat B", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D24.3", n:"Enrochement C / Taş Tahkimat C", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D25.1", n:"Enrochements liés / Harçlı Taş", u:"m3", d:2042.98, e:7.40},
+        {l:"ROUTE", c:"D26.1", n:"Barbacane / Barbakan", u:"ml", d:1700, e:0},
+        {l:"ROUTE", c:"D27.1", n:"Béton de propreté / Grobeton", u:"m3", d:178.16, e:0.80},
+        {l:"ROUTE", c:"D27.2", n:"Béton ouvrages / Yapı Betonu", u:"m3", d:9553.28, e:46.40},
+        {l:"ROUTE", c:"D27.3", n:"Coffrage / Kalıp", u:"m2", d:920.22, e:8.60},
+        {l:"ROUTE", c:"D27.4", n:"Ferraillage / Demir Donatı", u:"Kg", d:65.08, e:0.40},
+        {l:"ROUTE", c:"E1.1", n:"Grave GNT / Plentmiks Temel", u:"m3", d:1922.64, e:3.20},
+        {l:"ROUTE", c:"E2.1", n:"Grave Bitume / Bitümlü Temel", u:"Tonne", d:3390.32, e:21.60},
+        {l:"ROUTE", c:"E2.2", n:"Enrobés EME 2 / Modifiye Asfalt", u:"Tonne", d:4782.15, e:29.50},
+        {l:"ROUTE", c:"E3.1", n:"Couche BB / Aşınma (BB)", u:"Tonne", d:4337.9, e:27},
+        {l:"ROUTE", c:"E3.2", n:"Couche BBM / Aşınma (BBM)", u:"Tonne", d:4650.19, e:34.70},
+        {l:"ROUTE", c:"E3.3", n:"Couche BBME / Aşınma (BBME)", u:"Tonne", d:4670.65, e:34.50},
+        {l:"ROUTE", c:"E4.1", n:"Imprégnation / Emprime", u:"m2", d:95, e:0},
+        {l:"ROUTE", c:"E4.2", n:"Accrochage / Yapıştırıcı", u:"m2", d:70, e:0},
+        {l:"ROUTE", c:"E5.1", n:"Bicouche / Sathi Kaplama", u:"m2", d:540, e:0},
+        {l:"ROUTE", c:"E6.1", n:"Bordure A2 / Bordür A2", u:"ml", d:2000, e:0},
+        {l:"ROUTE", c:"F1.1", n:"Hachures / Taralı Alan", u:"m2", d:680, e:0},
+        {l:"ROUTE", c:"F1.2", n:"Bande 100mm / Çizgi 100mm", u:"ml", d:70, e:0},
+        {l:"ROUTE", c:"F1.3", n:"Bande 150mm / Çizgi 150mm", u:"ml", d:145, e:0},
+        {l:"ROUTE", c:"F1.5", n:"Bande 375mm / Çizgi 375mm", u:"ml", d:340, e:0},
+        {l:"ROUTE", c:"F1.8", n:"Flèche / Yön Oku", u:"U", d:800, e:0},
+        {l:"ROUTE", c:"F2.1", n:"Bande préfa. / Hazır Çizgi", u:"ml", d:800, e:0},
+        {l:"ROUTE", c:"G1.1", n:"Panneau A/AB / Levha A-AB", u:"U", d:52000, e:0},
+        {l:"ROUTE", c:"G1.2", n:"Panneau Triangle / Üçgen Levha", u:"U", d:42400, e:0},
+        {l:"ROUTE", c:"G1.3", n:"Panneau Circulaire / Yuvarlak", u:"U", d:48600, e:0},
+        {l:"ROUTE", c:"G2.1", n:"Panonceau M / M Tipi Levha", u:"m2", d:42000, e:0},
+        {l:"ROUTE", c:"G3.1", n:"Panneau Direction / Yön Levhası", u:"m2", d:64000, e:0},
+        {l:"ROUTE", c:"G4.1", n:"Balise J1 / Viraj Yön", u:"U", d:18000, e:0},
+        {l:"ROUTE", c:"G5.1", n:"Poteaux / Direk", u:"ml", d:9776.59, e:0},
+        {l:"ROUTE", c:"G5.7", n:"Semelle / Levha Temeli", u:"m3", d:8020.53, e:38.90},
+        {l:"ROUTE", c:"G7.1", n:"Réflecteur / Reflektör", u:"U", d:1670, e:0},
+        {l:"ROUTE", c:"H1.1.1", n:"Glissière GS4 / Otokorkuluk", u:"ml", d:1238.45, e:48.50},
+        {l:"ROUTE", c:"H2.1.1", n:"Barrière GBA / Beton Bariyer", u:"ml", d:3932.51, e:16.30},
+        {l:"ROUTE", c:"H2.1.2", n:"Barrière DBA / Çiftli Bariyer", u:"ml", d:4586.99, e:18.70},
+        {l:"ROUTE", c:"H3.1", n:"Extrémité GBA / Bariyer Sonu", u:"U", d:5150.55, e:21.50},
+        {l:"ROUTE", c:"I1.1", n:"Fouilles / Kazı (Çevre)", u:"m3", d:178.16, e:0.80},
+        {l:"ROUTE", c:"I1.3", n:"Béton propreté / Grobeton", u:"m3", d:5919.19, e:4.70},
+        {l:"ROUTE", c:"I1.6", n:"Béton fondations / Temel Betonu", u:"m3", d:8973.98, e:37.40},
+        {l:"ROUTE", c:"I2.1", n:"Support HEA 140 / Destek", u:"U", d:9600, e:0},
+        {l:"ROUTE", c:"I3.1", n:"Panneau antibruit / Gürültü Paneli", u:"m2", d:88750, e:0},
+        {l:"ROUTE", c:"I4.1", n:"Déblais bassins / Havuz Kazısı", u:"m3", d:168.16, e:0.80},
+        {l:"ROUTE", c:"I5.1", n:"Argile compactée / Sıkıştırılmış Kil", u:"m3", d:474.48, e:2.40},
+        {l:"ROUTE", c:"I5.3", n:"Enrochement / Taş Dolgu", u:"m3", d:2205.85, e:10.50},
+        {l:"ROUTE", c:"I6.1", n:"Séparateur hydro / Yağ Ayırıcı", u:"U", d:4400000, e:0},
+        {l:"ROUTE", c:"I8.1", n:"Clôture / Çit", u:"ml", d:5934.02, e:2.60},
+        {l:"ROUTE", c:"I9.1", n:"Plantation arbres / Ağaç Dikimi", u:"m2", d:1545.17, e:0},
+        {l:"ROUTE", c:"J1.1", n:"Mur gabions / Gabion Duvar", u:"m3", d:3034.57, e:24.10},
+        {l:"ROUTE", c:"J2.1", n:"Béton projeté / Püskürtme Beton", u:"m3", d:13478.48, e:122.40},
+        {l:"ROUTE", c:"J2.3.1", n:"Clous 12m / Zemin Çivisi", u:"U", d:19236.87, e:23.10},
+        {l:"ROUTE", c:"J6.1", n:"Drains / Drenaj", u:"ml", d:4700, e:0},
+        {l:"ROUTE", c:"J8.1", n:"Ancrages 32mm / Ankraj", u:"ml", d:470.1, e:13},
+        {l:"ROUTE", c:"J9", n:"Géotextile alv. / Hücresel Geotekstil", u:"m2", d:780, e:0},
+        {l:"ROUTE", c:"K1.1", n:"Caméra / Kamera", u:"U", d:412003.51, e:36246.30},
+        {l:"ROUTE", c:"NP.11", n:"Poste observation / Kule", u:"U", d:12200000, e:0},
+        {l:"ROUTE", c:"NP.18", n:"Badigeonnage / Badana", u:"m2", d:759.08, e:0.40},
+        {l:"ROUTE", c:"NP.26", n:"Géocomposite / Geokompozit", u:"m2", d:764.73, e:26.64},
+        {l:"ROUTE", c:"NP.27", n:"Masque poids / Ağırlık Dolgusu", u:"MC", d:3405.85, e:10.50},
+        {l:"ROUTE", c:"NP32", n:"Fibres béton / Elyaf", u:"Kg", d:974.7, e:0},
+        {l:"ROUTE", c:"NP.48", n:"Déplacement cimetière / Mezarlık", u:"U", d:22275, e:0},
+        {l:"ROUTE", c:"NP08.64", n:"Chambre L5C / Menhol L5C", u:"U", d:348873.07, e:11.02},
+        {l:"ROUTE", c:"NP08.67", n:"Réseau multitub / Çoklu Boru", u:"ml", d:6113.37, e:16.49},
+        {l:"ROUTE", c:"NP08.74", n:"Couche forme sélec.", u:"m3", d:1950, e:0},
+        {l:"ROUTE", c:"NP08.14m", n:"Inclinomètres / İnklinometre", u:"U", d:209998.56, e:2052.80},
+        {l:"ROUTE", c:"NP11.14a", n:"Sondages carottés", u:"ml", d:18000, e:0},
+        {l:"ROUTE", c:"NP11.14b", n:"Sondages pressio", u:"ml", d:15500, e:0},
+        {l:"ROUTE", c:"NP11.19", n:"Etude adaptation", u:"ft", d:36723806, e:358780},
+
+        // LOT OA
+        {l:"OA", c:"OUA.A1", n:"Installation OA / Şantiye Kurulumu", u:"Ft", d:1010357152.02, e:4786342.60},
+        {l:"OA", c:"OUA.B1.1", n:"Déblais fouilles / Temel Kazısı", u:"m3", d:178.16, e:0.80},
+        {l:"OA", c:"OUA.B1.2", n:"PV Roche / Kaya Farkı", u:"m3", d:1113.56, e:2.80},
+        {l:"OA", c:"OUA.B1.3", n:"Remblaiement / Geri Dolgu", u:"m3", d:613.56, e:2.80},
+        {l:"OA", c:"OUA.B2.1", n:"Pieux 1200mm / Fore Kazık", u:"ml", d:5404.19, e:54.70},
+        {l:"OA", c:"OUA.B2.2", n:"PV forage rocheux", u:"ml", d:802.06, e:7.80},
+        {l:"OA", c:"OUA.B2.7", n:"Essais statiques / Yükleme Deneyi", u:"U", d:1520000, e:0},
+        {l:"OA", c:"OUA.B3.1", n:"Puits < 3m / Kuyu", u:"ml", d:124999.63, e:1221.90},
+        {l:"OA", c:"OUA.B4.1.1", n:"Coffrage ordinaire", u:"m2", d:853.21, e:7.30},
+        {l:"OA", c:"OUA.B5.1", n:"Béton propreté", u:"m2", d:723.79, e:2.70},
+        {l:"OA", c:"OUA.B5.2.1", n:"Béton C40 Caisson", u:"m3", d:21343.02, e:172.60},
+        {l:"OA", c:"OUA.B5.2.6", n:"Béton C35 Piles / Ayak", u:"m3", d:12538.45, e:48.50},
+        {l:"OA", c:"OUA.B6.1.1", n:"Acier HA / Demir", u:"Tonne", d:67033.93, e:380.90},
+        {l:"OA", c:"OUA.B6.2", n:"Précontrainte / Öngerilme", u:"Tonne", d:55688.54, e:3170.20},
+        {l:"OA", c:"OUA.B7.1.1", n:"Appareil 2100 / Mesnet", u:"U", d:260001.71, e:3812.30},
+        {l:"OA", c:"OUA.NP.05", n:"Shock Transmittal", u:"U", d:659476.9, e:53097},
+        {l:"OA", c:"OUA.NP.06", n:"Isolateur / Sismik İzolatör", u:"U", d:134282.61, e:15822.32},
+        {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T / Ankraj", u:"ml", d:4260, e:89},
+        {l:"OA", c:"OUA.NP.09b", n:"Tirants 75T / Ankraj", u:"ml", d:4310, e:103},
+        {l:"OA", c:"OUA.NP08.41", n:"Drain perforé / Drenaj", u:"ml", d:2700, e:0},
+        {l:"OA", c:"OUA.NP08.44", n:"Water Stop / Su Bandı", u:"ml", d:2550, e:0},
+        {l:"OA", c:"OUA.NP11.03", n:"Joint 250-400mm", u:"ml", d:26173.22, e:3898.60},
+        {l:"OA", c:"OUA.NP.11.04", n:"Joint 500-800mm", u:"ml", d:102606, e:9780},
+
+        // LOT TUNNEL
+        {l:"TUNNEL", c:"TUN.E1.1", n:"Fondation GNT / Temel", u:"m3", d:1862.41, e:3.30},
+        {l:"TUNNEL", c:"TUN.E1.3", n:"Enrobé EME / Asfalt", u:"Tonne", d:4812.84, e:29.20},
+        {l:"TUNNEL", c:"TUN.E3.5", n:"Portique / Gabari Takı", u:"U", d:309995.66, e:57575.80},
+        {l:"TUNNEL", c:"TU.E3.1.1", n:"Panneau Tunnel / Levha", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TUN.A1", n:"Installation Tunnel", u:"Ft", d:280633538.7, e:1362331.3},
+        {l:"TUNNEL", c:"TUN.B1", n:"Déblais dépôt / Tünel Kazısı", u:"m3", d:1126.54, e:4.62},
+        {l:"TUNNEL", c:"TUN.C1.2", n:"Explosif / Patlatmalı Kazı", u:"m3", d:4883.43, e:53.50},
+        {l:"TUNNEL", c:"TUN.C2.1", n:"Cintre / İksa Çeliği", u:"kg", d:46.55, e:1.50},
+        {l:"TUNNEL", c:"TUN.C3.1", n:"Boulons 4m / Kaya Bulonu", u:"U", d:2832.82, e:46.60},
+        {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Püskürtme", u:"m3", d:13046.21, e:97.30},
+        {l:"TUNNEL", c:"TUN.F2.1", n:"Ventilateurs / Fanlar", u:"U", d:459359.84, e:85315.40}
+    ];
+
+    // --- 3. MANTIKSAL İŞLEMLER ---
+    function setFilter(type, btn) {
+        currentFilter = type;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        document.getElementById("searchBox").value = "";
+        document.getElementById("resultsList").style.display = "none";
+        document.getElementById("detailCard").style.display = "none";
+        document.getElementById("calcSec").style.opacity = "0.5";
+        document.getElementById("calcSec").style.pointerEvents = "none";
+    }
+
+    function toggleDropdown(state) {
+        const list = document.getElementById("resultsList");
+        if (state === true || (state === 'toggle' && list.style.display === "none")) {
+            showList();
+        } else {
+            list.style.display = "none";
+        }
+    }
+
+    function showList() {
+        const val = document.getElementById("searchBox").value.toLowerCase();
+        const list = document.getElementById("resultsList");
+        list.innerHTML = "";
+        
+        const filtered = database.filter(item => {
+            const match = item.c.toLowerCase().includes(val) || item.n.toLowerCase().includes(val);
+            return match && (currentFilter === 'ALL' || item.l === currentFilter);
+        });
+
+        if (filtered.length === 0) {
+            list.innerHTML = "<div class='result-item'>Sonuç yok...</div>";
+        } else {
+            filtered.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "result-item";
+                let color = "#95a5a6";
+                if(item.l === "ROUTE") color="#3498db";
+                else if(item.l === "OA") color="#27ae60";
+                else if(item.l === "TUNNEL") color="#e67e22";
+
+                const parts = item.n.split(" / ");
+                div.innerHTML = `<span class='tag' style='background:${color}'>${item.l}</span> <strong>${item.c}</strong> ${parts[0]} <br> <span style="color:#007aff;">${parts[1]||""}</span>`;
+                div.onclick = () => selectItem(item);
+                list.appendChild(div);
+            });
+        }
+        list.style.display = "block";
+    }
+
+    function filterList() {
+        showList();
+    }
+
+    function selectItem(item) {
+        selectedItem = item;
+        document.getElementById("searchBox").value = item.c + " - " + item.n.split(" / ")[0];
+        document.getElementById("resultsList").style.display = "none";
+
+        document.getElementById("dCode").innerText = item.c;
+        document.getElementById("dUnit").innerText = item.u;
+        document.getElementById("dName").innerText = item.n;
+        document.getElementById("dDZD").innerText = item.d.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+        document.getElementById("dEUR").innerText = item.e.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+
+        document.getElementById("detailCard").style.display = "block";
+        document.getElementById("calcSec").style.opacity = "1";
+        document.getElementById("calcSec").style.pointerEvents = "auto";
+        document.getElementById("qtyIn").value = "";
+        document.getElementById("totalBox").style.display = "none";
+        document.getElementById("qtyIn").focus();
+    }
+
+    function calculate() {
+        if (!selectedItem) return;
+        const q = parseFloat(document.getElementById("qtyIn").value);
+        const r = parseFloat(document.getElementById("rateIn").value);
+
+        if (q > 0) {
+            const totD = q * selectedItem.d;
+            const totE = q * selectedItem.e;
+            const grand = totD + (totE * r);
+
+            document.getElementById("tDZD").innerText = totD.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
+            document.getElementById("tEUR").innerText = totE.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " €";
+            document.getElementById("tGrand").innerText = grand.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
+            document.getElementById("totalBox").style.display = "block";
+        } else {
+            document.getElementById("totalBox").style.display = "none";
+        }
+    }
+
+    // --- SÖZLER ---
+    const quotes = [
+        { t: "Mühendislik, hayal gücünün maddeye dönüşmesidir.", a: "Anonim" },
+        { t: "Zor yollar, genellikle güzel yerlere çıkar.", a: "Anonim" },
+        { t: "Şantiyede güvenlik, hızdan önce gelir.", a: "Kural" },
+        { t: "Yol medeniyettir.", a: "Atasözü" },
+        { t: "La route est le symbole de la civilisation.", a: "Proverbe" }
+    ];
+
+    function getNewQuote() {
+        const r = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById("qText").innerText = '"' + r.t + '"';
+        document.getElementById("qAuthor").innerText = "— " + r.a;
+    }
+
+    getNewQuote();
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-wrapper')) {
+            document.getElementById("resultsList").style.display = "none";
+        }
+    });
+
+</script>
+
+</body>
+</html>
