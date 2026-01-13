@@ -3,32 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DQE PRO Hesaplayıcı</title>
+    <title>LOT ROUTE HESAPLAYICI</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f2f2f7; margin: 0; padding: 15px; color: #1c1c1e; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #007aff; margin-bottom: 20px; font-weight: 800; letter-spacing: -0.5px; }
         
         label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; color: #8e8e93; }
+        
+        /* Dropdown Stili */
+        select { 
+            width: 100%; padding: 14px; border: 1px solid #e5e5ea; border-radius: 12px; 
+            font-size: 15px; background: #f9f9f9; appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007AFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right .7em top 50%; background-size: .65em auto;
+        }
+        select:focus { outline: none; border-color: #007aff; background-color: #fff; }
+        
         input { width: 100%; padding: 14px; border: 1px solid #e5e5ea; border-radius: 12px; font-size: 16px; background: #f9f9f9; box-sizing: border-box; transition: all 0.3s; -webkit-appearance: none; }
         input:focus { outline: none; border-color: #007aff; background: #fff; box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
-        
-        .search-container { position: relative; }
-        .search-results { 
-            position: absolute; width: 100%; background: white; border: 1px solid #e5e5ea; 
-            border-top: none; border-radius: 0 0 12px 12px; max-height: 300px; overflow-y: auto; 
-            z-index: 1000; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .search-item { padding: 14px; cursor: pointer; border-bottom: 1px solid #f2f2f7; }
-        .search-item:last-child { border-bottom: none; }
-        .search-item strong { display: block; color: #000; font-size: 15px; margin-bottom: 2px; }
-        .search-item small { color: #666; font-size: 13px; display: block; }
-        .tag-lot { display: inline-block; background: #e5e5ea; color: #555; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
 
         .selected-card { background: #f0f8ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; }
-        .selected-card h3 { margin: 0; color: #007aff; font-size: 20px; display: flex; align-items: center; }
-        .badge-unit { background: #007aff; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; margin-left: auto; }
-        .price-tag { margin-top:10px; font-size:14px; color:#333; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 8px; }
+        .selected-card h3 { margin: 0; color: #007aff; font-size: 20px; display: flex; align-items: center; justify-content: space-between;}
+        .badge-unit { background: #007aff; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+        .price-tag { margin-top:10px; font-size:14px; color:#333; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 8px; border: 1px solid #daeaff;}
 
         .result-box { margin-top: 25px; background-color: #1c1c1e; color: #fff; border-radius: 16px; padding: 20px; display: none; }
         .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #333; padding-bottom: 8px; }
@@ -37,197 +35,18 @@
         .grand-total-val { font-size: 28px; font-weight: 700; color: #30d158; text-align: right; display: block; margin-top: 5px; letter-spacing: -1px;}
         
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
-        .rate-input-group span { white-space: nowrap; font-weight: bold; color: #555; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>DQE Hesaplayıcı PRO</h2>
+    <h2>LOT ROUTE</h2>
 
-    <label>İş Kalemi Ara:</label>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Kod (C.3.3) veya İsim (Kazı)..." onkeyup="filterItems()">
-        <div class="search-results" id="searchResults"></div>
-    </div>
+    <label>İş Kalemi Seçiniz:</label>
+    <select id="itemSelect" onchange="itemSelected()">
+        <option value="">Lütfen bir kalem seçin...</option>
+        </select>
 
     <div id="selectedCard" class="selected-card">
         <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT</span></h3>
-        <p id="selName" style="margin: 8px 0; color: #444; font-weight: 500;">İş Tanımı</p>
-        <div class="price-tag">
-            Birim Fiyat: <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
-        </div>
-    </div>
-
-    <div id="calcArea" style="opacity: 0.5; pointer-events: none;">
-        <label>Euro Kuru (Sabit):</label>
-        <div class="rate-input-group">
-            <input type="number" id="exchangeRate" value="102.3" step="0.1" oninput="calculate()">
-            <span>DZD</span>
-        </div>
-
-        <label>Miktar (Metraj):</label>
-        <input type="number" id="quantity" placeholder="Örn: 1000" oninput="calculate()">
-
-        <div class="result-box" id="resultBox">
-            <div class="result-row">
-                <span>Dinar Kısmı:</span>
-                <span id="resDZD">0,00 DZD</span>
-            </div>
-            <div class="result-row">
-                <span>Euro Kısmı:</span>
-                <span id="resEUR">0,00 €</span>
-            </div>
-            <div style="margin-top: 20px; text-align: center;">
-                <span class="grand-total-label">TOPLAM MALİYET</span>
-                <span class="grand-total-val" id="resGrandTotal">0,00 DZD</span>
-                <small style="color:#888; display:block; margin-top:5px; font-size: 11px;">(Euro x 102.3 + Dinar)</small>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- TAM VERİTABANI (DQE MAPA GÖRSELİNDEN AKTARILDI) ---
-    const database = [
-        // LOT ROUTE - SERIE A
-        { code: "A.1", name: "Installation de chantier", unit: "Forfait", priceDZD: 1041277760.00, priceEUR: 4972851.80, lot: "YOL" },
-        { code: "A.3.1", name: "Etudes d'execution", unit: "Forfait", priceDZD: 212842500.00, priceEUR: 2025000.00, lot: "YOL" },
-        
-        // LOT ROUTE - SERIE B (Preparatory)
-        { code: "B.1", name: "Débroussaillage, évacuation des blocs", unit: "ha", priceDZD: 619820.41, priceEUR: 2543.30, lot: "YOL" },
-        { code: "B.5.1", name: "Démolition d'ouvrages en béton armé", unit: "m3", priceDZD: 1335.05, priceEUR: 6.50, lot: "YOL" },
-
-        // LOT ROUTE - SERIE C (Terrassement - Toprak İşleri)
-        { code: "C.1", name: "Décapage de la terre végétale", unit: "m3", priceDZD: 128.62, priceEUR: 0.60, lot: "YOL" },
-        { code: "C.3.1", name: "Déblai meuble mis en remblai", unit: "m3", priceDZD: 257.24, priceEUR: 1.20, lot: "YOL" },
-        { code: "C.3.2", name: "Déblai terre des mis en remblai", unit: "m3", priceDZD: 480.93, priceEUR: 0.80, lot: "YOL" },
-        { code: "C.3.3", name: "Déblai rocheur dur mis en remblai", unit: "m3", priceDZD: 1308.96, priceEUR: 4.80, lot: "YOL" },
-        { code: "C.4.1", name: "Déblai meuble mis en dépôt", unit: "m3", priceDZD: 148.16, priceEUR: 0.80, lot: "YOL" },
-        { code: "C.4.2", name: "Déblai terre des mis en dépôt", unit: "m3", priceDZD: 437.13, priceEUR: 2.00, lot: "YOL" },
-        { code: "C.4.3", name: "Déblai rocheur dur mis en dépôt", unit: "m3", priceDZD: 893.10, priceEUR: 3.00, lot: "YOL" },
-        { code: "C.5", name: "Remblai en provenance d'emprunt", unit: "m3", priceDZD: 555.63, priceEUR: 1.90, lot: "YOL" },
-        { code: "C.6.1", name: "Assise drainante", unit: "m3", priceDZD: 1166.55, priceEUR: 1.50, lot: "YOL" },
-        { code: "C.7.1", name: "Géotextile de renforcement", unit: "m2", priceDZD: 290.80, priceEUR: 4.00, lot: "YOL" },
-
-        // LOT ROUTE - SERIE D (Assainissement - Drenaj)
-        { code: "D.1.1", name: "Fossé trapézoïdal non revêtu type A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80, lot: "YOL" },
-        { code: "D.2.1", name: "Bétonnage de fossé de type A", unit: "ml", priceDZD: 4448.37, priceEUR: 18.10, lot: "YOL" },
-        { code: "D.9.1", name: "Déblai de tranchées prof < 2m", unit: "m3", priceDZD: 217.93, priceEUR: 0.90, lot: "YOL" },
-        { code: "D.9.3", name: "Déblai de tranchées prof 4-6m", unit: "m3", priceDZD: 326.55, priceEUR: 1.50, lot: "YOL" },
-        { code: "D.12", name: "Diamétre de 400 mm (Tuyau)", unit: "ml", priceDZD: 7769.31, priceEUR: 0.30, lot: "YOL" },
-        { code: "D.14.3", name: "Diamétre de 1200 mm (Buse)", unit: "ml", priceDZD: 36376.02, priceEUR: 5.10, lot: "YOL" },
-
-        // LOT ROUTE - SERIE E (Chaussée - Üstyapı)
-        { code: "E.1.1", name: "Grave non traitée (GNT 0/31.5)", unit: "m3", priceDZD: 1922.64, priceEUR: 3.20, lot: "YOL" },
-        { code: "E.2.2", name: "Grave Bitume (GB) 0/14", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60, lot: "YOL" },
-        { code: "E.3.1", name: "Couche de roulement BB", unit: "Tonne", priceDZD: 4337.90, priceEUR: 27.00, lot: "YOL" },
-        { code: "E.3.2", name: "Couche de roulement BBME 0/10", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50, lot: "YOL" },
-        { code: "E.4.1", name: "Couche d'imprégnation", unit: "m2", priceDZD: 95.00, priceEUR: 0.00, lot: "YOL" },
-
-        // LOT ROUTE - SERIE J & K (Duvarlar ve Güvenlik)
-        { code: "J.1.1", name: "Mur en béton armé", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10, lot: "YOL" },
-        { code: "J.2.1", name: "Béton B30 (ep>15cm)", unit: "m3", priceDZD: 13478.48, priceEUR: 122.40, lot: "YOL" },
-        { code: "K.1.1", name: "Poteau pour caméra", unit: "U", priceDZD: 23504.98, priceEUR: 2067.40, lot: "YOL" },
-
-        // --- LOT OUVRAGES D'ART (SANAT YAPILARI) ---
-        { code: "OA-A.1", name: "Installation de chantier (OA)", unit: "Forfait", priceDZD: 1010357152.52, priceEUR: 4786342.60, lot: "SANAT" },
-        { code: "OA-B.1.1", name: "Déblai pour fouilles", unit: "m3", priceDZD: 178.16, priceEUR: 0.80, lot: "SANAT" },
-        { code: "OA-B.1.4", name: "Remblai aux abords immédiats", unit: "m3", priceDZD: 734.02, priceEUR: 2.60, lot: "SANAT" },
-        { code: "OA-B.2.1", name: "Pieux forés verticaux 1200mm", unit: "ml", priceDZD: 10695.00, priceEUR: 130.00, lot: "SANAT" },
-        { code: "OA-B.5.2.1", name: "Béton RN 40 pour caisson", unit: "m3", priceDZD: 759.08, priceEUR: 210.00, lot: "SANAT" },
-        { code: "OA-B.5.2.7", name: "Béton RN 35 pour semelles/dalle", unit: "m3", priceDZD: 10736.15, priceEUR: 49.50, lot: "SANAT" },
-        { code: "OA-B.6.1", name: "Acier HA (Donatı)", unit: "Tonne", priceDZD: 67033.93, priceEUR: 380.90, lot: "SANAT" },
-
-        // --- LOT TUNNEL (TÜNEL) ---
-        { code: "TUN-B.1", name: "Déblais meubles", unit: "m3", priceDZD: 1126.54, priceEUR: 4.62, lot: "TÜNEL" },
-        { code: "TUN-C.1.1", name: "Déblais excavés sans explosif", unit: "m3", priceDZD: 2711.25, priceEUR: 12.50, lot: "TÜNEL" },
-        { code: "TUN-C.1.2", name: "Déblais excavés à l'explosif", unit: "m3", priceDZD: 4883.43, priceEUR: 53.50, lot: "TÜNEL" },
-        { code: "TUN-C.2.1", name: "Cintre de type 130/26/34", unit: "Kg", priceDZD: 46.55, priceEUR: 1.50, lot: "TÜNEL" },
-        { code: "TUN-C.4.1", name: "Clous en fibre de verre 12 m", unit: "U", priceDZD: 24000.00, priceEUR: 0.00, lot: "TÜNEL" },
-        { code: "TUN-D.2.1", name: "Béton projeté C30/37", unit: "m3", priceDZD: 13046.21, priceDZD: 97.30, lot: "TÜNEL" },
-        { code: "TUN-E.1.3", name: "Grave Bitume (GB)", unit: "Tonne", priceDZD: 4812.84, priceEUR: 29.20, lot: "TÜNEL" }
-    ];
-
-    let selectedItem = null;
-
-    function formatMoney(amount, currency) {
-        return amount.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " " + currency;
-    }
-
-    function filterItems() {
-        const input = document.getElementById("searchInput").value.toLowerCase();
-        const resultsDiv = document.getElementById("searchResults");
-        resultsDiv.innerHTML = "";
-        
-        if (input.length < 1) { resultsDiv.style.display = "none"; return; }
-
-        const filtered = database.filter(item => 
-            item.code.toLowerCase().includes(input) || item.name.toLowerCase().includes(input)
-        );
-
-        if (filtered.length > 0) {
-            filtered.forEach(item => {
-                const div = document.createElement("div");
-                div.className = "search-item";
-                div.innerHTML = `<strong>${item.code} <span class="tag-lot">${item.lot}</span></strong><small>${item.name}</small>`;
-                div.onclick = () => selectItem(item);
-                resultsDiv.appendChild(div);
-            });
-            resultsDiv.style.display = "block";
-        } else {
-            resultsDiv.style.display = "none";
-        }
-    }
-
-    function selectItem(item) {
-        selectedItem = item;
-        document.getElementById("searchResults").style.display = "none";
-        document.getElementById("searchInput").value = item.code + " - " + item.name;
-
-        document.getElementById("selCode").innerText = item.code;
-        document.getElementById("selUnit").innerText = item.unit;
-        document.getElementById("selName").innerText = item.name;
-        document.getElementById("selPriceDZD").innerText = item.priceDZD.toLocaleString('tr-TR');
-        document.getElementById("selPriceEUR").innerText = item.priceEUR.toLocaleString('tr-TR');
-
-        document.getElementById("selectedCard").style.display = "block";
-        document.getElementById("calcArea").style.opacity = "1";
-        document.getElementById("calcArea").style.pointerEvents = "auto";
-        
-        document.getElementById("quantity").value = "";
-        document.getElementById("resultBox").style.display = "none";
-        document.getElementById("quantity").focus();
-    }
-
-    function calculate() {
-        if (!selectedItem) return;
-
-        const qty = parseFloat(document.getElementById("quantity").value);
-        const rate = parseFloat(document.getElementById("exchangeRate").value);
-
-        if (qty > 0) {
-            const totalDZD = qty * selectedItem.priceDZD;
-            const totalEUR = qty * selectedItem.priceEUR;
-            const euroInDZD = totalEUR * rate;
-            const grandTotal = totalDZD + euroInDZD;
-
-            document.getElementById("resDZD").innerText = formatMoney(totalDZD, "DZD");
-            document.getElementById("resEUR").innerText = formatMoney(totalEUR, "€");
-            document.getElementById("resGrandTotal").innerText = formatMoney(grandTotal, "DZD");
-            
-            document.getElementById("resultBox").style.display = "block";
-        } else {
-            document.getElementById("resultBox").style.display = "none";
-        }
-    }
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-container')) {
-            document.getElementById("searchResults").style.display = "none";
-        }
-    });
-</script>
-
-</body>
-</html>
+        <p id="selName" style="
