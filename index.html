@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOT ROUTE PRO (1907)</title>
+    <title>LOT ROUTE (FR/TR)</title>
     <style>
         /* MODERN FERAH TEMA (Göz Yormayan) */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
             padding: 15px; 
-            background-color: #f4f6f8; /* Soluk Gri Arka Plan */
+            background-color: #f4f6f8; 
             color: #333;
             min-height: 100vh;
         }
@@ -43,7 +43,7 @@
             width: 100%; padding: 16px 50px 16px 16px; 
             border: 1px solid #d1d9e6; 
             border-radius: 12px; 
-            font-size: 16px; 
+            font-size: 15px; 
             background: #f9fbfd; 
             color: #2c3e50;
             font-weight: 500;
@@ -71,17 +71,19 @@
         .custom-results {
             position: absolute; top: 115%; left: 0; right: 0;
             background: white; border: 1px solid #eee; border-radius: 12px;
-            max-height: 300px; overflow-y: auto; z-index: 1000;
+            max-height: 350px; overflow-y: auto; z-index: 1000;
             display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
 
         .result-item {
             padding: 14px 16px; border-bottom: 1px solid #f4f6f8;
-            cursor: pointer; font-size: 14px; color: #444; transition: background 0.1s;
+            cursor: pointer; font-size: 13px; color: #444; transition: background 0.1s;
+            line-height: 1.4;
         }
         .result-item:last-child { border-bottom: none; }
         .result-item:hover, .result-item:active { background-color: #eaf6ff; color: #007aff; }
-        .result-item strong { display: block; color: #2c3e50; font-size: 15px; margin-bottom: 3px; }
+        .result-item strong { display: block; color: #2c3e50; font-size: 14px; margin-bottom: 2px; }
+        .result-item span { color: #666; font-size: 12px; display: block; font-style: italic; }
 
         /* KART ve SONUÇLAR */
         .selected-card { background: #f0f7ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; }
@@ -97,7 +99,7 @@
         
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
 
-        /* --- GİRİŞ EKRANI (LOGIN OVERLAY) --- */
+        /* --- GİRİŞ EKRANI --- */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #f4f6f8; z-index: 9999;
@@ -139,17 +141,17 @@
     </div>
     <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
 
-    <label>İş Kalemi Seçiniz:</label>
+    <label>İş Kalemi Seçiniz (Ara):</label>
     
     <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Seçiniz..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Örn: Beton / Kazı..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
         <div class="arrow-btn" onclick="toggleDropdown('toggle')">▼</div>
         <div id="customResults" class="custom-results"></div>
     </div>
 
     <div id="selectedCard" class="selected-card">
         <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT</span></h3>
-        <p id="selName" style="margin: 8px 0; color: #555; font-weight: 500;">İş Tanımı</p>
+        <p id="selName" style="margin: 10px 0; color: #333; font-weight: 600; line-height: 1.4;">İş Tanımı</p>
         <div class="price-tag">
             Birim Fiyat: <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
         </div>
@@ -184,15 +186,12 @@
 </div>
 
 <script>
-    // --- GÜVENLİK AYARLARI ---
-    const APP_PASSWORD = "1907"; // <<--- ŞİFRE BURADAN DEĞİŞTİRİLİR
+    const APP_PASSWORD = "1907";
 
     function checkPassword() {
         const input = document.getElementById("passwordInput").value;
         const errorMsg = document.getElementById("loginError");
-        
         if(input === APP_PASSWORD) {
-            // Şifre doğru, kaydet ve aç
             localStorage.setItem("isLoggedIn", "true");
             document.getElementById("loginOverlay").style.display = "none";
         } else {
@@ -202,187 +201,197 @@
 
     function logout() {
         localStorage.removeItem("isLoggedIn");
-        location.reload(); // Sayfayı yenile, kilit geri gelsin
+        location.reload();
     }
 
-    // Sayfa açıldığında daha önce girmiş mi kontrol et
     window.onload = function() {
         if(localStorage.getItem("isLoggedIn") === "true") {
             document.getElementById("loginOverlay").style.display = "none";
         }
     }
 
-    // --- VERITABANI: LOT ROUTE (TAM & DÜZELTİLMİŞ) ---
+    // --- VERITABANI: LOT ROUTE (FR + TR) ---
     const database = [
-        { code: "A.1", name: "Installation et repliement du chantier", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
-        { code: "A.2.1", name: "Laboratoire de chantier", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
-        { code: "A.2.2", name: "Contrôle externe des travaux", unit: "Ft", priceDZD: 33983960.76, priceEUR: 400938.80 },
-        { code: "A.3.1", name: "Études d'exécution", unit: "Ft", priceDZD: 212842500.00, priceEUR: 2025000.00 },
-        { code: "A.3.2", name: "Contrôle externe des études", unit: "Ft", priceDZD: 45999996.83, priceEUR: 449657.90 },
-        { code: "A.3.3", name: "Dossier de récolement", unit: "Ft", priceDZD: 33568500.00, priceEUR: 405000.00 },
-        { code: "A.3.4", name: "Etude des méthodes", unit: "Ft", priceDZD: 7500069.87, priceEUR: 73313.10 },
-        { code: "A.3.5", name: "Reconnaissances géotechniques", unit: "Ft", priceDZD: 40209555.68, priceEUR: 388958.40 },
-        { code: "A.4.1", name: "Sécurité passive", unit: "Ft", priceDZD: 200000000.00, priceEUR: 0.00 },
-        { code: "A.4.2", name: "Sécurité active", unit: "Ft", priceDZD: 400000000.00, priceEUR: 0.00 },
-        { code: "A.5", name: "Panneau d'identification", unit: "U", priceDZD: 1775000.00, priceEUR: 0.00 },
-        { code: "B.1.1", name: "Débroussaillage", unit: "Ha", priceDZD: 619820.41, priceEUR: 2543.30 },
-        { code: "B.1.2", name: "Abattage arbres", unit: "U", priceDZD: 1600.00, priceEUR: 0.00 },
-        { code: "B.1.3", name: "Dépose ouvrages métalliques", unit: "Tonne", priceDZD: 944.25, priceEUR: 2.50 },
-        { code: "B.2.1", name: "Démolition ouvrages divers", unit: "m3", priceDZD: 1335.05, priceEUR: 6.50 },
-        { code: "B.2.2", name: "Démolition béton armé", unit: "m3", priceDZD: 1620.22, priceEUR: 8.60 },
-        { code: "B.2.3", name: "Démolition chaussées", unit: "m3", priceDZD: 207.70, priceEUR: 1.00 },
-        { code: "B.3.1", name: "Rabotage <= 100mm", unit: "m2", priceDZD: 88.85, priceEUR: 0.50 },
-        { code: "B.3.2", name: "Rabotage 100-200mm", unit: "m2", priceDZD: 98.62, priceEUR: 0.60 },
-        { code: "B.4", name: "Scarification chaussée", unit: "m2", priceDZD: 28.16, priceEUR: 0.80 },
-        { code: "C.1.1", name: "Décapage terre végétale", unit: "m3", priceDZD: 128.62, priceEUR: 0.60 },
-        { code: "C.1.2", name: "Reprise sur stock", unit: "m3", priceDZD: 179.08, priceEUR: 0.40 },
-        { code: "C.2.2", name: "Purges", unit: "m3", priceDZD: 2200.00, priceEUR: 0.00 },
-        { code: "C.3.1", name: "Déblai meuble mis en remblai", unit: "m3", priceDZD: 257.24, priceEUR: 1.20 },
-        { code: "C.3.2", name: "Déblai semi-dur mis en remblai", unit: "m3", priceDZD: 386.32, priceEUR: 1.60 },
-        { code: "C.3.3", name: "Déblai rocheur dur mis en remblai", unit: "m3", priceDZD: 1308.96, priceEUR: 4.80 },
-        { code: "C.4.1", name: "Déblai meuble mis en dépôt", unit: "m3", priceDZD: 148.16, priceEUR: 0.80 },
-        { code: "C.4.2", name: "Déblai semi-dur mis en dépôt", unit: "m3", priceDZD: 307.70, priceEUR: 1.00 },
-        { code: "C.4.3", name: "Déblai rocheur dur mis en dépôt", unit: "m3", priceDZD: 893.10, priceEUR: 3.00 },
-        { code: "C.5", name: "Remblai d'emprunt", unit: "m3", priceDZD: 555.63, priceEUR: 1.90 },
-        { code: "C.6.1", name: "Assise drainante", unit: "m3", priceDZD: 1166.55, priceEUR: 1.50 },
-        { code: "C.7.1", name: "Géotextile de renforcement", unit: "m2", priceDZD: 290.80, priceEUR: 4.00 },
-        { code: "C.7.2", name: "Géotextile anti-contaminant", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
-        { code: "C.7.3", name: "Géogrille", unit: "m2", priceDZD: 418.04, priceEUR: 5.20 },
-        { code: "C.8.1", name: "Arrondi de crête", unit: "ml", priceDZD: 317.01, priceEUR: 1.30 },
-        { code: "C.9.1", name: "Couche de forme", unit: "m3", priceDZD: 1346.55, priceEUR: 1.50 },
-        { code: "C.10.1", name: "Transport < 30km", unit: "M3xKM", priceDZD: 12.50, priceEUR: 0.00 },
-        { code: "C.10.2", name: "Transport > 30km", unit: "M3xKM", priceDZD: 11.00, priceEUR: 0.00 },
-        { code: "D.1.1", name: "Fossé trapézoïdal non revêtu A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80 },
-        { code: "D.1.2", name: "Fossé trapézoïdal non revêtu B", unit: "ml", priceDZD: 594.94, priceEUR: 2.20 },
-        { code: "D.1.3", name: "Fossé trapézoïdal non revêtu C", unit: "ml", priceDZD: 897.18, priceEUR: 3.40 },
-        { code: "D.1.4", name: "Végétalisation de fossés", unit: "m2", priceDZD: 874.94, priceEUR: 2.20 },
-        { code: "D.2.1", name: "Bétonnage fossé A", unit: "ml", priceDZD: 4448.37, priceEUR: 18.10 },
-        { code: "D.2.2", name: "Bétonnage fossé B", unit: "ml", priceDZD: 5662.50, priceEUR: 25.00 },
-        { code: "D.2.3", name: "Bétonnage fossé C", unit: "ml", priceDZD: 6316.17, priceEUR: 32.10 },
-        { code: "D.3.1", name: "Cunettes végétalisées", unit: "ml", priceDZD: 3402.40, priceEUR: 12.00 },
-        { code: "D.3.2", name: "Cunettes béton extrudé", unit: "ml", priceDZD: 4304.81, priceEUR: 15.30 },
-        { code: "D.3.3", name: "Cunettes symétriques béton", unit: "ml", priceDZD: 4829.18, priceEUR: 13.40 },
-        { code: "D.4.1", name: "Descente d'eau A", unit: "ml", priceDZD: 2912.86, priceEUR: 11.80 },
-        { code: "D.4.2", name: "Descente d'eau B", unit: "ml", priceDZD: 3357.57, priceEUR: 14.10 },
-        { code: "D.4.3", name: "Descente d'eau C", unit: "ml", priceDZD: 3824.21, priceEUR: 15.30 },
-        { code: "D.4.4", name: "Descente d'eau D", unit: "ml", priceDZD: 4119.98, priceEUR: 17.40 },
-        { code: "D.5.1", name: "Descente eau tuile A", unit: "ml", priceDZD: 2200.00, priceEUR: 0.00 },
-        { code: "D.5.2", name: "Descente eau tuile B", unit: "ml", priceDZD: 3520.00, priceEUR: 0.00 },
-        { code: "D.6.1", name: "Caniveau en U 0.30x0.40", unit: "ml", priceDZD: 4800.00, priceEUR: 0.00 },
-        { code: "D.6.2", name: "Caniveau en U 0.40x0.50", unit: "ml", priceDZD: 5800.00, priceEUR: 0.00 },
-        { code: "D.6.3", name: "Caniveau en U 0.45x0.55", unit: "ml", priceDZD: 6300.00, priceEUR: 0.00 },
-        { code: "D.7.1", name: "Caniveau fente 300mm", unit: "ml", priceDZD: 22200.00, priceEUR: 0.00 },
-        { code: "D.7.2", name: "Caniveau fente 400mm", unit: "ml", priceDZD: 26600.00, priceEUR: 0.00 },
-        { code: "D.7.3", name: "Caniveau fente 500mm", unit: "ml", priceDZD: 29300.00, priceEUR: 0.00 },
-        { code: "D.7.4", name: "Renforcement caniveaux", unit: "ml", priceDZD: 11191.83, priceEUR: 7.90 },
-        { code: "D.8.1", name: "Demi-buse 300mm", unit: "ml", priceDZD: 4400.00, priceEUR: 0.00 },
-        { code: "D.8.2", name: "Demi-buse 400mm", unit: "ml", priceDZD: 5800.00, priceEUR: 0.00 },
-        { code: "D.8.3", name: "Demi-buse 500mm", unit: "ml", priceDZD: 7800.00, priceEUR: 0.00 },
-        { code: "D.9.1", name: "Déblai tranchées < 2m", unit: "m3", priceDZD: 217.93, priceEUR: 0.90 },
-        { code: "D.9.2", name: "Déblai tranchées 2-4m", unit: "m3", priceDZD: 277.24, priceEUR: 1.20 },
-        { code: "D.9.3", name: "Déblai tranchées 4-6m", unit: "m3", priceDZD: 326.55, priceEUR: 1.50 },
-        { code: "D.9.4", name: "Plus-value terrain rocheux", unit: "m3", priceDZD: 1500.00, priceEUR: 0.00 },
-        { code: "D.10.1", name: "Lit de pose sable", unit: "m3", priceDZD: 1455.51, priceEUR: 6.10 },
-        { code: "D.10.2", name: "Lit de pose béton", unit: "m3", priceDZD: 5962.17, priceEUR: 12.10 },
-        { code: "D.11.1", name: "Enrobage tuyaux grave naturelle", unit: "m3", priceDZD: 1437.35, priceEUR: 5.50 },
-        { code: "D.11.2", name: "Enrobage tuyaux béton", unit: "m3", priceDZD: 5593.89, priceEUR: 15.70 },
-        { code: "D.11.3", name: "Enrobage tuyaux drainants", unit: "m3", priceDZD: 1739.65, priceEUR: 4.50 },
-        { code: "D.12.1", name: "Tuyau BA 400 mm", unit: "ml", priceDZD: 7769.31, priceEUR: 0.30 },
-        { code: "D.12.2", name: "Tuyau BA 600 mm", unit: "ml", priceDZD: 9369.31, priceEUR: 0.30 },
-        { code: "D.13.1", name: "Buse BA diam 800 mm", unit: "ml", priceDZD: 15498.73, priceEUR: 4.90 },
-        { code: "D.13.2", name: "Buse BA diam 1000 mm", unit: "ml", priceDZD: 21631.72, priceEUR: 3.60 },
-        { code: "D.13.3", name: "Buse BA diam 1200 mm", unit: "ml", priceDZD: 36375.97, priceEUR: 6.10 },
-        { code: "D.13.4", name: "Buse BA diam 1500 mm", unit: "ml", priceDZD: 50775.97, priceEUR: 6.10 },
-        { code: "D.14.1", name: "Collecteur drainant 150mm", unit: "ml", priceDZD: 2700.00, priceEUR: 0.00 },
-        { code: "D.17.1", name: "Tuyau PEHD 75mm", unit: "ml", priceDZD: 1236.00, priceEUR: 0.00 },
-        { code: "D.18.1", name: "Chambre de tirage K1C", unit: "U", priceDZD: 112000.00, priceEUR: 0.00 },
-        { code: "D.18.2", name: "Chambre de tirage K2C", unit: "U", priceDZD: 125000.00, priceEUR: 0.00 },
-        { code: "D.19.1", name: "Regard de visite diam 1000mm", unit: "U", priceDZD: 120000.00, priceEUR: 0.00 },
-        { code: "D.20.1", name: "Puisard 1000x1000x1500", unit: "U", priceDZD: 150000.00, priceEUR: 0.00 },
-        { code: "D.22.1", name: "Tête simple buse 600mm", unit: "U", priceDZD: 60925.34, priceEUR: 154.20 },
-        { code: "D.22.2", name: "Tête simple buse 800mm", unit: "U", priceDZD: 68921.05, priceEUR: 186.50 },
-        { code: "D.22.3", name: "Tête simple buse 1000mm", unit: "U", priceDZD: 76992.73, priceEUR: 224.90 },
-        { code: "D.22.4", name: "Tête simple buse 1200mm", unit: "U", priceDZD: 90558.06, priceEUR: 287.80 },
-        { code: "D.22.5", name: "Tête simple buse 1500mm", unit: "U", priceDZD: 125386.97, priceEUR: 436.10 },
-        { code: "D.23", name: "Bourrelet", unit: "ml", priceDZD: 3000.00, priceEUR: 0.00 },
-        { code: "D.24.1", name: "Enrochements Type A", unit: "m3", priceDZD: 1879.30, priceEUR: 9.00 },
-        { code: "D.26.1", name: "Réalisation de barbacane", unit: "ml", priceDZD: 1700.00, priceEUR: 0.00 },
-        { code: "D.27.1", name: "Béton de propreté", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
-        { code: "D.27.2", name: "Béton pour ouvrages divers", unit: "m3", priceDZD: 9553.28, priceEUR: 46.40 },
-        { code: "D.27.4", name: "Ferraillage pour ouvrages", unit: "kg", priceDZD: 65.08, priceEUR: 0.40 },
-        { code: "E.1.1", name: "Grave non traitée (GNT 0/31.5)", unit: "m3", priceDZD: 1922.64, priceEUR: 3.20 },
-        { code: "E.2.1", name: "Grave Bitume GB 0/20", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
-        { code: "E.2.2", name: "Enrobés à module élevé (EME 2)", unit: "Tonne", priceDZD: 4782.15, priceEUR: 29.50 },
-        { code: "E.3.1", name: "Couche roulement BB", unit: "Tonne", priceDZD: 4337.90, priceEUR: 27.00 },
-        { code: "E.3.2", name: "Couche roulement BBME 0/14", unit: "Tonne", priceDZD: 4650.19, priceEUR: 34.70 },
-        { code: "E.3.3", name: "Couche roulement BBME 0/10", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50 },
-        { code: "E.4.1", name: "Couche d'imprégnation", unit: "m2", priceDZD: 95.00, priceEUR: 0.00 },
-        { code: "E.4.2", name: "Couche d'accrochage", unit: "m2", priceDZD: 55.00, priceEUR: 0.00 },
-        { code: "E.5.1", name: "Revêtement bicouche", unit: "m2", priceDZD: 540.00, priceEUR: 0.00 },
-        { code: "F.1.1", name: "Marquage axe 150mm", unit: "ml", priceDZD: 680.00, priceEUR: 0.00 },
-        { code: "F.1.2", name: "Marquage rive 150mm", unit: "ml", priceDZD: 70.00, priceEUR: 0.00 },
-        { code: "F.1.5", name: "Bande largeur 375mm", unit: "ml", priceDZD: 340.00, priceEUR: 0.00 },
-        { code: "F.1.8", name: "Marquage flèche", unit: "U", priceDZD: 800.00, priceEUR: 0.00 },
-        { code: "G.1.1", name: "Panneau A, AB, B, C (Petit)", unit: "U", priceDZD: 52000.00, priceEUR: 0.00 },
-        { code: "G.1.2", name: "Panneau normal", unit: "U", priceDZD: 42400.00, priceEUR: 0.00 },
-        { code: "G.2.1", name: "Panneau type M", unit: "m2", priceDZD: 42000.00, priceEUR: 0.00 },
-        { code: "G.3.1", name: "Panneau type D", unit: "m2", priceDZD: 64000.00, priceEUR: 0.00 },
-        { code: "G.4.1", name: "Balise J1", unit: "U", priceDZD: 18000.00, priceEUR: 0.00 },
-        { code: "G.5.1", name: "Poteaux < 50 cm4", unit: "ml", priceDZD: 9776.59, priceEUR: 0.00 },
-        { code: "G.5.7", name: "Semelle de fondation", unit: "U", priceDZD: 8020.53, priceEUR: 38.90 },
-        { code: "G.7.1", name: "Réflecteur simple face", unit: "U", priceDZD: 1400.00, priceEUR: 0.00 },
-        { code: "H.1.1.1", name: "Glissière GS4", unit: "ml", priceDZD: 1238.45, priceEUR: 48.50 },
-        { code: "H.2.1.1", name: "Barrière GBA (Simple)", unit: "ml", priceDZD: 3932.51, priceEUR: 16.30 },
-        { code: "H.2.1.2", name: "Barrière DBA (Double)", unit: "ml", priceDZD: 4586.99, priceEUR: 18.70 },
-        { code: "H.3.1", name: "Extrémité GBA", unit: "U", priceDZD: 5150.55, priceEUR: 21.50 },
-        { code: "I.1.1", name: "Fouilles fondations murs", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
-        { code: "I.1.3", name: "Béton propreté", unit: "m3", priceDZD: 5919.19, priceEUR: 4.70 },
-        { code: "I.1.4", name: "Béton semelles", unit: "m3", priceDZD: 13523.50, priceEUR: 121.70 },
-        { code: "I.2.1", name: "Support HEA 140", unit: "U", priceDZD: 9600.00, priceEUR: 0.00 },
-        { code: "I.3", name: "Panneaux écrans", unit: "m2", priceDZD: 88750.00, priceEUR: 0.00 },
-        { code: "I.4.1", name: "Déblais pour bassins", unit: "m3", priceDZD: 168.16, priceEUR: 0.80 },
-        { code: "I.5.1", name: "Argile compactée", unit: "m3", priceDZD: 474.48, priceEUR: 2.40 },
-        { code: "I.5.2", name: "Géotextile", unit: "m2", priceDZD: 268.39, priceEUR: 0.70 },
-        { code: "I.5.3", name: "Enrochement", unit: "m3", priceDZD: 2205.85, priceEUR: 10.50 },
-        { code: "I.5.4", name: "Grave Non traitée (GNT)", unit: "m3", priceDZD: 2179.54, priceEUR: 0.20 },
-        { code: "I.6.1", name: "Séparateur hydrocarbures", unit: "U", priceDZD: 4400000.00, priceEUR: 0.00 },
-        { code: "I.7.1", name: "Regard siphoïde", unit: "U", priceDZD: 280000.00, priceEUR: 0.00 },
-        { code: "I.7.2.1", name: "Vanne de dérivation", unit: "U", priceDZD: 282000.00, priceEUR: 0.00 },
-        { code: "I.8.1", name: "Clôtures anti-intrusion", unit: "ml", priceDZD: 5934.02, priceEUR: 2.60 },
-        { code: "I.8.2", name: "Portail double battant", unit: "U", priceDZD: 250000.00, priceEUR: 0.00 },
-        { code: "I.9.1", name: "Plantation d'arbres", unit: "m2", priceDZD: 1545.17, priceEUR: 0.00 },
-        { code: "I.9.2", name: "Plantation de baliveaux", unit: "m2", priceDZD: 1822.86, priceEUR: 0.00 },
-        { code: "I.9.3", name: "Plantation d'espèces d'arbrisseaux", unit: "m2", priceDZD: 1103.00, priceEUR: 0.00 },
-        { code: "I.9.4", name: "Engazonnement", unit: "m2", priceDZD: 637.19, priceEUR: 0.00 },
-        { code: "I.9.5", name: "Terre végétale", unit: "m2", priceDZD: 797.00, priceEUR: 0.00 },
-        { code: "J.1.1", name: "Murs en gabions", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10 },
-        { code: "J.2.2", name: "Béton B30 murs", unit: "m3", priceDZD: 13478.48, priceEUR: 122.40 },
-        { code: "J.2.3.1", name: "Clous 25mm 8m", unit: "U", priceDZD: 16738.61, priceEUR: 14.50 },
-        { code: "J.2.3.2", name: "Clous 32mm 16m", unit: "U", priceDZD: 25618.99, priceEUR: 30.90 },
-        { code: "J.6.1", name: "Drains subhorizontaux", unit: "ml", priceDZD: 4700.00, priceEUR: 0.00 },
-        { code: "J.8.1", name: "Ancrages passifs 32mm", unit: "ml", priceDZD: 470.10, priceEUR: 13.00 },
-        { code: "J.9", name: "Géotextile alvéolaire", unit: "m2", priceDZD: 32400.00, priceEUR: 0.00 },
-        { code: "K.1.1", name: "Système vidéosurveillance", unit: "U", priceDZD: 412003.51, priceEUR: 36246.30 },
-        { code: "K.1.2", name: "Poteau caméra", unit: "U", priceDZD: 23504.98, priceEUR: 2067.40 },
-        { code: "K.1.6", name: "Système DAI", unit: "U", priceDZD: 356431.76, priceEUR: 31168.10 },
-        { code: "K.2", name: "Clôture aéroport", unit: "ml", priceDZD: 5200.00, priceEUR: 0.00 },
-        { code: "NP.11", name: "Poste d'observation", unit: "U", priceDZD: 12200000.00, priceEUR: 0.00 },
-        { code: "NP.17", name: "Cable torsadé Cu/Al", unit: "ml", priceDZD: 673.70, priceEUR: 0.00 },
-        { code: "NP.18", name: "Badigeonnage parements", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
-        { code: "NP.37", name: "Pompe à main + Hors gél", unit: "Ens", priceDZD: 3405.85, priceEUR: 10.50 },
-        { code: "NP.48", name: "Fibres pour Béton", unit: "kg", priceDZD: 974.70, priceEUR: 0.00 },
-        { code: "NP.60.b2", name: "Chambre de tirage L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
-        { code: "NP.08.65", name: "Grille anti chute K2C/K1C", unit: "U", priceDZD: 41364.79, priceEUR: 0.00 },
-        { code: "NP.08.67", name: "Réseau multitubulaire", unit: "ml", priceDZD: 6113.37, priceEUR: 16.49 },
-        { code: "NP.08.68", name: "Traversée de chaussée", unit: "U", priceDZD: 6792.85, priceEUR: 2.02 },
-        { code: "NP.08.74", name: "Couche forme mat. sélec.", unit: "m3", priceDZD: 1950.00, priceEUR: 0.00 },
-        { code: "NP.08.14m", name: "Inclinomètres", unit: "ml", priceDZD: 209998.56, priceEUR: 2052.80 },
-        { code: "NP.11.14a.1", name: "Sondages carottés pour ouvrages", unit: "ml", priceDZD: 18000.00, priceEUR: 0.00 },
-        { code: "NP.11.14b.1", name: "Sondages pressiométriques", unit: "ml", priceDZD: 15000.00, priceEUR: 0.00 },
-        { code: "NP.11.14c.1", name: "Essais pressiométriques", unit: "ml", priceDZD: 10000.00, priceEUR: 0.00 },
-        { code: "NP.11.14d.1", name: "Essai Tomographique", unit: "ml", priceDZD: 851.00, priceEUR: 0.00 },
-        { code: "NP.11.14e.1", name: "Essai Sismique", unit: "ml", priceDZD: 1566.00, priceEUR: 0.00 },
-        { code: "NP.11.19", name: "Etude adaptation tracé", unit: "Ft", priceDZD: 36723806.00, priceEUR: 358780.00 }
+        { code: "A.1", name: "Installation et repliement du chantier / Şantiye Kurulumu", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
+        { code: "A.2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
+        { code: "A.2.2", name: "Contrôle externe des travaux / İşlerin Dış Kontrolü", unit: "Ft", priceDZD: 33983960.76, priceEUR: 400938.80 },
+        { code: "A.3.1", name: "Études d'exécution / Uygulama Projeleri", unit: "Ft", priceDZD: 212842500.00, priceEUR: 2025000.00 },
+        { code: "A.3.2", name: "Contrôle externe des études / Projelerin Dış Kontrolü", unit: "Ft", priceDZD: 45999996.83, priceEUR: 449657.90 },
+        { code: "A.3.3", name: "Dossier de récolement / İş Sonu Projesi (As-built)", unit: "Ft", priceDZD: 33568500.00, priceEUR: 405000.00 },
+        { code: "A.3.4", name: "Etude des méthodes / Metodoloji Çalışması", unit: "Ft", priceDZD: 7500069.87, priceEUR: 73313.10 },
+        { code: "A.3.5", name: "Reconnaissances géotechniques / Jeoteknik Etütler", unit: "Ft", priceDZD: 40209555.68, priceEUR: 388958.40 },
+        { code: "A.4.1", name: "Sécurité passive / Pasif Güvenlik", unit: "Ft", priceDZD: 200000000.00, priceEUR: 0.00 },
+        { code: "A.4.2", name: "Sécurité active / Aktif Güvenlik", unit: "Ft", priceDZD: 400000000.00, priceEUR: 0.00 },
+        { code: "A.5", name: "Panneau d'identification / Tanıtım Tabelası", unit: "U", priceDZD: 1775000.00, priceEUR: 0.00 },
+        
+        { code: "B.1.1", name: "Débroussaillage / Çalı Temizliği", unit: "Ha", priceDZD: 619820.41, priceEUR: 2543.30 },
+        { code: "B.1.2", name: "Abattage arbres / Ağaç Kesimi", unit: "U", priceDZD: 1600.00, priceEUR: 0.00 },
+        { code: "B.1.3", name: "Dépose ouvrages métalliques / Metal Yapı Sökümü", unit: "Tonne", priceDZD: 944.25, priceEUR: 2.50 },
+        { code: "B.2.1", name: "Démolition ouvrages divers / Çeşitli Yıkımlar", unit: "m3", priceDZD: 1335.05, priceEUR: 6.50 },
+        { code: "B.2.2", name: "Démolition béton armé / Betonarme Yıkımı", unit: "m3", priceDZD: 1620.22, priceEUR: 8.60 },
+        { code: "B.2.3", name: "Démolition chaussées / Yol Kaplaması Sökümü", unit: "m3", priceDZD: 207.70, priceEUR: 1.00 },
+        { code: "B.3.1", name: "Rabotage <= 100mm / Frezeleme <= 10cm", unit: "m2", priceDZD: 88.85, priceEUR: 0.50 },
+        { code: "B.3.2", name: "Rabotage 100-200mm / Frezeleme 10-20cm", unit: "m2", priceDZD: 98.62, priceEUR: 0.60 },
+        { code: "B.4", name: "Scarification chaussée / Yolun Kazınması", unit: "m2", priceDZD: 28.16, priceEUR: 0.80 },
+
+        { code: "C.1.1", name: "Décapage terre végétale / Bitkisel Toprak Sıyırma", unit: "m3", priceDZD: 128.62, priceEUR: 0.60 },
+        { code: "C.1.2", name: "Reprise sur stock / Stoktan Geri Alım", unit: "m3", priceDZD: 179.08, priceEUR: 0.40 },
+        { code: "C.2.2", name: "Purges / Zayıf Zemin Kazısı", unit: "m3", priceDZD: 2200.00, priceEUR: 0.00 },
+        { code: "C.3.1", name: "Déblai meuble mis en remblai / Dolguya Yumuşak Kazı", unit: "m3", priceDZD: 257.24, priceEUR: 1.20 },
+        { code: "C.3.2", name: "Déblai semi-dur mis en remblai / Dolguya Yarı Sert Kazı", unit: "m3", priceDZD: 386.32, priceEUR: 1.60 },
+        { code: "C.3.3", name: "Déblai rocheur dur mis en remblai / Dolguya Sert Kaya", unit: "m3", priceDZD: 1308.96, priceEUR: 4.80 },
+        { code: "C.4.1", name: "Déblai meuble mis en dépôt / Depoya Yumuşak Kazı", unit: "m3", priceDZD: 148.16, priceEUR: 0.80 },
+        { code: "C.4.2", name: "Déblai semi-dur mis en dépôt / Depoya Yarı Sert Kazı", unit: "m3", priceDZD: 307.70, priceEUR: 1.00 },
+        { code: "C.4.3", name: "Déblai rocheur dur mis en dépôt / Depoya Sert Kaya", unit: "m3", priceDZD: 893.10, priceEUR: 3.00 },
+        { code: "C.5", name: "Remblai d'emprunt / Ariyet Dolgusu", unit: "m3", priceDZD: 555.63, priceEUR: 1.90 },
+        { code: "C.6.1", name: "Assise drainante / Drenaj Tabakası", unit: "m3", priceDZD: 1166.55, priceEUR: 1.50 },
+        { code: "C.7.1", name: "Géotextile de renforcement / Güçlendirme Geotekstili", unit: "m2", priceDZD: 290.80, priceEUR: 4.00 },
+        { code: "C.7.2", name: "Géotextile anti-contaminant / Ayırıcı Geotekstil", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
+        { code: "C.7.3", name: "Géogrille / Geogrid", unit: "m2", priceDZD: 418.04, priceEUR: 5.20 },
+        { code: "C.8.1", name: "Arrondi de crête / Şev Başı Yuvarlama", unit: "ml", priceDZD: 317.01, priceEUR: 1.30 },
+        { code: "C.9.1", name: "Couche de forme / Form Tabakası", unit: "m3", priceDZD: 1346.55, priceEUR: 1.50 },
+        { code: "C.10.1", name: "Transport < 30km / Taşıma < 30km", unit: "M3xKM", priceDZD: 12.50, priceEUR: 0.00 },
+        { code: "C.10.2", name: "Transport > 30km / Taşıma > 30km", unit: "M3xKM", priceDZD: 11.00, priceEUR: 0.00 },
+
+        { code: "D.1.1", name: "Fossé trapézoïdal non revêtu A / Kaplamasız Hendek A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80 },
+        { code: "D.1.2", name: "Fossé trapézoïdal non revêtu B / Kaplamasız Hendek B", unit: "ml", priceDZD: 594.94, priceEUR: 2.20 },
+        { code: "D.1.3", name: "Fossé trapézoïdal non revêtu C / Kaplamasız Hendek C", unit: "ml", priceDZD: 897.18, priceEUR: 3.40 },
+        { code: "D.1.4", name: "Végétalisation de fossés / Hendek Bitkilendirme", unit: "m2", priceDZD: 874.94, priceEUR: 2.20 },
+        { code: "D.2.1", name: "Bétonnage fossé A / Beton Hendek A", unit: "ml", priceDZD: 4448.37, priceEUR: 18.10 },
+        { code: "D.2.2", name: "Bétonnage fossé B / Beton Hendek B", unit: "ml", priceDZD: 5662.50, priceEUR: 25.00 },
+        { code: "D.2.3", name: "Bétonnage fossé C / Beton Hendek C", unit: "ml", priceDZD: 6316.17, priceEUR: 32.10 },
+        { code: "D.3.1", name: "Cunettes végétalisées / Bitkili Künvet", unit: "ml", priceDZD: 3402.40, priceEUR: 12.00 },
+        { code: "D.3.2", name: "Cunettes béton extrudé / Beton Künvet", unit: "ml", priceDZD: 4304.81, priceEUR: 15.30 },
+        { code: "D.3.3", name: "Cunettes symétriques béton / Simetrik Künvet", unit: "ml", priceDZD: 4829.18, priceEUR: 13.40 },
+        { code: "D.4.1", name: "Descente d'eau A / İniş Kanalı A", unit: "ml", priceDZD: 2912.86, priceEUR: 11.80 },
+        { code: "D.4.2", name: "Descente d'eau B / İniş Kanalı B", unit: "ml", priceDZD: 3357.57, priceEUR: 14.10 },
+        { code: "D.4.3", name: "Descente d'eau C / İniş Kanalı C", unit: "ml", priceDZD: 3824.21, priceEUR: 15.30 },
+        { code: "D.4.4", name: "Descente d'eau D / İniş Kanalı D", unit: "ml", priceDZD: 4119.98, priceEUR: 17.40 },
+        { code: "D.5.1", name: "Descente eau tuile A / Kiremit Kanal A", unit: "ml", priceDZD: 2200.00, priceEUR: 0.00 },
+        { code: "D.5.2", name: "Descente eau tuile B / Kiremit Kanal B", unit: "ml", priceDZD: 3520.00, priceEUR: 0.00 },
+        { code: "D.6.1", name: "Caniveau en U 0.30x0.40 / U Kanal 30x40", unit: "ml", priceDZD: 4800.00, priceEUR: 0.00 },
+        { code: "D.6.2", name: "Caniveau en U 0.40x0.50 / U Kanal 40x50", unit: "ml", priceDZD: 5800.00, priceEUR: 0.00 },
+        { code: "D.6.3", name: "Caniveau en U 0.45x0.55 / U Kanal 45x55", unit: "ml", priceDZD: 6300.00, priceEUR: 0.00 },
+        { code: "D.7.1", name: "Caniveau fente 300mm / Yarık Kanal 300", unit: "ml", priceDZD: 22200.00, priceEUR: 0.00 },
+        { code: "D.7.2", name: "Caniveau fente 400mm / Yarık Kanal 400", unit: "ml", priceDZD: 26600.00, priceEUR: 0.00 },
+        { code: "D.7.3", name: "Caniveau fente 500mm / Yarık Kanal 500", unit: "ml", priceDZD: 29300.00, priceEUR: 0.00 },
+        { code: "D.7.4", name: "Renforcement caniveaux / Kanal Güçlendirme", unit: "ml", priceDZD: 11191.83, priceEUR: 7.90 },
+        { code: "D.8.1", name: "Demi-buse 300mm / Yarım Büz 300", unit: "ml", priceDZD: 4400.00, priceEUR: 0.00 },
+        { code: "D.8.2", name: "Demi-buse 400mm / Yarım Büz 400", unit: "ml", priceDZD: 5800.00, priceEUR: 0.00 },
+        { code: "D.8.3", name: "Demi-buse 500mm / Yarım Büz 500", unit: "ml", priceDZD: 7800.00, priceEUR: 0.00 },
+        { code: "D.9.1", name: "Déblai tranchées < 2m / Hendek Kazısı <2m", unit: "m3", priceDZD: 217.93, priceEUR: 0.90 },
+        { code: "D.9.2", name: "Déblai tranchées 2-4m / Hendek Kazısı 2-4m", unit: "m3", priceDZD: 277.24, priceEUR: 1.20 },
+        { code: "D.9.3", name: "Déblai tranchées 4-6m / Hendek Kazısı 4-6m", unit: "m3", priceDZD: 326.55, priceEUR: 1.50 },
+        { code: "D.9.4", name: "Plus-value terrain rocheux / Kaya Zemin Farkı", unit: "m3", priceDZD: 1500.00, priceEUR: 0.00 },
+        { code: "D.10.1", name: "Lit de pose sable / Kum Yataklama", unit: "m3", priceDZD: 1455.51, priceEUR: 6.10 },
+        { code: "D.10.2", name: "Lit de pose béton / Beton Yataklama", unit: "m3", priceDZD: 5962.17, priceEUR: 12.10 },
+        { code: "D.11.1", name: "Enrobage tuyaux grave / Boru Gömlekleme (Doğal)", unit: "m3", priceDZD: 1437.35, priceEUR: 5.50 },
+        { code: "D.11.2", name: "Enrobage tuyaux béton / Boru Gömlekleme (Beton)", unit: "m3", priceDZD: 5593.89, priceEUR: 15.70 },
+        { code: "D.11.3", name: "Enrobage tuyaux drainants / Drenaj Borusu Gömlekleme", unit: "m3", priceDZD: 1739.65, priceEUR: 4.50 },
+        { code: "D.12.1", name: "Tuyau BA 400 mm / BA Boru 400", unit: "ml", priceDZD: 7769.31, priceEUR: 0.30 },
+        { code: "D.12.2", name: "Tuyau BA 600 mm / BA Boru 600", unit: "ml", priceDZD: 9369.31, priceEUR: 0.30 },
+        { code: "D.13.1", name: "Buse BA diam 800 mm / BA Büz 800", unit: "ml", priceDZD: 15498.73, priceEUR: 4.90 },
+        { code: "D.13.2", name: "Buse BA diam 1000 mm / BA Büz 1000", unit: "ml", priceDZD: 21631.72, priceEUR: 3.60 },
+        { code: "D.13.3", name: "Buse BA diam 1200 mm / BA Büz 1200", unit: "ml", priceDZD: 36375.97, priceEUR: 6.10 },
+        { code: "D.13.4", name: "Buse BA diam 1500 mm / BA Büz 1500", unit: "ml", priceDZD: 50775.97, priceEUR: 6.10 },
+        { code: "D.14.1", name: "Collecteur drainant 150mm / Drenaj Kolektörü 150", unit: "ml", priceDZD: 2700.00, priceEUR: 0.00 },
+        { code: "D.17.1", name: "Tuyau PEHD 75mm / PEHD Boru 75", unit: "ml", priceDZD: 1236.00, priceEUR: 0.00 },
+        { code: "D.18.1", name: "Chambre de tirage K1C / Menhol K1C", unit: "U", priceDZD: 112000.00, priceEUR: 0.00 },
+        { code: "D.18.2", name: "Chambre de tirage K2C / Menhol K2C", unit: "U", priceDZD: 125000.00, priceEUR: 0.00 },
+        { code: "D.19.1", name: "Regard de visite diam 1000mm / Muayene Bacası 1000", unit: "U", priceDZD: 120000.00, priceEUR: 0.00 },
+        { code: "D.20.1", name: "Puisard 1000x1000x1500 / Rogar", unit: "U", priceDZD: 150000.00, priceEUR: 0.00 },
+        { code: "D.22.1", name: "Tête simple buse 600mm / Büz Ağzı 600", unit: "U", priceDZD: 60925.34, priceEUR: 154.20 },
+        { code: "D.22.2", name: "Tête simple buse 800mm / Büz Ağzı 800", unit: "U", priceDZD: 68921.05, priceEUR: 186.50 },
+        { code: "D.22.3", name: "Tête simple buse 1000mm / Büz Ağzı 1000", unit: "U", priceDZD: 76992.73, priceEUR: 224.90 },
+        { code: "D.22.4", name: "Tête simple buse 1200mm / Büz Ağzı 1200", unit: "U", priceDZD: 90558.06, priceEUR: 287.80 },
+        { code: "D.22.5", name: "Tête simple buse 1500mm / Büz Ağzı 1500", unit: "U", priceDZD: 125386.97, priceEUR: 436.10 },
+        { code: "D.23", name: "Bourrelet / Bordür", unit: "ml", priceDZD: 3000.00, priceEUR: 0.00 },
+        { code: "D.24.1", name: "Enrochements Type A / Taş Tahkimat A", unit: "m3", priceDZD: 1879.30, priceEUR: 9.00 },
+        { code: "D.26.1", name: "Réalisation de barbacane / Barbakan", unit: "ml", priceDZD: 1700.00, priceEUR: 0.00 },
+        { code: "D.27.1", name: "Béton de propreté / Grobeton", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
+        { code: "D.27.2", name: "Béton pour ouvrages divers / Yapı Betonu", unit: "m3", priceDZD: 9553.28, priceEUR: 46.40 },
+        { code: "D.27.4", name: "Ferraillage pour ouvrages / Demir Donatı", unit: "kg", priceDZD: 65.08, priceEUR: 0.40 },
+
+        { code: "E.1.1", name: "Grave non traitée (GNT 0/31.5) / Plentmiks Temel (PMT)", unit: "m3", priceDZD: 1922.64, priceEUR: 3.20 },
+        { code: "E.2.1", name: "Grave Bitume GB 0/20 / Bitümlü Temel", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
+        { code: "E.2.2", name: "Enrobés à module élevé (EME 2) / Yüksek Modüllü Asfalt", unit: "Tonne", priceDZD: 4782.15, priceEUR: 29.50 },
+        { code: "E.3.1", name: "Couche roulement BB / Aşınma (BB)", unit: "Tonne", priceDZD: 4337.90, priceEUR: 27.00 },
+        { code: "E.3.2", name: "Couche roulement BBME 0/14 / Aşınma (BBME 14)", unit: "Tonne", priceDZD: 4650.19, priceEUR: 34.70 },
+        { code: "E.3.3", name: "Couche roulement BBME 0/10 / Aşınma (BBME 10)", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50 },
+        { code: "E.4.1", name: "Couche d'imprégnation / Emprime (MC-30)", unit: "m2", priceDZD: 95.00, priceEUR: 0.00 },
+        { code: "E.4.2", name: "Couche d'accrochage / Yapıştırıcı (Tack)", unit: "m2", priceDZD: 55.00, priceEUR: 0.00 },
+        { code: "E.5.1", name: "Revêtement bicouche / Sathi Kaplama", unit: "m2", priceDZD: 540.00, priceEUR: 0.00 },
+
+        { code: "F.1.1", name: "Marquage axe 150mm / Eksen Çizgisi 150", unit: "ml", priceDZD: 680.00, priceEUR: 0.00 },
+        { code: "F.1.2", name: "Marquage rive 150mm / Kenar Çizgisi 150", unit: "ml", priceDZD: 70.00, priceEUR: 0.00 },
+        { code: "F.1.5", name: "Bande largeur 375mm / Geniş Çizgi 375", unit: "ml", priceDZD: 340.00, priceEUR: 0.00 },
+        { code: "F.1.8", name: "Marquage flèche / Ok İşareti", unit: "U", priceDZD: 800.00, priceEUR: 0.00 },
+
+        { code: "G.1.1", name: "Panneau A, AB, B, C (Petit) / Levha (Küçük)", unit: "U", priceDZD: 52000.00, priceEUR: 0.00 },
+        { code: "G.1.2", name: "Panneau normal / Normal Levha", unit: "U", priceDZD: 42400.00, priceEUR: 0.00 },
+        { code: "G.2.1", name: "Panneau type M / M Tipi Levha", unit: "m2", priceDZD: 42000.00, priceEUR: 0.00 },
+        { code: "G.3.1", name: "Panneau type D / D Tipi Levha", unit: "m2", priceDZD: 64000.00, priceEUR: 0.00 },
+        { code: "G.4.1", name: "Balise J1 / Viraj Yön Levhası", unit: "U", priceDZD: 18000.00, priceEUR: 0.00 },
+        { code: "G.5.1", name: "Poteaux < 50 cm4 / Direk <50", unit: "ml", priceDZD: 9776.59, priceEUR: 0.00 },
+        { code: "G.5.7", name: "Semelle de fondation / Direk Temeli", unit: "U", priceDZD: 8020.53, priceEUR: 38.90 },
+        { code: "G.7.1", name: "Réflecteur simple face / Tek Taraflı Reflektör", unit: "U", priceDZD: 1400.00, priceEUR: 0.00 },
+
+        { code: "H.1.1.1", name: "Glissière GS4 / Otokorkuluk GS4", unit: "ml", priceDZD: 1238.45, priceEUR: 48.50 },
+        { code: "H.2.1.1", name: "Barrière GBA (Simple) / Beton Bariyer (Tekli)", unit: "ml", priceDZD: 3932.51, priceEUR: 16.30 },
+        { code: "H.2.1.2", name: "Barrière DBA (Double) / Beton Bariyer (Çiftli)", unit: "ml", priceDZD: 4586.99, priceEUR: 18.70 },
+        { code: "H.3.1", name: "Extrémité GBA / Bariyer Sonu", unit: "U", priceDZD: 5150.55, priceEUR: 21.50 },
+
+        { code: "I.1.1", name: "Fouilles fondations murs / Duvar Temel Kazısı", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
+        { code: "I.1.3", name: "Béton propreté / Grobeton", unit: "m3", priceDZD: 5919.19, priceEUR: 4.70 },
+        { code: "I.1.4", name: "Béton semelles / Temel Betonu", unit: "m3", priceDZD: 13523.50, priceEUR: 121.70 },
+        { code: "I.2.1", name: "Support HEA 140 / HEA 140 Destek", unit: "U", priceDZD: 9600.00, priceEUR: 0.00 },
+        { code: "I.3", name: "Panneaux écrans / Gürültü Paneli", unit: "m2", priceDZD: 88750.00, priceEUR: 0.00 },
+        { code: "I.4.1", name: "Déblais pour bassins / Havuz Kazısı", unit: "m3", priceDZD: 168.16, priceEUR: 0.80 },
+        { code: "I.5.1", name: "Argile compactée / Sıkıştırılmış Kil", unit: "m3", priceDZD: 474.48, priceEUR: 2.40 },
+        { code: "I.5.2", name: "Géotextile / Geotekstil", unit: "m2", priceDZD: 268.39, priceEUR: 0.70 },
+        { code: "I.5.3", name: "Enrochement / Taş Dolgu", unit: "m3", priceDZD: 2205.85, priceEUR: 10.50 },
+        { code: "I.5.4", name: "Grave Non traitée (GNT) / PMT", unit: "m3", priceDZD: 2179.54, priceEUR: 0.20 },
+        { code: "I.6.1", name: "Séparateur hydrocarbures / Yağ Ayırıcı", unit: "U", priceDZD: 4400000.00, priceEUR: 0.00 },
+        { code: "I.7.1", name: "Regard siphoïde / Sifon Bacası", unit: "U", priceDZD: 280000.00, priceEUR: 0.00 },
+        { code: "I.7.2.1", name: "Vanne de dérivation / Ayrım Vanası", unit: "U", priceDZD: 282000.00, priceEUR: 0.00 },
+        { code: "I.8.1", name: "Clôtures anti-intrusion / Tel Çit", unit: "ml", priceDZD: 5934.02, priceEUR: 2.60 },
+        { code: "I.8.2", name: "Portail double battant / Çift Kanatlı Kapı", unit: "U", priceDZD: 250000.00, priceEUR: 0.00 },
+        { code: "I.9.1", name: "Plantation d'arbres / Ağaç Dikimi", unit: "m2", priceDZD: 1545.17, priceEUR: 0.00 },
+        { code: "I.9.2", name: "Plantation de baliveaux / Fidan Dikimi", unit: "m2", priceDZD: 1822.86, priceEUR: 0.00 },
+        { code: "I.9.3", name: "Plantation d'arbrisseaux / Çalı Dikimi", unit: "m2", priceDZD: 1103.00, priceEUR: 0.00 },
+        { code: "I.9.4", name: "Engazonnement / Çimleme", unit: "m2", priceDZD: 637.19, priceEUR: 0.00 },
+        { code: "I.9.5", name: "Terre végétale / Bitkisel Toprak", unit: "m2", priceDZD: 797.00, priceEUR: 0.00 },
+
+        { code: "J.1.1", name: "Murs en gabions / Gabion Duvar", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10 },
+        { code: "J.2.2", name: "Béton B30 murs / Duvar Betonu B30", unit: "m3", priceDZD: 13478.48, priceEUR: 122.40 },
+        { code: "J.2.3.1", name: "Clous 25mm 8m / Zemin Çivisi 25mm 8m", unit: "U", priceDZD: 16738.61, priceEUR: 14.50 },
+        { code: "J.2.3.2", name: "Clous 32mm 16m / Zemin Çivisi 32mm 16m", unit: "U", priceDZD: 25618.99, priceEUR: 30.90 },
+        { code: "J.6.1", name: "Drains subhorizontaux / Yatay Dren", unit: "ml", priceDZD: 4700.00, priceEUR: 0.00 },
+        { code: "J.8.1", name: "Ancrages passifs 32mm / Pasif Ankraj 32mm", unit: "ml", priceDZD: 470.10, priceEUR: 13.00 },
+        { code: "J.9", name: "Géotextile alvéolaire / Hücresel Geotekstil", unit: "m2", priceDZD: 32400.00, priceEUR: 0.00 },
+
+        { code: "K.1.1", name: "Système vidéosurveillance / Kamera Sistemi", unit: "U", priceDZD: 412003.51, priceEUR: 36246.30 },
+        { code: "K.1.2", name: "Poteau caméra / Kamera Direği", unit: "U", priceDZD: 23504.98, priceEUR: 2067.40 },
+        { code: "K.1.6", name: "Système DAI / Olay Algılama Sistemi", unit: "U", priceDZD: 356431.76, priceEUR: 31168.10 },
+        { code: "K.2", name: "Clôture aéroport / Havaalanı Çiti", unit: "ml", priceDZD: 5200.00, priceEUR: 0.00 },
+
+        { code: "NP.11", name: "Poste d'observation / Gözlem Kulesi", unit: "U", priceDZD: 12200000.00, priceEUR: 0.00 },
+        { code: "NP.17", name: "Cable torsadé Cu/Al / Bükülü Kablo", unit: "ml", priceDZD: 673.70, priceEUR: 0.00 },
+        { code: "NP.18", name: "Badigeonnage parements / Yüzey Badanası", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
+        { code: "NP.37", name: "Pompe à main + Hors gél / El Pompası", unit: "Ens", priceDZD: 3405.85, priceEUR: 10.50 },
+        { code: "NP.48", name: "Fibres pour Béton / Beton Elyafı", unit: "kg", priceDZD: 974.70, priceEUR: 0.00 },
+        { code: "NP.60.b2", name: "Chambre de tirage L5C / Menhol L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
+        { code: "NP.08.65", name: "Grille anti chute K2C/K1C / Düşme Önleyici Izgara", unit: "U", priceDZD: 41364.79, priceEUR: 0.00 },
+        { code: "NP.08.67", name: "Réseau multitubulaire / Çoklu Boru Hattı", unit: "ml", priceDZD: 6113.37, priceEUR: 16.49 },
+        { code: "NP.08.68", name: "Traversée de chaussée / Yol Geçişi", unit: "U", priceDZD: 6792.85, priceEUR: 2.02 },
+        { code: "NP.08.74", name: "Couche forme mat. sélec. / Seçme Malzeme Form", unit: "m3", priceDZD: 1950.00, priceEUR: 0.00 },
+        { code: "NP.08.14m", name: "Inclinomètres / İnklinometre", unit: "ml", priceDZD: 209998.56, priceEUR: 2052.80 },
+        { code: "NP.11.14a.1", name: "Sondages carottés / Karotlu Sondaj", unit: "ml", priceDZD: 18000.00, priceEUR: 0.00 },
+        { code: "NP.11.14b.1", name: "Sondages pressiométriques / Presyometre Sondajı", unit: "ml", priceDZD: 15000.00, priceEUR: 0.00 },
+        { code: "NP.11.14c.1", name: "Essais pressiométriques / Presyometre Deneyi", unit: "ml", priceDZD: 10000.00, priceEUR: 0.00 },
+        { code: "NP.11.14d.1", name: "Essai Tomographique / Tomografi Deneyi", unit: "ml", priceDZD: 851.00, priceEUR: 0.00 },
+        { code: "NP.11.14e.1", name: "Essai Sismique / Sismik Deney", unit: "ml", priceDZD: 1566.00, priceEUR: 0.00 },
+        { code: "NP.11.19", name: "Etude adaptation tracé / Güzergah Adaptasyonu", unit: "Ft", priceDZD: 36723806.00, priceEUR: 358780.00 }
     ];
 
     let selectedItem = null;
@@ -413,7 +422,12 @@
         database.forEach(item => {
             const div = document.createElement("div");
             div.className = "result-item";
-            div.innerHTML = `<strong>${item.code}</strong> ${item.name}`;
+            // İki satırlı görünüm (Kod üstte, İsim altta)
+            const parts = item.name.split(" / ");
+            const frName = parts[0];
+            const trName = parts[1] ? parts[1] : "";
+            
+            div.innerHTML = `<strong>${item.code}</strong> ${frName} <br> <span style="color:#007aff; font-size:12px;">${trName}</span>`;
             div.onclick = function() { selectItem(item); };
             resultsDiv.appendChild(div);
         });
@@ -440,7 +454,11 @@
             filtered.forEach(item => {
                 const div = document.createElement("div");
                 div.className = "result-item";
-                div.innerHTML = `<strong>${item.code}</strong> ${item.name}`;
+                const parts = item.name.split(" / ");
+                const frName = parts[0];
+                const trName = parts[1] ? parts[1] : "";
+                
+                div.innerHTML = `<strong>${item.code}</strong> ${frName} <br> <span style="color:#007aff; font-size:12px;">${trName}</span>`;
                 div.onclick = function() { selectItem(item); };
                 resultsDiv.appendChild(div);
             });
