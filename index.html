@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOT ROUTE PRO</title>
+    <title>LOT ROUTE PRO (1907)</title>
     <style>
-        /* MODERN FERAH TEMA */
+        /* MODERN FERAH TEMA (Göz Yormayan) */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
             padding: 15px; 
-            /* Arka Plan: Soluk Beyaz/Gri */
-            background-color: #f4f6f8;
+            background-color: #f4f6f8; /* Soluk Gri Arka Plan */
             color: #333;
             min-height: 100vh;
         }
@@ -19,17 +18,16 @@
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
-            background: #ffffff; /* Tam Beyaz Kart */
+            background: #ffffff; 
             padding: 25px; 
             border-radius: 20px; 
-            /* Yumuşak Gölge */
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             border: 1px solid #e1e4e8;
         }
 
         h2 { 
             text-align: center; 
-            color: #2c3e50; /* Koyu Gri/Mavi Başlık */
+            color: #2c3e50; 
             margin-bottom: 25px; 
             font-weight: 800; 
             letter-spacing: -0.5px;
@@ -38,15 +36,15 @@
         
         label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; color: #555; }
         
-        /* Arama Kutusu ve Kapsayıcı */
+        /* Arama Kutusu */
         .search-wrapper { position: relative; width: 100%; }
 
-        input[type="text"], .calc-input {
-            width: 100%; padding: 16px 40px 16px 16px; 
-            border: 1px solid #d1d9e6; /* İnce Gri Çerçeve */
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%; padding: 16px 50px 16px 16px; 
+            border: 1px solid #d1d9e6; 
             border-radius: 12px; 
             font-size: 16px; 
-            background: #f9fbfd; /* Çok açık mavi-beyaz */
+            background: #f9fbfd; 
             color: #2c3e50;
             font-weight: 500;
             box-sizing: border-box;
@@ -56,121 +54,96 @@
         
         input:focus { 
             outline: none; 
-            border-color: #3498db; /* Odaklanınca Açık Mavi */
+            border-color: #3498db; 
             background: #fff;
             box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15); 
         }
 
-        /* ÖZEL ARAMA SONUÇ LİSTESİ */
+        /* OK TUŞU */
+        .arrow-btn {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 50px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #3498db; font-size: 14px;
+            background: transparent; border: none; z-index: 2;
+        }
+        
+        /* AÇILIR LİSTE */
         .custom-results {
-            position: absolute;
-            top: 110%; /* Biraz boşluk */
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            max-height: 280px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            position: absolute; top: 115%; left: 0; right: 0;
+            background: white; border: 1px solid #eee; border-radius: 12px;
+            max-height: 300px; overflow-y: auto; z-index: 1000;
+            display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
 
         .result-item {
-            padding: 14px;
-            border-bottom: 1px solid #f4f6f8;
-            cursor: pointer;
-            font-size: 14px;
-            color: #444;
-            transition: background 0.2s;
+            padding: 14px 16px; border-bottom: 1px solid #f4f6f8;
+            cursor: pointer; font-size: 14px; color: #444; transition: background 0.1s;
         }
-
         .result-item:last-child { border-bottom: none; }
-        /* Hover Rengi: Çok açık mavi */
         .result-item:hover, .result-item:active { background-color: #eaf6ff; color: #007aff; }
-        
         .result-item strong { display: block; color: #2c3e50; font-size: 15px; margin-bottom: 3px; }
 
-        /* Temizleme Butonu (X) */
-        .clear-btn {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            background: #e0e0e0; color: #555; border: none; border-radius: 50%;
-            width: 24px; height: 24px; font-size: 12px; cursor: pointer;
-            display: none; align-items: center; justify-content: center; 
-            transition: 0.2s;
-        }
-        .clear-btn:hover { background: #bbb; color: #fff; }
+        /* KART ve SONUÇLAR */
+        .selected-card { background: #f0f7ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; }
+        .selected-card h3 { margin: 0; color: #0056b3; font-size: 18px; display: flex; align-items: center; justify-content: space-between; }
+        .badge-unit { background: #3498db; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .price-tag { margin-top:12px; font-size:15px; color: #333; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
 
-        /* Seçilen Kart Tasarımı */
-        .selected-card { 
-            background: #f0f7ff; /* Çok hafif mavi zemin */
-            border: 1px solid #cce4ff; 
-            padding: 20px; 
-            border-radius: 12px; 
-            margin-top: 25px; 
-            display: none; 
-        }
-        
-        .selected-card h3 { 
-            margin: 0; 
-            color: #0056b3; 
-            font-size: 18px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-        }
-
-        .badge-unit { 
-            background: #3498db; /* Açık Mavi Rozet */
-            color: white; 
-            padding: 4px 10px; 
-            border-radius: 6px; 
-            font-size: 12px; 
-            font-weight: 600; 
-        }
-
-        .price-tag { 
-            margin-top:12px; 
-            font-size:15px; 
-            color: #333; 
-            background: #fff; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: 1px solid #e1e4e8;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        /* SONUÇ KUTUSU */
-        .result-box { 
-            margin-top: 25px; 
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); /* Mavi Gradyan */
-            color: white; 
-            border-radius: 16px; 
-            padding: 25px; 
-            display: none; 
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-        }
-
+        .result-box { margin-top: 25px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border-radius: 16px; padding: 25px; display: none; box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3); }
         .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; }
         .result-row:last-child { border: none; margin: 0; padding: 0; }
-        
         .grand-total-label { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; }
         .grand-total-val { font-size: 32px; font-weight: 700; color: #fff; text-align: right; display: block; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
+
+        /* --- GİRİŞ EKRANI (LOGIN OVERLAY) --- */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #f4f6f8; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+            text-align: center; border: 1px solid #e1e4e8;
+        }
+        .login-btn {
+            width: 100%; padding: 15px; margin-top: 20px;
+            background: #3498db; color: white; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+        .logout-btn {
+            background: #e74c3c; color: white; padding: 5px 10px; border-radius: 6px;
+            font-size: 12px; text-decoration: none; display: inline-block; margin-top: 10px; cursor: pointer; border: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>LOT ROUTE</h2>
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2 style="margin-bottom: 10px;">🔒 GÜVENLİ GİRİŞ</h2>
+        <p style="color:#666; margin-bottom: 20px;">Lütfen erişim şifresini giriniz.</p>
+        <input type="password" id="passwordInput" placeholder="Şifre" style="padding-right: 16px;">
+        <button class="login-btn" onclick="checkPassword()">GİRİŞ YAP</button>
+        <p id="loginError" style="color:red; margin-top:10px; display:none;">Hatalı Şifre!</p>
+    </div>
+</div>
 
-    <label>İş Kalemi Ara:</label>
+<div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">LOT ROUTE</h2>
+        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+    </div>
+    <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
+
+    <label>İş Kalemi Seçiniz:</label>
     
     <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Kod veya İsim yazın..." onkeyup="filterItems()" onfocus="filterItems()" autocomplete="off">
-        <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        <input type="text" id="searchInput" placeholder="Seçiniz..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
+        <div class="arrow-btn" onclick="toggleDropdown('toggle')">▼</div>
         <div id="customResults" class="custom-results"></div>
     </div>
 
@@ -211,7 +184,35 @@
 </div>
 
 <script>
-    // --- VERITABANI: LOT ROUTE (TAM & EKSİKSİZ) ---
+    // --- GÜVENLİK AYARLARI ---
+    const APP_PASSWORD = "1907"; // <<--- ŞİFRE BURADAN DEĞİŞTİRİLİR
+
+    function checkPassword() {
+        const input = document.getElementById("passwordInput").value;
+        const errorMsg = document.getElementById("loginError");
+        
+        if(input === APP_PASSWORD) {
+            // Şifre doğru, kaydet ve aç
+            localStorage.setItem("isLoggedIn", "true");
+            document.getElementById("loginOverlay").style.display = "none";
+        } else {
+            errorMsg.style.display = "block";
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("isLoggedIn");
+        location.reload(); // Sayfayı yenile, kilit geri gelsin
+    }
+
+    // Sayfa açıldığında daha önce girmiş mi kontrol et
+    window.onload = function() {
+        if(localStorage.getItem("isLoggedIn") === "true") {
+            document.getElementById("loginOverlay").style.display = "none";
+        }
+    }
+
+    // --- VERITABANI: LOT ROUTE (TAM & DÜZELTİLMİŞ) ---
     const database = [
         { code: "A.1", name: "Installation et repliement du chantier", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
         { code: "A.2.1", name: "Laboratoire de chantier", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
@@ -386,17 +387,46 @@
 
     let selectedItem = null;
 
+    function toggleDropdown(state) {
+        const resultsDiv = document.getElementById("customResults");
+        const currentDisplay = window.getComputedStyle(resultsDiv).display;
+        
+        if (state === true) { 
+            renderAllItems();
+            resultsDiv.style.display = "block";
+        } else if (state === 'toggle') { 
+            if (currentDisplay === "none") {
+                renderAllItems();
+                resultsDiv.style.display = "block";
+                document.getElementById("searchInput").focus();
+            } else {
+                resultsDiv.style.display = "none";
+            }
+        } else {
+            resultsDiv.style.display = "none";
+        }
+    }
+
+    function renderAllItems() {
+        const resultsDiv = document.getElementById("customResults");
+        resultsDiv.innerHTML = "";
+        database.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "result-item";
+            div.innerHTML = `<strong>${item.code}</strong> ${item.name}`;
+            div.onclick = function() { selectItem(item); };
+            resultsDiv.appendChild(div);
+        });
+    }
+
     function filterItems() {
         const input = document.getElementById("searchInput");
         const filter = input.value.toLowerCase();
         const resultsDiv = document.getElementById("customResults");
-        const clearBtn = document.getElementById("clearBtn");
         
-        resultsDiv.innerHTML = ""; 
-        clearBtn.style.display = filter.length > 0 ? "flex" : "none";
-
         if (filter.length < 1) {
-            resultsDiv.style.display = "none";
+            renderAllItems();
+            resultsDiv.style.display = "block";
             return;
         }
 
@@ -405,6 +435,7 @@
             item.name.toLowerCase().includes(filter)
         );
 
+        resultsDiv.innerHTML = "";
         if (filtered.length > 0) {
             filtered.forEach(item => {
                 const div = document.createElement("div");
@@ -433,22 +464,10 @@
         document.getElementById("selectedCard").style.display = "block";
         document.getElementById("calcArea").style.opacity = "1";
         document.getElementById("calcArea").style.pointerEvents = "auto";
-        document.getElementById("clearBtn").style.display = "flex";
         
         document.getElementById("quantity").value = "";
         document.getElementById("resultBox").style.display = "none";
         document.getElementById("quantity").focus();
-    }
-
-    function clearSearch() {
-        document.getElementById("searchInput").value = "";
-        document.getElementById("customResults").style.display = "none";
-        document.getElementById("clearBtn").style.display = "none";
-        document.getElementById("selectedCard").style.display = "none";
-        document.getElementById("calcArea").style.opacity = "0.5";
-        document.getElementById("resultBox").style.display = "none";
-        document.getElementById("searchInput").focus();
-        selectedItem = null;
     }
 
     function calculate() {
