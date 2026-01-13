@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LOT ROUTE (FR/TR)</title>
     <style>
-        /* MODERN FERAH TEMA (Göz Yormayan) */
+        /* MODERN FERAH TEMA */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
@@ -31,10 +31,11 @@
             margin-bottom: 25px; 
             font-weight: 800; 
             letter-spacing: -0.5px;
-            font-size: 22px;
+            font-size: 20px; /* Biraz küçülttüm sığsın diye */
+            text-transform: uppercase;
         }
         
-        label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; color: #555; }
+        label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.9em; color: #555; }
         
         /* Arama Kutusu */
         .search-wrapper { position: relative; width: 100%; }
@@ -87,15 +88,15 @@
 
         /* KART ve SONUÇLAR */
         .selected-card { background: #f0f7ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; }
-        .selected-card h3 { margin: 0; color: #0056b3; font-size: 18px; display: flex; align-items: center; justify-content: space-between; }
+        .selected-card h3 { margin: 0; color: #0056b3; font-size: 16px; display: flex; align-items: center; justify-content: space-between; }
         .badge-unit { background: #3498db; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-        .price-tag { margin-top:12px; font-size:15px; color: #333; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .price-tag { margin-top:12px; font-size:14px; color: #333; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
 
         .result-box { margin-top: 25px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border-radius: 16px; padding: 25px; display: none; box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3); }
-        .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; }
         .result-row:last-child { border: none; margin: 0; padding: 0; }
         .grand-total-label { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; }
-        .grand-total-val { font-size: 32px; font-weight: 700; color: #fff; text-align: right; display: block; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .grand-total-val { font-size: 28px; font-weight: 700; color: #fff; text-align: right; display: block; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
 
@@ -117,8 +118,8 @@
             font-size: 16px; font-weight: bold; cursor: pointer;
         }
         .logout-btn {
-            background: #e74c3c; color: white; padding: 5px 10px; border-radius: 6px;
-            font-size: 12px; text-decoration: none; display: inline-block; margin-top: 10px; cursor: pointer; border: none;
+            background: #e74c3c; color: white; padding: 6px 12px; border-radius: 6px;
+            font-size: 12px; text-decoration: none; display: inline-block; margin-top: 0; cursor: pointer; border: none;
         }
     </style>
 </head>
@@ -126,58 +127,59 @@
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h2 style="margin-bottom: 10px;">🔒 GÜVENLİ GİRİŞ</h2>
-        <p style="color:#666; margin-bottom: 20px;">Lütfen erişim şifresini giriniz.</p>
-        <input type="password" id="passwordInput" placeholder="Şifre" style="padding-right: 16px;">
-        <button class="login-btn" onclick="checkPassword()">GİRİŞ YAP</button>
-        <p id="loginError" style="color:red; margin-top:10px; display:none;">Hatalı Şifre!</p>
+        <h2 style="margin-bottom: 10px;">🔒 CONNEXION / GİRİŞ</h2>
+        <p style="color:#666; margin-bottom: 20px; font-size:14px;">Veuillez entrer le mot de passe<br>Lütfen şifreyi giriniz</p>
+        <input type="password" id="passwordInput" placeholder="Mot de passe / Şifre" style="padding-right: 16px;">
+        <button class="login-btn" onclick="checkPassword()">SE CONNECTER / GİRİŞ</button>
+        <p id="loginError" style="color:red; margin-top:10px; display:none;">Mot de passe incorrect / Hatalı Şifre!</p>
     </div>
 </div>
 
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2 style="margin:0;">LOT ROUTE</h2>
-        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+        <button class="logout-btn" onclick="logout()">Déconnexion / Çıkış</button>
     </div>
     <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
 
-    <label>İş Kalemi Seçiniz (Ara):</label>
+    <label>Sélectionnez l'article / İş Kalemi Seç:</label>
     
     <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Örn: Beton / Kazı..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Ex: Béton / Örn: Beton..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
         <div class="arrow-btn" onclick="toggleDropdown('toggle')">▼</div>
         <div id="customResults" class="custom-results"></div>
     </div>
 
     <div id="selectedCard" class="selected-card">
-        <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT</span></h3>
-        <p id="selName" style="margin: 10px 0; color: #333; font-weight: 600; line-height: 1.4;">İş Tanımı</p>
+        <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT / BİRİM</span></h3>
+        <p id="selName" style="margin: 10px 0; color: #333; font-weight: 600; line-height: 1.4;">Désignation / İş Tanımı</p>
         <div class="price-tag">
-            Birim Fiyat: <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
+            Prix Unitaire / Birim Fiyat: <br>
+            <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
         </div>
     </div>
 
     <div id="calcArea" style="opacity: 0.5; pointer-events: none;">
-        <label>Euro Kuru:</label>
+        <label>Taux Euro / Euro Kuru:</label>
         <div class="rate-input-group">
             <input type="number" class="calc-input" id="exchangeRate" value="102.3" step="0.1" oninput="calculate()">
             <span style="font-weight:bold; color:#3498db">DZD</span>
         </div>
 
-        <label>Miktar (Metraj):</label>
-        <input type="number" class="calc-input" id="quantity" placeholder="Miktar giriniz..." oninput="calculate()">
+        <label>Quantité / Miktar (Metraj):</label>
+        <input type="number" class="calc-input" id="quantity" placeholder="Entrez la quantité / Miktar giriniz..." oninput="calculate()">
 
         <div class="result-box" id="resultBox">
             <div class="result-row">
-                <span>Dinar Tutarı:</span>
+                <span>Montant DZD / Dinar Tutarı:</span>
                 <span id="resDZD">0,00 DZD</span>
             </div>
             <div class="result-row">
-                <span>Euro Tutarı:</span>
+                <span>Montant EUR / Euro Tutarı:</span>
                 <span id="resEUR">0,00 €</span>
             </div>
             <div style="margin-top: 20px; text-align: center;">
-                <span class="grand-total-label">TOPLAM MALİYET</span>
+                <span class="grand-total-label">TOTAL GÉNÉRAL / TOPLAM</span>
                 <span class="grand-total-val" id="resGrandTotal">0,00 DZD</span>
                 <small style="color:rgba(255,255,255,0.7); display:block; margin-top:5px; font-size: 11px;">(Euro x 102.3 + Dinar)</small>
             </div>
@@ -422,7 +424,7 @@
         database.forEach(item => {
             const div = document.createElement("div");
             div.className = "result-item";
-            // İki satırlı görünüm (Kod üstte, İsim altta)
+            // Bilingual display splitting
             const parts = item.name.split(" / ");
             const frName = parts[0];
             const trName = parts[1] ? parts[1] : "";
