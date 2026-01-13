@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MASTER DQE (ULTIMATE)</title>
+    <title>MASTER DQE PRO</title>
     <style>
         /* MODERN FERAH TEMA */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f8; color: #333; min-height: 100vh; }
-        .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e1e4e8; }
-        
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f8; color: #333; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 600px; background: #ffffff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e1e4e8; box-sizing: border-box; }
+
         /* TABS */
         .tabs { display: flex; justify-content: space-between; margin-bottom: 20px; background: #f0f2f5; padding: 4px; border-radius: 12px; gap: 5px; }
         .tab-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; cursor: pointer; font-weight: 700; color: #7f8c8d; border-radius: 8px; transition: all 0.3s; font-size: 11px; text-align: center; }
@@ -17,11 +17,13 @@
         h2 { text-align: center; color: #2c3e50; margin-bottom: 15px; font-weight: 800; font-size: 18px; text-transform: uppercase; }
         label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.9em; color: #555; }
         
+        /* INPUTS */
         .search-wrapper { position: relative; width: 100%; }
         input { width: 100%; padding: 14px 45px 14px 14px; border: 1px solid #d1d9e6; border-radius: 12px; font-size: 15px; background: #f9fbfd; color: #2c3e50; font-weight: 500; box-sizing: border-box; -webkit-appearance: none; }
         input:focus { outline: none; border-color: #3498db; background: #fff; box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15); }
         .arrow-btn { position: absolute; right: 0; top: 0; bottom: 0; width: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #3498db; font-size: 14px; z-index: 2; }
         
+        /* RESULTS */
         .custom-results { position: absolute; top: 115%; left: 0; right: 0; background: white; border: 1px solid #eee; border-radius: 12px; max-height: 350px; overflow-y: auto; z-index: 1000; display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
         .result-item { padding: 12px 16px; border-bottom: 1px solid #f4f6f8; cursor: pointer; font-size: 13px; line-height: 1.4; }
         .result-item:last-child { border-bottom: none; }
@@ -32,6 +34,7 @@
         .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-bottom: 4px; color: white;}
         .tag-route { background: #3498db; } .tag-oa { background: #27ae60; } .tag-tunnel { background: #e67e22; }
 
+        /* CARDS */
         .selected-card { background: #f0f7ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; }
         .selected-card h3 { margin: 0; color: #0056b3; font-size: 16px; display: flex; justify-content: space-between; }
         .badge-unit { background: #3498db; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
@@ -42,13 +45,13 @@
         .grand-total-val { font-size: 28px; font-weight: 700; text-align: right; display: block; margin-top: 5px; }
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
 
-        /* GİRİŞ */
+        /* LOGIN SCREEN */
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f8; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; border: 1px solid #e1e4e8; }
         .login-btn { width: 100%; padding: 15px; margin-top: 20px; background: #3498db; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .logout-btn { background: #e74c3c; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; border: none; }
 
-        /* SÖZ */
+        /* QUOTE */
         .quote-card { width: 100%; max-width: 600px; margin-top: 25px; margin-bottom: 40px; background: #fff; border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; border-bottom: 3px solid #3498db; box-sizing: border-box; }
         .q-text { font-size: 14px; font-weight: 500; color: #444; font-style: italic; margin: 0 0 8px 0; }
         .q-author { font-size: 11px; font-weight: 700; color: #3498db; text-transform: uppercase; }
@@ -61,7 +64,7 @@
     <div class="login-box">
         <h2 style="margin-bottom: 10px;">🔒 ACCÈS SÉCURISÉ<br><span style="font-size:0.7em; color:#666;">GÜVENLİ GİRİŞ</span></h2>
         <p style="color:#666; margin-bottom: 20px; font-size:14px;">Veuillez entrer le mot de passe<br>Lütfen şifreyi giriniz</p>
-        <input type="password" id="passwordInput" placeholder="Mot de passe / Şifre" style="text-align: center;">
+        <input type="password" id="passwordInput" placeholder="Şifre" style="text-align: center;">
         <button class="login-btn" onclick="attemptLogin()">ENTRER / GİRİŞ</button>
         <p id="loginError" style="color:red; margin-top:10px; display:none;">Mot de passe incorrect!<br>Hatalı Şifre!</p>
     </div>
@@ -92,8 +95,7 @@
         <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT / BİRİM</span></h3>
         <p id="selName" style="margin: 10px 0; color: #333; font-weight: 600; line-height: 1.4;">Désignation / İş Tanımı</p>
         <div class="price-tag">
-            Prix Unitaire / Birim Fiyat: <br>
-            <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
+            Birim Fiyat: <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
         </div>
     </div>
 
@@ -105,7 +107,7 @@
         </div>
 
         <label>Quantité / Miktar (Metraj):</label>
-        <input type="number" class="calc-input" id="quantity" placeholder="Entrez la quantité..." oninput="calculate()">
+        <input type="number" class="calc-input" id="quantity" placeholder="Entrez la quantité / Miktar giriniz..." oninput="calculate()">
 
         <div class="result-box" id="resultBox">
             <div class="result-row">
@@ -123,13 +125,13 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="quote-card" onclick="getNewQuote()">
-        <div class="quote-icon">❝</div>
-        <p id="qText" class="q-text">...</p>
-        <div id="qAuthor" class="q-author"></div>
-        <div class="q-hint">Changer / Değiştirmek için dokun ↻</div>
-    </div>
+<div class="quote-card" id="quoteCard" style="display:none;" onclick="getNewQuote()">
+    <div class="quote-icon">❝</div>
+    <p id="qText" class="q-text">...</p>
+    <div id="qAuthor" class="q-author"></div>
+    <div class="q-hint">Changer / Değiştirmek için dokun ↻</div>
 </div>
 
 <script>
@@ -146,7 +148,7 @@
             document.getElementById("loginError").style.display = "block";
         }
     }
-    
+
     document.getElementById("passwordInput").addEventListener("keypress", function(e) {
         if (e.key === "Enter") attemptLogin();
     });
@@ -154,6 +156,7 @@
     function showApp() {
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainApp").style.display = "block";
+        document.getElementById("quoteCard").style.display = "block";
         getNewQuote();
     }
 
@@ -166,27 +169,6 @@
         if(localStorage.getItem("isLoggedIn") === "true") {
             showApp();
         }
-    }
-
-    // --- SÖZ MOTORU ---
-    const quotes = [
-        { t: "Mühendislik, hayal gücünün maddeye dönüşmesidir.", a: "Anonim" },
-        { t: "Zor yollar, genellikle güzel yerlere çıkar.", a: "Anonim" },
-        { t: "Şantiyede en önemli kural: Güvenlik, hızdan önce gelir.", a: "Şantiye Kuralı" },
-        { t: "Bir problemi çözmek, onu anlamakla başlar.", a: "Albert Einstein" },
-        { t: "Başarı, hazırlık ve fırsatın karşılaştığı yerdir.", a: "Bobby Unser" },
-        { t: "Planlama yoksa, başarısızlık planlanmıştır.", a: "Anonim" },
-        { t: "Yol medeniyettir.", a: "Türk Atasözü" },
-        { t: "La route est le symbole de la civilisation.", a: "Proverbe" },
-        { t: "Taş yerinde ağırdır.", a: "Türk Atasözü" },
-        { t: "İşleyen demir ışıldar.", a: "Türk Atasözü" },
-        { t: "La simplicité est la sophistication suprême.", a: "Leonardo da Vinci" }
-    ];
-
-    function getNewQuote() {
-        const random = quotes[Math.floor(Math.random() * quotes.length)];
-        document.getElementById("qText").innerText = '"' + random.t + '"';
-        document.getElementById("qAuthor").innerText = "— " + random.a;
     }
 
     function switchTab(tab) {
@@ -202,162 +184,150 @@
         document.getElementById("resultBox").style.display = "none";
     }
 
-    function toggleDropdown(state) {
-        const resultsDiv = document.getElementById("customResults");
-        const currentDisplay = window.getComputedStyle(resultsDiv).display;
-        if (state === true || (state === 'toggle' && currentDisplay === "none")) {
-            renderAllItems();
-            resultsDiv.style.display = "block";
-        } else {
-            resultsDiv.style.display = "none";
-        }
-    }
-
-    // --- CSV'DEN GELEN %100 TAM VERİTABANI ---
+    // --- TAM VERİTABANI ---
     const database = [
-        // LOT ROUTE
-        { lot: "ROUTE", code: "A1", name: "Installation et repliement / Şantiye Kurulumu", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
+        { lot: "ROUTE", code: "A1", name: "Installation chantier / Şantiye Kurulumu", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
         { lot: "ROUTE", code: "A2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
         { lot: "ROUTE", code: "A2.2", name: "Contrôle externe / Dış Kontrol", unit: "Ft", priceDZD: 33983960.76, priceEUR: 400938.80 },
         { lot: "ROUTE", code: "A3.1", name: "Études d'exécution / Uygulama Projeleri", unit: "Ft", priceDZD: 212842500, priceEUR: 2025000 },
         { lot: "ROUTE", code: "A3.2", name: "Contrôle externe études / Proje Kontrolü", unit: "Ft", priceDZD: 45999996.83, priceEUR: 449657.90 },
         { lot: "ROUTE", code: "A3.3", name: "Dossier de récolement / As-Built", unit: "Ft", priceDZD: 33568500, priceEUR: 405000 },
         { lot: "ROUTE", code: "A3.4", name: "Étude des méthodes / Metodoloji", unit: "Ft", priceDZD: 7500069.87, priceEUR: 73313.10 },
-        { lot: "ROUTE", code: "A3.5", name: "Reconnaissances géotech / Jeoteknik Etüt", unit: "Ft", priceDZD: 40209555.68, priceEUR: 388958.40 },
+        { lot: "ROUTE", code: "A3.5", name: "Reconnaissances géotechniques / Jeoteknik Etüt", unit: "Ft", priceDZD: 40209555.68, priceEUR: 388958.40 },
         { lot: "ROUTE", code: "A4.1", name: "Sécurité passive / Pasif Güvenlik", unit: "Ft", priceDZD: 200000000, priceEUR: 0 },
         { lot: "ROUTE", code: "A4.2", name: "Sécurité active / Aktif Güvenlik", unit: "Ft", priceDZD: 400000000, priceEUR: 0 },
-        { lot: "ROUTE", code: "A5", name: "Panneau d'identification / Proje Tabelası", unit: "U", priceDZD: 1775000, priceEUR: 0 },
+        { lot: "ROUTE", code: "A5", name: "Panneau d'identification / Tanıtım Tabelası", unit: "U", priceDZD: 1775000, priceEUR: 0 },
         { lot: "ROUTE", code: "B1.1", name: "Débroussaillage / Çalı Temizliği", unit: "Ha", priceDZD: 619820.41, priceEUR: 2543.30 },
         { lot: "ROUTE", code: "B1.2", name: "Abattage arbres / Ağaç Kesimi", unit: "U", priceDZD: 1600, priceEUR: 0 },
-        { lot: "ROUTE", code: "B1.3", name: "Dépose métal / Metal Sökümü", unit: "Tonne", priceDZD: 944.25, priceEUR: 2.50 },
-        { lot: "ROUTE", code: "B2.1", name: "Démolition ouvrages / Yıkım", unit: "m3", priceDZD: 1335.05, priceEUR: 6.50 },
+        { lot: "ROUTE", code: "B1.3", name: "Dépose ouvrages métalliques / Metal Sökümü", unit: "Tonne", priceDZD: 944.25, priceEUR: 2.50 },
+        { lot: "ROUTE", code: "B2.1", name: "Démolition ouvrages divers / Yıkım", unit: "m3", priceDZD: 1335.05, priceEUR: 6.50 },
         { lot: "ROUTE", code: "B2.2", name: "Démolition béton armé / Beton Yıkımı", unit: "m3", priceDZD: 1620.22, priceEUR: 8.60 },
         { lot: "ROUTE", code: "B2.3", name: "Démolition chaussées / Asfalt Sökümü", unit: "m3", priceDZD: 207.7, priceEUR: 1 },
-        { lot: "ROUTE", code: "B3.1", name: "Rabotage <100mm / Frezeleme", unit: "m2", priceDZD: 88.85, priceEUR: 0.50 },
-        { lot: "ROUTE", code: "B3.2", name: "Rabotage 100-200mm / Frezeleme", unit: "m2", priceDZD: 98.62, priceEUR: 0.60 },
+        { lot: "ROUTE", code: "B3.1", name: "Rabotage <= 100mm / Frezeleme < 10cm", unit: "m2", priceDZD: 88.85, priceEUR: 0.50 },
+        { lot: "ROUTE", code: "B3.2", name: "Rabotage 100-200mm / Frezeleme 10-20cm", unit: "m2", priceDZD: 98.62, priceEUR: 0.60 },
         { lot: "ROUTE", code: "B4", name: "Scarification / Kazıma", unit: "m2", priceDZD: 28.16, priceEUR: 0.80 },
         { lot: "ROUTE", code: "C1.1", name: "Décapage terre végétale / Sıyırma", unit: "m3", priceDZD: 128.62, priceEUR: 0.60 },
         { lot: "ROUTE", code: "C1.2", name: "Reprise sur stock / Stoktan Kullanım", unit: "m3", priceDZD: 179.08, priceEUR: 0.40 },
         { lot: "ROUTE", code: "C2.2", name: "Purges / Zayıf Zemin", unit: "m3", priceDZD: 2200, priceEUR: 0 },
         { lot: "ROUTE", code: "C3.1", name: "Déblai meuble > remblai / Yumuşak Kazı Dolguya", unit: "m3", priceDZD: 257.24, priceEUR: 1.20 },
-        { lot: "ROUTE", code: "C3.2", name: "Déblai semi-dur > remblai / Yarı Sert Kazı Dolguya", unit: "m3", priceDZD: 386.32, priceEUR: 1.60 },
+        { lot: "ROUTE", code: "C3.2", name: "Déblai semi-dur > remblai / Küskülük Kazı Dolguya", unit: "m3", priceDZD: 386.32, priceEUR: 1.60 },
         { lot: "ROUTE", code: "C3.3", name: "Déblai rocheux > remblai / Kaya Kazı Dolguya", unit: "m3", priceDZD: 1308.96, priceEUR: 4.80 },
         { lot: "ROUTE", code: "C4.1", name: "Déblai meuble > dépôt / Yumuşak Kazı Depoya", unit: "m3", priceDZD: 148.16, priceEUR: 0.80 },
-        { lot: "ROUTE", code: "C4.2", name: "Déblai semi-dur > dépôt / Yarı Sert Kazı Depoya", unit: "m3", priceDZD: 307.7, priceEUR: 1 },
+        { lot: "ROUTE", code: "C4.2", name: "Déblai semi-dur > dépôt / Küskülük Kazı Depoya", unit: "m3", priceDZD: 307.7, priceEUR: 1 },
         { lot: "ROUTE", code: "C4.3", name: "Déblai rocheux > dépôt / Kaya Kazı Depoya", unit: "m3", priceDZD: 893.1, priceEUR: 3 },
-        { lot: "ROUTE", code: "C5.1", name: "Remblai d'emprunt / Ariyet", unit: "m3", priceDZD: 555.63, priceEUR: 1.90 },
+        { lot: "ROUTE", code: "C5.1", name: "Remblai d'emprunt / Ariyet Dolgusu", unit: "m3", priceDZD: 555.63, priceEUR: 1.90 },
         { lot: "ROUTE", code: "C6.1", name: "Assise drainante / Drenaj Tabakası", unit: "m3", priceDZD: 1166.55, priceEUR: 1.50 },
-        { lot: "ROUTE", code: "C7.1", name: "Géotextile renforcement", unit: "m2", priceDZD: 290.8, priceEUR: 4 },
-        { lot: "ROUTE", code: "C7.2", name: "Géotextile anti-contam.", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
-        { lot: "ROUTE", code: "C7.3", name: "Géogrille", unit: "m2", priceDZD: 418.04, priceEUR: 5.20 },
-        { lot: "ROUTE", code: "C8.1", name: "Arrondi de crête / Şev Yuvarlama", unit: "ml", priceDZD: 317.01, priceEUR: 1.30 },
-        { lot: "ROUTE", code: "C9.1", name: "Couche de forme / Form", unit: "m3", priceDZD: 1346.55, priceEUR: 1.50 },
-        { lot: "ROUTE", code: "C10.1", name: "Transport < 30km", unit: "M3xKM", priceDZD: 12.5, priceEUR: 0 },
-        { lot: "ROUTE", code: "C10.2", name: "Transport > 30km", unit: "M3xKM", priceDZD: 11, priceEUR: 0 },
-        { lot: "ROUTE", code: "D1.1", name: "Fossé non revêtu A / Kaplamasız Hendek A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80 },
-        { lot: "ROUTE", code: "D1.2", name: "Fossé non revêtu B / Kaplamasız Hendek B", unit: "ml", priceDZD: 594.94, priceEUR: 2.20 },
-        { lot: "ROUTE", code: "D1.3", name: "Fossé non revêtu C / Kaplamasız Hendek C", unit: "ml", priceDZD: 897.18, priceEUR: 3.40 },
-        { lot: "ROUTE", code: "D1.4", name: "Végétalisation / Çimleme", unit: "ml", priceDZD: 874.94, priceEUR: 2.20 },
+        { lot: "ROUTE", code: "C7.1", name: "Géotextile de renforcement / Güçlendirme Geotekstili", unit: "m2", priceDZD: 290.8, priceEUR: 4 },
+        { lot: "ROUTE", code: "C7.2", name: "Géotextile anti-contam. / Ayırıcı Geotekstil", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
+        { lot: "ROUTE", code: "C7.3", name: "Géogrille / Geogrid", unit: "m2", priceDZD: 418.04, priceEUR: 5.20 },
+        { lot: "ROUTE", code: "C8.1", name: "Arrondi de crête / Şev Başı Yuvarlama", unit: "ml", priceDZD: 317.01, priceEUR: 1.30 },
+        { lot: "ROUTE", code: "C9.1", name: "Couche de forme / Form Tabakası", unit: "m3", priceDZD: 1346.55, priceEUR: 1.50 },
+        { lot: "ROUTE", code: "C10.1", name: "Transport < 30km / Nakliye < 30km", unit: "M3xKM", priceDZD: 12.5, priceEUR: 0 },
+        { lot: "ROUTE", code: "C10.2", name: "Transport > 30km / Nakliye > 30km", unit: "M3xKM", priceDZD: 11, priceEUR: 0 },
+        { lot: "ROUTE", code: "D1.1", name: "Fossé type A / Kaplamasız Hendek A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80 },
+        { lot: "ROUTE", code: "D1.2", name: "Fossé type B / Kaplamasız Hendek B", unit: "ml", priceDZD: 594.94, priceEUR: 2.20 },
+        { lot: "ROUTE", code: "D1.3", name: "Fossé type C / Kaplamasız Hendek C", unit: "ml", priceDZD: 897.18, priceEUR: 3.40 },
+        { lot: "ROUTE", code: "D1.4", name: "Végétalisation fossés / Hendek Çimlemesi", unit: "ml", priceDZD: 874.94, priceEUR: 2.20 },
         { lot: "ROUTE", code: "D2.1", name: "Bétonnage fossé A / Beton Hendek A", unit: "ml", priceDZD: 4448.37, priceEUR: 18.10 },
         { lot: "ROUTE", code: "D2.2", name: "Bétonnage fossé B / Beton Hendek B", unit: "ml", priceDZD: 5662.5, priceEUR: 25 },
         { lot: "ROUTE", code: "D2.3", name: "Bétonnage fossé C / Beton Hendek C", unit: "ml", priceDZD: 6316.17, priceEUR: 32.10 },
-        { lot: "ROUTE", code: "D3.1", name: "Cunettes végétalisées / Çim Kanal", unit: "ml", priceDZD: 3402.4, priceEUR: 12 },
-        { lot: "ROUTE", code: "D3.2", name: "Cunettes béton / Beton Kanal", unit: "ml", priceDZD: 4304.81, priceEUR: 15.30 },
-        { lot: "ROUTE", code: "D3.3", name: "Cunettes symétriques / Simetrik Kanal", unit: "ml", priceDZD: 4829.18, priceEUR: 13.40 },
-        { lot: "ROUTE", code: "D4.1", name: "Descente d'eau A / İniş Kanalı A", unit: "ml", priceDZD: 2912.86, priceEUR: 11.80 },
-        { lot: "ROUTE", code: "D4.2", name: "Descente d'eau B / İniş Kanalı B", unit: "ml", priceDZD: 3357.57, priceEUR: 14.10 },
-        { lot: "ROUTE", code: "D4.3", name: "Descente d'eau C / İniş Kanalı C", unit: "ml", priceDZD: 3634.81, priceEUR: 15.30 },
-        { lot: "ROUTE", code: "D4.4", name: "Descente d'eau D / İniş Kanalı D", unit: "ml", priceDZD: 4119.98, priceEUR: 17.40 },
-        { lot: "ROUTE", code: "D5.1", name: "Descente eau tuile A / Kiremit Kanal A", unit: "ml", priceDZD: 2200, priceEUR: 0 },
-        { lot: "ROUTE", code: "D5.2", name: "Descente eau tuile B / Kiremit Kanal B", unit: "ml", priceDZD: 3520, priceEUR: 0 },
-        { lot: "ROUTE", code: "D5.3", name: "Descente eau tuile C / Kiremit Kanal C", unit: "ml", priceDZD: 4200, priceEUR: 0 },
-        { lot: "ROUTE", code: "D6.1", name: "Caniveau en U 30x40 / U Kanal 30x40", unit: "ml", priceDZD: 4800, priceEUR: 0 },
-        { lot: "ROUTE", code: "D6.2", name: "Caniveau en U 40x50 / U Kanal 40x50", unit: "ml", priceDZD: 5800, priceEUR: 0 },
-        { lot: "ROUTE", code: "D6.3", name: "Caniveau en U 45x55 / U Kanal 45x55", unit: "ml", priceDZD: 6300, priceEUR: 0 },
-        { lot: "ROUTE", code: "D7.1", name: "Caniveau fente 300 / Yarık Kanal 300", unit: "ml", priceDZD: 22200, priceEUR: 0 },
-        { lot: "ROUTE", code: "D7.2", name: "Caniveau fente 400 / Yarık Kanal 400", unit: "ml", priceDZD: 26600, priceEUR: 0 },
-        { lot: "ROUTE", code: "D7.3", name: "Caniveau fente 500 / Yarık Kanal 500", unit: "ml", priceDZD: 29300, priceEUR: 0 },
+        { lot: "ROUTE", code: "D3.1", name: "Cunettes végétalisées / Çim Kaplı Künvet", unit: "ml", priceDZD: 3402.4, priceEUR: 12 },
+        { lot: "ROUTE", code: "D3.2", name: "Cunettes béton / Beton Künvet", unit: "ml", priceDZD: 4304.81, priceEUR: 15.30 },
+        { lot: "ROUTE", code: "D3.3", name: "Cunettes symétriques / Simetrik Beton Künvet", unit: "ml", priceDZD: 4829.18, priceEUR: 13.40 },
+        { lot: "ROUTE", code: "D4.1", name: "Descente d'eau A / İniş Kanalı (Şüt) A", unit: "ml", priceDZD: 2912.86, priceEUR: 11.80 },
+        { lot: "ROUTE", code: "D4.2", name: "Descente d'eau B / İniş Kanalı (Şüt) B", unit: "ml", priceDZD: 3357.57, priceEUR: 14.10 },
+        { lot: "ROUTE", code: "D4.3", name: "Descente d'eau C / İniş Kanalı (Şüt) C", unit: "ml", priceDZD: 3634.81, priceEUR: 15.30 },
+        { lot: "ROUTE", code: "D4.4", name: "Descente d'eau D / İniş Kanalı (Şüt) D", unit: "ml", priceDZD: 4119.98, priceEUR: 17.40 },
+        { lot: "ROUTE", code: "D5.1", name: "Descente Tuile A / Kiremit Kanal A", unit: "ml", priceDZD: 2200, priceEUR: 0 },
+        { lot: "ROUTE", code: "D5.2", name: "Descente Tuile B / Kiremit Kanal B", unit: "ml", priceDZD: 3520, priceEUR: 0 },
+        { lot: "ROUTE", code: "D5.3", name: "Descente Tuile C / Kiremit Kanal C", unit: "ml", priceDZD: 4200, priceEUR: 0 },
+        { lot: "ROUTE", code: "D6.1", name: "Caniveau U 30x40 / U Kanal 30x40", unit: "ml", priceDZD: 4800, priceEUR: 0 },
+        { lot: "ROUTE", code: "D6.2", name: "Caniveau U 40x50 / U Kanal 40x50", unit: "ml", priceDZD: 5800, priceEUR: 0 },
+        { lot: "ROUTE", code: "D6.3", name: "Caniveau U 45x55 / U Kanal 45x55", unit: "ml", priceDZD: 6300, priceEUR: 0 },
+        { lot: "ROUTE", code: "D7.1", name: "Caniveau fente 300 / Yarık Kanal 300mm", unit: "ml", priceDZD: 22200, priceEUR: 0 },
+        { lot: "ROUTE", code: "D7.2", name: "Caniveau fente 400 / Yarık Kanal 400mm", unit: "ml", priceDZD: 26600, priceEUR: 0 },
+        { lot: "ROUTE", code: "D7.3", name: "Caniveau fente 500 / Yarık Kanal 500mm", unit: "ml", priceDZD: 29300, priceEUR: 0 },
         { lot: "ROUTE", code: "D7.4", name: "Renforcement caniveaux / Kanal Güçlendirme", unit: "ml", priceDZD: 11191.83, priceEUR: 7.90 },
-        { lot: "ROUTE", code: "D8.1", name: "Demi-buse 300 / Yarım Büz 300", unit: "ml", priceDZD: 4400, priceEUR: 0 },
-        { lot: "ROUTE", code: "D8.2", name: "Demi-buse 400 / Yarım Büz 400", unit: "ml", priceDZD: 5700, priceEUR: 0 },
-        { lot: "ROUTE", code: "D8.3", name: "Demi-buse 500 / Yarım Büz 500", unit: "ml", priceDZD: 7800, priceEUR: 0 },
-        { lot: "ROUTE", code: "D9.1", name: "Déblai tranchées < 2m / Hendek Kazısı", unit: "m3", priceDZD: 217.93, priceEUR: 0.90 },
-        { lot: "ROUTE", code: "D9.2", name: "Déblai tranchées 2-4m / Hendek Kazısı", unit: "m3", priceDZD: 277.24, priceEUR: 1.20 },
-        { lot: "ROUTE", code: "D9.3", name: "Déblai tranchées 4-6m / Hendek Kazısı", unit: "m3", priceDZD: 326.55, priceEUR: 1.50 },
-        { lot: "ROUTE", code: "D9.4", name: "Plus-value terrain rocheux / Kaya Farkı", unit: "m3", priceDZD: 1500, priceEUR: 0 },
-        { lot: "ROUTE", code: "D10.1", name: "Lit de pose sable / Kum Yataklama", unit: "m3", priceDZD: 1455.51, priceEUR: 6.30 },
-        { lot: "ROUTE", code: "D10.2", name: "Lit de pose béton / Beton Yataklama", unit: "m3", priceDZD: 5962.17, priceEUR: 12.10 },
+        { lot: "ROUTE", code: "D8.1", name: "Demi-buse 300 / Yarım Büz 300mm", unit: "ml", priceDZD: 4400, priceEUR: 0 },
+        { lot: "ROUTE", code: "D8.2", name: "Demi-buse 400 / Yarım Büz 400mm", unit: "ml", priceDZD: 5700, priceEUR: 0 },
+        { lot: "ROUTE", code: "D8.3", name: "Demi-buse 500 / Yarım Büz 500mm", unit: "ml", priceDZD: 7800, priceEUR: 0 },
+        { lot: "ROUTE", code: "D9.1", name: "Tranchée < 2m / Hendek Kazısı <2m", unit: "m3", priceDZD: 217.93, priceEUR: 0.90 },
+        { lot: "ROUTE", code: "D9.2", name: "Tranchée 2-4m / Hendek Kazısı 2-4m", unit: "m3", priceDZD: 277.24, priceEUR: 1.20 },
+        { lot: "ROUTE", code: "D9.3", name: "Tranchée 4-6m / Hendek Kazısı 4-6m", unit: "m3", priceDZD: 326.55, priceEUR: 1.50 },
+        { lot: "ROUTE", code: "D9.4", name: "PV Roche / Kaya Hendek Kazısı Farkı", unit: "m3", priceDZD: 1500, priceEUR: 0 },
+        { lot: "ROUTE", code: "D10.1", name: "Lit de sable / Kum Yataklama", unit: "m3", priceDZD: 1455.51, priceEUR: 6.30 },
+        { lot: "ROUTE", code: "D10.2", name: "Lit de béton / Beton Yataklama", unit: "m3", priceDZD: 5962.17, priceEUR: 12.10 },
         { lot: "ROUTE", code: "D11.1", name: "Enrobage grave / Doğal Gömlekleme", unit: "m3", priceDZD: 1437.35, priceEUR: 5.50 },
         { lot: "ROUTE", code: "D11.2", name: "Enrobage béton / Beton Gömlekleme", unit: "m3", priceDZD: 5593.89, priceEUR: 15.70 },
         { lot: "ROUTE", code: "D11.3", name: "Enrobage drainant / Drenaj Gömlekleme", unit: "m3", priceDZD: 1739.65, priceEUR: 4.50 },
-        { lot: "ROUTE", code: "D12.1", name: "Tuyau 400 mm / BA Boru 400", unit: "ml", priceDZD: 7769.31, priceEUR: 0.30 },
-        { lot: "ROUTE", code: "D12.2", name: "Tuyau 600 mm / BA Boru 600", unit: "ml", priceDZD: 9369.31, priceEUR: 0.30 },
-        { lot: "ROUTE", code: "D13.1", name: "Buse 800 mm / BA Büz 800", unit: "ml", priceDZD: 15498.73, priceEUR: 4.90 },
-        { lot: "ROUTE", code: "D13.2", name: "Buse 1000 mm / BA Büz 1000", unit: "ml", priceDZD: 21631.72, priceEUR: 3.60 },
-        { lot: "ROUTE", code: "D13.3", name: "Buse 1200 mm / BA Büz 1200", unit: "ml", priceDZD: 36375.97, priceEUR: 6.10 },
-        { lot: "ROUTE", code: "D13.4", name: "Buse 1500 mm / BA Büz 1500", unit: "ml", priceDZD: 50775.97, priceEUR: 6.10 },
-        { lot: "ROUTE", code: "D14.1", name: "Collecteur drainant 150 / Drenaj Kolektörü", unit: "ml", priceDZD: 2700, priceEUR: 0 },
-        { lot: "ROUTE", code: "D17.1", name: "Tuyau PEHD 75 mm / PEHD Boru 75", unit: "ml", priceDZD: 1236, priceEUR: 0 },
-        { lot: "ROUTE", code: "D17.2", name: "Tuyau PEHD 90 mm / PEHD Boru 90", unit: "ml", priceDZD: 1500, priceEUR: 0 },
+        { lot: "ROUTE", code: "D12.1", name: "Tuyau 400mm / BA Boru 400mm", unit: "ml", priceDZD: 7769.31, priceEUR: 0.30 },
+        { lot: "ROUTE", code: "D12.2", name: "Tuyau 600mm / BA Boru 600mm", unit: "ml", priceDZD: 9369.31, priceEUR: 0.30 },
+        { lot: "ROUTE", code: "D13.1", name: "Buse 800mm / BA Büz 800mm", unit: "ml", priceDZD: 15498.73, priceEUR: 4.90 },
+        { lot: "ROUTE", code: "D13.2", name: "Buse 1000mm / BA Büz 1000mm", unit: "ml", priceDZD: 21631.72, priceEUR: 3.60 },
+        { lot: "ROUTE", code: "D13.3", name: "Buse 1200mm / BA Büz 1200mm", unit: "ml", priceDZD: 36375.97, priceEUR: 6.10 },
+        { lot: "ROUTE", code: "D13.4", name: "Buse 1500mm / BA Büz 1500mm", unit: "ml", priceDZD: 50775.97, priceEUR: 6.10 },
+        { lot: "ROUTE", code: "D14.1", name: "Collecteur 150mm / Drenaj Kolektörü 150mm", unit: "ml", priceDZD: 2700, priceEUR: 0 },
+        { lot: "ROUTE", code: "D17.1", name: "Tuyau PEHD 75mm / PEHD Boru 75mm", unit: "ml", priceDZD: 1236, priceEUR: 0 },
+        { lot: "ROUTE", code: "D17.2", name: "Tuyau PEHD 90mm / PEHD Boru 90mm", unit: "ml", priceDZD: 1500, priceEUR: 0 },
         { lot: "ROUTE", code: "D18.1", name: "Chambre K1C / Menhol K1C", unit: "U", priceDZD: 112000, priceEUR: 0 },
         { lot: "ROUTE", code: "D18.2", name: "Chambre K2C / Menhol K2C", unit: "U", priceDZD: 125000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D19.1", name: "Regard 1000 mm / Muayene Bacası", unit: "U", priceDZD: 120000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.1", name: "Puisard / Rogar", unit: "U", priceDZD: 150000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.2", name: "Puisard 1500x1300", unit: "U", priceDZD: 174000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.3", name: "Puisard 1500x1500", unit: "U", priceDZD: 188000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.4", name: "Puisard 1500x1800", unit: "U", priceDZD: 215000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.5", name: "Puisard 1500x2000", unit: "U", priceDZD: 220000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D20.6", name: "Puisard 1500x2500", unit: "U", priceDZD: 260000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D21.1", name: "Grille d'avaloir 700x700 / Izgara", unit: "U", priceDZD: 32000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D21.2", name: "Grille d'avaloir 250x400 / Izgara", unit: "U", priceDZD: 26826.09, priceEUR: 1.70 },
-        { lot: "ROUTE", code: "D21.3", name: "Caillebotis 1x1m / Izgara 1x1", unit: "U", priceDZD: 5400, priceEUR: 0 },
-        { lot: "ROUTE", code: "D21.4", name: "Caillebotis 1x2m / Izgara 1x2", unit: "U", priceDZD: 9200, priceEUR: 0 },
+        { lot: "ROUTE", code: "D19.1", name: "Regard 1000mm / Muayene Bacası 1000mm", unit: "U", priceDZD: 120000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.1", name: "Puisard / Rogar 1000x1000", unit: "U", priceDZD: 150000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.2", name: "Puisard 1500x1300 / Rogar 1500x1300", unit: "U", priceDZD: 174000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.3", name: "Puisard 1500x1500 / Rogar 1500x1500", unit: "U", priceDZD: 188000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.4", name: "Puisard 1500x1800 / Rogar 1500x1800", unit: "U", priceDZD: 215000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.5", name: "Puisard 1500x2000 / Rogar 1500x2000", unit: "U", priceDZD: 220000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D20.6", name: "Puisard 1500x2500 / Rogar 1500x2500", unit: "U", priceDZD: 260000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D21.1", name: "Grille d'avaloir 700x700 / Izgara 700x700", unit: "U", priceDZD: 32000, priceEUR: 0 },
+        { lot: "ROUTE", code: "D21.2", name: "Grille d'avaloir 250x400 / Izgara 250x400", unit: "U", priceDZD: 26826.09, priceEUR: 1.70 },
+        { lot: "ROUTE", code: "D21.3", name: "Caillebotis 1x1m / Izgara 1x1m", unit: "U", priceDZD: 5400, priceEUR: 0 },
+        { lot: "ROUTE", code: "D21.4", name: "Caillebotis 1x2m / Izgara 1x2m", unit: "U", priceDZD: 9200, priceEUR: 0 },
         { lot: "ROUTE", code: "D22.1", name: "Tête buse 600 / Büz Ağzı 600", unit: "U", priceDZD: 60925.34, priceEUR: 154.20 },
         { lot: "ROUTE", code: "D22.2", name: "Tête buse 800 / Büz Ağzı 800", unit: "U", priceDZD: 68921.05, priceEUR: 186.50 },
         { lot: "ROUTE", code: "D22.3", name: "Tête buse 1000 / Büz Ağzı 1000", unit: "U", priceDZD: 76992.73, priceEUR: 224.90 },
         { lot: "ROUTE", code: "D22.4", name: "Tête buse 1200 / Büz Ağzı 1200", unit: "U", priceDZD: 90558.06, priceEUR: 287.80 },
         { lot: "ROUTE", code: "D22.5", name: "Tête buse 1500 / Büz Ağzı 1500", unit: "U", priceDZD: 125386.97, priceEUR: 436.10 },
         { lot: "ROUTE", code: "D23.1", name: "Bourrelet en enrobé / Asfalt Bordür", unit: "ml", priceDZD: 3000, priceEUR: 0 },
-        { lot: "ROUTE", code: "D24.1", name: "Enrochement Type A / Taş Tahkimat A", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
-        { lot: "ROUTE", code: "D24.2", name: "Enrochement Type B / Taş Tahkimat B", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
-        { lot: "ROUTE", code: "D24.3", name: "Enrochement Type C / Taş Tahkimat C", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
+        { lot: "ROUTE", code: "D24.1", name: "Enrochements Type A / Taş Tahkimat A", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
+        { lot: "ROUTE", code: "D24.2", name: "Enrochements Type B / Taş Tahkimat B", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
+        { lot: "ROUTE", code: "D24.3", name: "Enrochements Type C / Taş Tahkimat C", unit: "m3", priceDZD: 1879.3, priceEUR: 9 },
         { lot: "ROUTE", code: "D25.1", name: "Enrochements liés / Harçlı Taş Tahkimat", unit: "m3", priceDZD: 2042.98, priceEUR: 7.40 },
-        { lot: "ROUTE", code: "D26.1", name: "Réalisation de barbacane / Barbakan", unit: "ml", priceDZD: 1700, priceEUR: 0 },
+        { lot: "ROUTE", code: "D26.1", name: "Barbacane / Barbakan", unit: "ml", priceDZD: 1700, priceEUR: 0 },
         { lot: "ROUTE", code: "D27.1", name: "Béton de propreté / Grobeton", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
         { lot: "ROUTE", code: "D27.2", name: "Béton pour ouvrages / Yapı Betonu", unit: "m3", priceDZD: 9553.28, priceEUR: 46.40 },
-        { lot: "ROUTE", code: "D27.3", name: "Coffrage ouvrages / Kalıp", unit: "m2", priceDZD: 920.22, priceEUR: 8.60 },
-        { lot: "ROUTE", code: "D27.4", name: "Ferraillage / Demir Donatı", unit: "Kg", priceDZD: 65.08, priceEUR: 0.40 },
+        { lot: "ROUTE", code: "D27.3", name: "Coffrage / Kalıp", unit: "m2", priceDZD: 920.22, priceEUR: 8.60 },
+        { lot: "ROUTE", code: "D27.4", name: "Ferraillage / Demir Donatı", unit: "kg", priceDZD: 65.08, priceEUR: 0.40 },
         { lot: "ROUTE", code: "E1.1", name: "Grave non traitée (GNT) / PMT", unit: "m3", priceDZD: 1922.64, priceEUR: 3.20 },
-        { lot: "ROUTE", code: "E2.1", name: "Grave Bitume GB 0/20 / Bitümlü Temel", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
+        { lot: "ROUTE", code: "E2.1", name: "Grave Bitume (GB) / Bitümlü Temel", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
         { lot: "ROUTE", code: "E2.2", name: "Enrobés EME 2 / Modifiye Asfalt (EME)", unit: "Tonne", priceDZD: 4782.15, priceEUR: 29.50 },
         { lot: "ROUTE", code: "E3.1", name: "Couche roulement BB / Aşınma (BB)", unit: "Tonne", priceDZD: 4337.9, priceEUR: 27 },
-        { lot: "ROUTE", code: "E3.2", name: "Couche BBME 14 / Aşınma (BBME 14)", unit: "Tonne", priceDZD: 4650.19, priceEUR: 34.70 },
-        { lot: "ROUTE", code: "E3.3", name: "Couche BBME 10 / Aşınma (BBME 10)", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50 },
+        { lot: "ROUTE", code: "E3.2", name: "Couche roulement BBME 14 / Aşınma (BBME 14)", unit: "Tonne", priceDZD: 4650.19, priceEUR: 34.70 },
+        { lot: "ROUTE", code: "E3.3", name: "Couche roulement BBME 10 / Aşınma (BBME 10)", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50 },
         { lot: "ROUTE", code: "E4.1", name: "Couche d'imprégnation / Emprime (MC-30)", unit: "m2", priceDZD: 95, priceEUR: 0 },
         { lot: "ROUTE", code: "E4.2", name: "Couche d'accrochage / Yapıştırıcı (Tack)", unit: "m2", priceDZD: 70, priceEUR: 0 },
         { lot: "ROUTE", code: "E5.1", name: "Revêtement bicouche / Sathi Kaplama", unit: "m2", priceDZD: 540, priceEUR: 0 },
-        { lot: "ROUTE", code: "E6.1", name: "Bordure A2 / Bordür", unit: "ml", priceDZD: 2000, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.1", name: "Marquage hachures / Taralı Alan", unit: "m2", priceDZD: 680, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.2", name: "Bande 100 mm / Çizgi 100", unit: "ml", priceDZD: 70, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.3", name: "Bande 150 mm / Çizgi 150", unit: "ml", priceDZD: 145, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.4", name: "Bande 225 mm / Çizgi 225", unit: "ml", priceDZD: 200, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.5", name: "Bande 375 mm / Çizgi 375", unit: "ml", priceDZD: 340, priceEUR: 0 },
-        { lot: "ROUTE", code: "F1.6", name: "Bande 500 mm / Çizgi 500", unit: "ml", priceDZD: 420, priceEUR: 0 },
+        { lot: "ROUTE", code: "E6.1", name: "Bordure A2 / Bordür A2", unit: "ml", priceDZD: 2000, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.1", name: "Marquage hachures / Taralı Alan Boyası", unit: "m2", priceDZD: 680, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.2", name: "Bande 100mm / Çizgi 100mm", unit: "ml", priceDZD: 70, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.3", name: "Bande 150mm / Çizgi 150mm", unit: "ml", priceDZD: 145, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.4", name: "Bande 225mm / Çizgi 225mm", unit: "ml", priceDZD: 200, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.5", name: "Bande 375mm / Çizgi 375mm", unit: "ml", priceDZD: 340, priceEUR: 0 },
+        { lot: "ROUTE", code: "F1.6", name: "Bande 500mm / Çizgi 500mm", unit: "ml", priceDZD: 420, priceEUR: 0 },
         { lot: "ROUTE", code: "F1.7", name: "Flèche rabattement / Yön Oku", unit: "U", priceDZD: 600, priceEUR: 0 },
         { lot: "ROUTE", code: "F1.8", name: "Flèche unidirectionnelle / Tek Yön Oku", unit: "U", priceDZD: 800, priceEUR: 0 },
         { lot: "ROUTE", code: "F1.9", name: "Flèche bidirectionnelle / Çift Yön Oku", unit: "U", priceDZD: 820, priceEUR: 0 },
         { lot: "ROUTE", code: "F2.1", name: "Bande préfabriquée / Hazır Çizgi", unit: "ml", priceDZD: 800, priceEUR: 0 },
-        { lot: "ROUTE", code: "G1.1", name: "Panneau A, AB / Levha A-AB", unit: "U", priceDZD: 52000, priceEUR: 0 },
-        { lot: "ROUTE", code: "G1.2", name: "Panneau triangle / Üçgen Levha", unit: "U", priceDZD: 42400, priceEUR: 0 },
-        { lot: "ROUTE", code: "G1.3", name: "Panneau circulaire / Yuvarlak Levha", unit: "U", priceDZD: 48600, priceEUR: 0 },
-        { lot: "ROUTE", code: "G1.4", name: "Panneau 850 mm / Yuvarlak 850", unit: "U", priceDZD: 41500, priceEUR: 0 },
+        { lot: "ROUTE", code: "G1.1", name: "Panneau A/AB / Levha A-AB", unit: "U", priceDZD: 52000, priceEUR: 0 },
+        { lot: "ROUTE", code: "G1.2", name: "Panneau Triangle / Üçgen Levha", unit: "U", priceDZD: 42400, priceEUR: 0 },
+        { lot: "ROUTE", code: "G1.3", name: "Panneau Circulaire / Yuvarlak Levha", unit: "U", priceDZD: 48600, priceEUR: 0 },
+        { lot: "ROUTE", code: "G1.4", name: "Panneau 850mm / Yuvarlak 850", unit: "U", priceDZD: 41500, priceEUR: 0 },
         { lot: "ROUTE", code: "G1.5", name: "Panneau carré 1050 / Kare 1050", unit: "U", priceDZD: 43000, priceEUR: 0 },
         { lot: "ROUTE", code: "G1.6", name: "Panneau carré 700 / Kare 700", unit: "U", priceDZD: 38800, priceEUR: 0 },
         { lot: "ROUTE", code: "G1.7", name: "Panneau octogonal / Sekizgen", unit: "U", priceDZD: 40700, priceEUR: 0 },
         { lot: "ROUTE", code: "G2.1", name: "Panonceau M / M Tipi Levha", unit: "m2", priceDZD: 42000, priceEUR: 0 },
         { lot: "ROUTE", code: "G2.2", name: "Panneau E / E Tipi Levha", unit: "m2", priceDZD: 57000, priceEUR: 0 },
-        { lot: "ROUTE", code: "G3.1", name: "Panneau direction D / Yön D Levhası", unit: "m2", priceDZD: 64000, priceEUR: 0 },
-        { lot: "ROUTE", code: "G4.1", name: "Balise J1", unit: "U", priceDZD: 18000, priceEUR: 0 },
+        { lot: "ROUTE", code: "G3.1", name: "Panneau Direction / Yön Levhası", unit: "m2", priceDZD: 64000, priceEUR: 0 },
+        { lot: "ROUTE", code: "G4.1", name: "Balise J1 / Viraj Yön Levhası", unit: "U", priceDZD: 18000, priceEUR: 0 },
         { lot: "ROUTE", code: "G4.2", name: "Balise J3", unit: "U", priceDZD: 26700, priceEUR: 0 },
         { lot: "ROUTE", code: "G4.3", name: "Balise J4", unit: "U", priceDZD: 64000, priceEUR: 0 },
         { lot: "ROUTE", code: "G4.4", name: "Balise J5", unit: "U", priceDZD: 22500, priceEUR: 0 },
@@ -369,7 +339,7 @@
         { lot: "ROUTE", code: "G5.4", name: "Poteaux < 800 cm4 / Direk <800", unit: "ml", priceDZD: 19553.22, priceEUR: 0 },
         { lot: "ROUTE", code: "G5.5", name: "Poteaux < 1600 cm4 / Direk <1600", unit: "ml", priceDZD: 26070.91, priceEUR: 0 },
         { lot: "ROUTE", code: "G5.6", name: "Poteaux < 3200 cm4 / Direk <3200", unit: "ml", priceDZD: 32588.67, priceEUR: 0 },
-        { lot: "ROUTE", code: "G5.7", name: "Semelle fondation / Direk Temeli", unit: "m3", priceDZD: 8020.53, priceEUR: 38.90 },
+        { lot: "ROUTE", code: "G5.7", name: "Semelle de fondation / Direk Temeli", unit: "m3", priceDZD: 8020.53, priceEUR: 38.90 },
         { lot: "ROUTE", code: "G6.1", name: "Jalonneur 1 réflecteur / Delinatör", unit: "U", priceDZD: 8450, priceEUR: 0 },
         { lot: "ROUTE", code: "G6.2", name: "Jalonneur 2 réflecteurs / Delinatör", unit: "U", priceDZD: 9380, priceEUR: 0 },
         { lot: "ROUTE", code: "G7.1.1", name: "Réflecteur sur GBA", unit: "U", priceDZD: 1670, priceEUR: 0 },
@@ -378,23 +348,23 @@
         { lot: "ROUTE", code: "G7.3", name: "Écran anti-éblouissement / Işık Önleyici", unit: "U", priceDZD: 21300, priceEUR: 0 },
         { lot: "ROUTE", code: "H1.1.1", name: "Glissière GS4 / Otokorkuluk", unit: "ml", priceDZD: 1238.45, priceEUR: 48.50 },
         { lot: "ROUTE", code: "H2.1.1", name: "Barrière GBA / Beton Bariyer", unit: "ml", priceDZD: 3932.51, priceEUR: 16.30 },
-        { lot: "ROUTE", code: "H2.1.2", name: "Barrière DBA", unit: "ml", priceDZD: 4586.99, priceEUR: 18.70 },
+        { lot: "ROUTE", code: "H2.1.2", name: "Barrière DBA / Çiftli Bariyer", unit: "ml", priceDZD: 4586.99, priceEUR: 18.70 },
         { lot: "ROUTE", code: "H2.2", name: "Semelles GBA / Bariyer Temeli", unit: "ml", priceDZD: 723.79, priceEUR: 2.70 },
         { lot: "ROUTE", code: "H3.1", name: "Extrémité GBA 20m / Bariyer Sonu 20m", unit: "U", priceDZD: 5150.55, priceEUR: 21.50 },
         { lot: "ROUTE", code: "H3.2", name: "Extrémité GBA 1.65m / Bariyer Sonu 1.65m", unit: "U", priceDZD: 6032.27, priceEUR: 25.10 },
-        { lot: "ROUTE", code: "I1.1", name: "Fouilles fondations / Temel Kazısı", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
-        { lot: "ROUTE", code: "I1.2", name: "Remblaiement / Geri Dolgu", unit: "m3", priceDZD: 822.41, priceEUR: 3.30 },
+        { lot: "ROUTE", code: "I1.1", name: "Fouilles fondations murs / Duvar Temel Kazısı", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
+        { lot: "ROUTE", code: "I1.2", name: "Remblaiement fouilles / Temel Geri Dolgusu", unit: "m3", priceDZD: 822.41, priceEUR: 3.30 },
         { lot: "ROUTE", code: "I1.3", name: "Béton propreté / Grobeton", unit: "m3", priceDZD: 5919.19, priceEUR: 4.70 },
         { lot: "ROUTE", code: "I1.4", name: "Coffrage fondations / Temel Kalıbı", unit: "m2", priceDZD: 812.29, priceEUR: 7.70 },
         { lot: "ROUTE", code: "I1.5", name: "Coffrage longrines / Hatıl Kalıbı", unit: "m2", priceDZD: 1349.88, priceEUR: 4.40 },
         { lot: "ROUTE", code: "I1.6", name: "Béton fondations / Temel Betonu", unit: "m3", priceDZD: 8973.98, priceEUR: 37.40 },
-        { lot: "ROUTE", code: "I1.7", name: "Aciers / Demir", unit: "Kg", priceDZD: 66.08, priceEUR: 0.40 },
-        { lot: "ROUTE", code: "I2.1", name: "Support HEA 140", unit: "U", priceDZD: 9600, priceEUR: 0 },
-        { lot: "ROUTE", code: "I2.2", name: "Support HEA 160", unit: "U", priceDZD: 14500, priceEUR: 0 },
-        { lot: "ROUTE", code: "I2.3", name: "Support HEA 180", unit: "U", priceDZD: 18220, priceEUR: 0 },
-        { lot: "ROUTE", code: "I2.4", name: "Support HEA 220", unit: "U", priceDZD: 28300, priceEUR: 0 },
-        { lot: "ROUTE", code: "I2.5", name: "Support HEA 260", unit: "U", priceDZD: 41300, priceEUR: 0 },
-        { lot: "ROUTE", code: "I2.6", name: "Support HEA 280", unit: "U", priceDZD: 52500, priceEUR: 0 },
+        { lot: "ROUTE", code: "I1.7", name: "Aciers ferraillage / Demir Donatı", unit: "Kg", priceDZD: 66.08, priceEUR: 0.40 },
+        { lot: "ROUTE", code: "I2.1", name: "Support HEA 140 / HEA 140 Destek", unit: "U", priceDZD: 9600, priceEUR: 0 },
+        { lot: "ROUTE", code: "I2.2", name: "Support HEA 160 / HEA 160 Destek", unit: "U", priceDZD: 14500, priceEUR: 0 },
+        { lot: "ROUTE", code: "I2.3", name: "Support HEA 180 / HEA 180 Destek", unit: "U", priceDZD: 18220, priceEUR: 0 },
+        { lot: "ROUTE", code: "I2.4", name: "Support HEA 220 / HEA 220 Destek", unit: "U", priceDZD: 28300, priceEUR: 0 },
+        { lot: "ROUTE", code: "I2.5", name: "Support HEA 260 / HEA 260 Destek", unit: "U", priceDZD: 41300, priceEUR: 0 },
+        { lot: "ROUTE", code: "I2.6", name: "Support HEA 280 / HEA 280 Destek", unit: "U", priceDZD: 52500, priceEUR: 0 },
         { lot: "ROUTE", code: "I3.1", name: "Panneaux réfléchissants / Gürültü Paneli", unit: "m2", priceDZD: 88750, priceEUR: 0 },
         { lot: "ROUTE", code: "I4.1", name: "Déblais bassins / Havuz Kazısı", unit: "m3", priceDZD: 168.16, priceEUR: 0.80 },
         { lot: "ROUTE", code: "I5.1", name: "Argile compactée / Sıkıştırılmış Kil", unit: "m3", priceDZD: 474.48, priceEUR: 2.40 },
@@ -402,88 +372,95 @@
         { lot: "ROUTE", code: "I5.3", name: "Enrochement / Taş Dolgu", unit: "m3", priceDZD: 2205.85, priceEUR: 10.50 },
         { lot: "ROUTE", code: "I5.4", name: "Grave GNT / PMT", unit: "m3", priceDZD: 2179.54, priceEUR: 0.20 },
         { lot: "ROUTE", code: "I6.1", name: "Séparateur hydrocarbures / Yağ Ayırıcı", unit: "U", priceDZD: 4400000, priceEUR: 0 },
-        { lot: "ROUTE", code: "I7.1", name: "Regard siphoïde", unit: "U", priceDZD: 280000, priceEUR: 0 },
-        { lot: "ROUTE", code: "I7.2.1", name: "Vanne de dérivation / Vana", unit: "U", priceDZD: 282000, priceEUR: 0 },
-        { lot: "ROUTE", code: "I8.1", name: "Clôtures / Çit", unit: "ml", priceDZD: 5934.02, priceEUR: 2.60 },
+        { lot: "ROUTE", code: "I7.1", name: "Regard siphoïde / Sifon Bacası", unit: "U", priceDZD: 280000, priceEUR: 0 },
+        { lot: "ROUTE", code: "I7.2.1", name: "Vanne de dérivation / Ayrım Vanası", unit: "U", priceDZD: 282000, priceEUR: 0 },
+        { lot: "ROUTE", code: "I8.1", name: "Clôtures / Tel Çit", unit: "ml", priceDZD: 5934.02, priceEUR: 2.60 },
         { lot: "ROUTE", code: "I8.2", name: "Portail / Kapı", unit: "U", priceDZD: 250000, priceEUR: 0 },
-        { lot: "ROUTE", code: "I9.1", name: "Plantation arbres / Ağaç Dikimi", unit: "m2", priceDZD: 1545.17, priceEUR: 0 },
-        { lot: "ROUTE", code: "I9.2", name: "Plantation baliveaux / Fidan Dikimi", unit: "m2", priceDZD: 1822.86, priceEUR: 0 },
-        { lot: "ROUTE", code: "I9.3", name: "Plantation arbrisseaux / Çalı Dikimi", unit: "m2", priceDZD: 1103, priceEUR: 0 },
+        { lot: "ROUTE", code: "I9.1", name: "Plantation d'arbres / Ağaç Dikimi", unit: "m2", priceDZD: 1545.17, priceEUR: 0 },
+        { lot: "ROUTE", code: "I9.2", name: "Plantation de baliveaux / Fidan Dikimi", unit: "m2", priceDZD: 1822.86, priceEUR: 0 },
+        { lot: "ROUTE", code: "I9.3", name: "Plantation d'arbrisseaux / Çalı Dikimi", unit: "m2", priceDZD: 1103, priceEUR: 0 },
         { lot: "ROUTE", code: "I9.4", name: "Engazonnement / Çimleme", unit: "m2", priceDZD: 637.19, priceEUR: 0 },
-        { lot: "ROUTE", code: "I9.5", name: "Plantation arbustes", unit: "m2", priceDZD: 797, priceEUR: 0 },
-        { lot: "ROUTE", code: "J1.1", name: "Murs gabions / Gabion Duvar", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10 },
+        { lot: "ROUTE", code: "I9.5", name: "Terre végétale / Bitkisel Toprak", unit: "m2", priceDZD: 797, priceEUR: 0 },
+        { lot: "ROUTE", code: "J1.1", name: "Murs en gabions / Gabion Duvar", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10 },
         { lot: "ROUTE", code: "J2.1", name: "Béton projeté / Püskürtme Beton", unit: "m3", priceDZD: 13478.48, priceEUR: 122.40 },
         { lot: "ROUTE", code: "J2.2", name: "Treillis soudés / Çelik Hasır", unit: "Kg", priceDZD: 71.85, priceEUR: 0.50 },
-        { lot: "ROUTE", code: "J2.3.1", name: "Clous 12m / Zemin Çivisi", unit: "U", priceDZD: 19236.87, priceEUR: 23.10 },
-        { lot: "ROUTE", code: "J2.3.2", name: "Clous 16m / Zemin Çivisi", unit: "U", priceDZD: 25638.93, priceEUR: 30.90 },
-        { lot: "ROUTE", code: "J2.3.3", name: "Clous 20m / Zemin Çivisi", unit: "U", priceDZD: 32010.3, priceEUR: 39 },
-        { lot: "ROUTE", code: "J3.1", name: "Merlons / Merlon", unit: "m3", priceDZD: 217.7, priceEUR: 1 },
-        { lot: "ROUTE", code: "J4.1", name: "Éperons drainants", unit: "m3", priceDZD: 1870, priceEUR: 0 },
-        { lot: "ROUTE", code: "J5", name: "Masque poids", unit: "m3", priceDZD: 1200, priceEUR: 0 },
-        { lot: "ROUTE", code: "J6.1", name: "Drains", unit: "ml", priceDZD: 4700, priceEUR: 0 },
-        { lot: "ROUTE", code: "J7", name: "Barbacanes PVC", unit: "ml", priceDZD: 980, priceEUR: 0 },
+        { lot: "ROUTE", code: "J2.3.1", name: "Clous 12m / Zemin Çivisi 12m", unit: "U", priceDZD: 19236.87, priceEUR: 23.10 },
+        { lot: "ROUTE", code: "J2.3.2", name: "Clous 16m / Zemin Çivisi 16m", unit: "U", priceDZD: 25638.93, priceEUR: 30.90 },
+        { lot: "ROUTE", code: "J2.3.3", name: "Clous 20m / Zemin Çivisi 20m", unit: "U", priceDZD: 32010.3, priceEUR: 39 },
+        { lot: "ROUTE", code: "J3.1", name: "Merlons / Merlon Yapımı", unit: "m3", priceDZD: 217.7, priceEUR: 1 },
+        { lot: "ROUTE", code: "J4.1", name: "Éperons drainants / Drenaj Mahmuzları", unit: "m3", priceDZD: 1870, priceEUR: 0 },
+        { lot: "ROUTE", code: "J5", name: "Masque poids / Ağırlık Dolgusu", unit: "m3", priceDZD: 1200, priceEUR: 0 },
+        { lot: "ROUTE", code: "J6.1", name: "Drains / Drenaj", unit: "ml", priceDZD: 4700, priceEUR: 0 },
+        { lot: "ROUTE", code: "J7", name: "Barbacanes PVC / Barbakan PVC", unit: "ml", priceDZD: 980, priceEUR: 0 },
         { lot: "ROUTE", code: "J8.1", name: "Ancrages 32mm / Ankraj", unit: "ml", priceDZD: 470.1, priceEUR: 13 },
         { lot: "ROUTE", code: "J8.2", name: "Ancrages 28mm / Ankraj", unit: "ml", priceDZD: 531.48, priceEUR: 12.40 },
         { lot: "ROUTE", code: "J8.3", name: "Ancrages 25mm / Ankraj", unit: "ml", priceDZD: 664.47, priceEUR: 11.10 },
-        { lot: "ROUTE", code: "J8.4", name: "Essais ancrages / Ankraj Testi", unit: "U", priceDZD: 32400, priceEUR: 0 },
-        { lot: "ROUTE", code: "J9", name: "Géotextile alvéolaire", unit: "m2", priceDZD: 780, priceEUR: 0 },
+        { lot: "ROUTE", code: "J8.4", name: "Essais ancrages / Ankraj Testleri", unit: "U", priceDZD: 32400, priceEUR: 0 },
+        { lot: "ROUTE", code: "J9", name: "Géotextile alvéolaire / Hücresel Geotekstil", unit: "m2", priceDZD: 780, priceEUR: 0 },
         { lot: "ROUTE", code: "J10", name: "Grillage boulonné / Çelik Ağ", unit: "m2", priceDZD: 9957.81, priceEUR: 5.30 },
         { lot: "ROUTE", code: "J11", name: "Atalus", unit: "m2", priceDZD: 18500, priceEUR: 0 },
-        { lot: "ROUTE", code: "J12.1", name: "Terre Armée < 15m", unit: "m2", priceDZD: 13600, priceEUR: 0 },
-        { lot: "ROUTE", code: "J12.2", name: "Terre Armée > 15m", unit: "m2", priceDZD: 15700, priceEUR: 0 },
+        { lot: "ROUTE", code: "J12.1", name: "Terre Armée < 15m / Toprakarme", unit: "m2", priceDZD: 13600, priceEUR: 0 },
+        { lot: "ROUTE", code: "J12.2", name: "Terre Armée > 15m / Toprakarme", unit: "m2", priceDZD: 15700, priceEUR: 0 },
         { lot: "ROUTE", code: "J13", name: "Rideau palplanches / Palplanş", unit: "m2", priceDZD: 25200, priceEUR: 0 },
         { lot: "ROUTE", code: "J14", name: "Perrés maçonnés / Taş Kaplama", unit: "m2", priceDZD: 2554.48, priceEUR: 2.40 },
         { lot: "ROUTE", code: "K1.1", name: "Caméra / Kamera", unit: "U", priceDZD: 412003.51, priceEUR: 36246.30 },
         { lot: "ROUTE", code: "K1.2", name: "Poteau caméra / Direk", unit: "U", priceDZD: 23504.98, priceEUR: 2067.40 },
         { lot: "ROUTE", code: "K1.3", name: "Conduits / Kablo Kanalı", unit: "ml", priceDZD: 832.1, priceEUR: 73 },
         { lot: "ROUTE", code: "K1.4", name: "Câblage", unit: "ml", priceDZD: 448.69, priceEUR: 39.70 },
-        { lot: "ROUTE", code: "K1.5", name: "Système CCTV", unit: "U", priceDZD: 1811998.95, priceEUR: 159413.50 },
-        { lot: "ROUTE", code: "K1.6", name: "Système DAI", unit: "U", priceDZD: 356431.76, priceEUR: 31168.80 },
-        { lot: "ROUTE", code: "K2", name: "Clôture aéroport", unit: "ml", priceDZD: 5200, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP.11", name: "Poste d'observation / Kule", unit: "U", priceDZD: 12200000, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP.18", name: "Badigeonnage", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
-        { lot: "ROUTE", code: "NP.26", name: "Géocomposite", unit: "m2", priceDZD: 764.73, priceEUR: 26.64 },
-        { lot: "ROUTE", code: "NP.27", name: "Masque à poids", unit: "MC", priceDZD: 3405.85, priceEUR: 10.50 },
+        { lot: "ROUTE", code: "K1.5", name: "Système CCTV / Merkezi Sistem", unit: "U", priceDZD: 1811998.95, priceEUR: 159413.50 },
+        { lot: "ROUTE", code: "K1.6", name: "Système DAI / Olay Algılama", unit: "U", priceDZD: 356431.76, priceEUR: 31168.80 },
+        { lot: "ROUTE", code: "K2", name: "Clôture aéroport / Havaalanı Çiti", unit: "ml", priceDZD: 5200, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP.11", name: "Poste d'observation / Gözlem Kulesi", unit: "U", priceDZD: 12200000, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP.18", name: "Badigeonnage / Badana", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
+        { lot: "ROUTE", code: "NP.26", name: "Géocomposite / Geokompozit", unit: "m2", priceDZD: 764.73, priceEUR: 26.64 },
+        { lot: "ROUTE", code: "NP.27", name: "Masque à poids / Ağırlık Dolgusu", unit: "MC", priceDZD: 3405.85, priceEUR: 10.50 },
         { lot: "ROUTE", code: "NP32", name: "Fibres béton / Elyaf", unit: "Kg", priceDZD: 974.7, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP.48", name: "Déplacement cimetière / Mezarlık", unit: "U", priceDZD: 22275, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP08.62", name: "PV plaque d'appui", unit: "U", priceDZD: 630, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP08.64", name: "Chambre L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
-        { lot: "ROUTE", code: "NP08.65", name: "Grille anti chute", unit: "U", priceDZD: 41364.79, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP08.67", name: "Réseau multitubulaire", unit: "ml", priceDZD: 6113.37, priceEUR: 16.49 },
-        { lot: "ROUTE", code: "NP08.68", name: "Traversée chaussée", unit: "ml", priceDZD: 6792.85, priceEUR: 2.02 },
-        { lot: "ROUTE", code: "NP08.74", name: "Couche forme sélec.", unit: "m3", priceDZD: 1950, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP08.14m", name: "Inclinomètres", unit: "U", priceDZD: 209998.56, priceEUR: 2052.80 },
-        { lot: "ROUTE", code: "NP11.14a.1", name: "Sondages carottés", unit: "ml", priceDZD: 18000, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP11.14b.1", name: "Sondages pressio", unit: "ml", priceDZD: 15500, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP11.14c.1", name: "Essais pressio", unit: "ml", priceDZD: 10000, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP11.14d.1", name: "Essai Tomo", unit: "ml", priceDZD: 851, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP11.14e.1", name: "Essai Sismique", unit: "ml", priceDZD: 1566, priceEUR: 0 },
-        { lot: "ROUTE", code: "NP11.19", name: "Etude adaptation", unit: "ft", priceDZD: 36723806, priceEUR: 358780 },
+        { lot: "ROUTE", code: "NP.48", name: "Déplacement cimetière / Mezarlık Taşıma", unit: "U", priceDZD: 22275, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP08.62", name: "PV plaque d'appui / Destek Plakası Farkı", unit: "U", priceDZD: 630, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP08.64", name: "Chambre L5C / Menhol L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
+        { lot: "ROUTE", code: "NP08.65", name: "Grille anti chute / Düşme Önleyici Izgara", unit: "U", priceDZD: 41364.79, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP08.67", name: "Réseau multitubulaire / Çoklu Boru", unit: "ml", priceDZD: 6113.37, priceEUR: 16.49 },
+        { lot: "ROUTE", code: "NP08.68", name: "Traversée de chaussée / Yol Geçişi", unit: "ml", priceDZD: 6792.85, priceEUR: 2.02 },
+        { lot: "ROUTE", code: "NP08.74", name: "Couche forme sélec. / Seçme Malzeme Form", unit: "m3", priceDZD: 1950, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP08.14m", name: "Inclinomètres / İnklinometre", unit: "U", priceDZD: 209998.56, priceEUR: 2052.80 },
+        { lot: "ROUTE", code: "NP11.14a", name: "Sondages carottés / Karotlu Sondaj", unit: "ml", priceDZD: 18000, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP11.14b", name: "Sondages pressio / Presyometre Sondaj", unit: "ml", priceDZD: 15500, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP11.14c", name: "Essais pressio / Presyometre Deney", unit: "ml", priceDZD: 10000, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP11.14d", name: "Essai Tomo / Tomografi", unit: "ml", priceDZD: 851, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP11.14e", name: "Essai Sismique / Sismik", unit: "ml", priceDZD: 1566, priceEUR: 0 },
+        { lot: "ROUTE", code: "NP11.19", name: "Etude adaptation / Güzergah Değişikliği", unit: "ft", priceDZD: 36723806, priceEUR: 358780 },
 
         // LOT TUNNEL
-        { lot: "TUNNEL", code: "TU.E1.1", name: "Couche fondation GNT / Temel GNT", unit: "m3", priceDZD: 1862.41, priceEUR: 3.30 },
-        { lot: "TUNNEL", code: "TU.E1.2", name: "Pierre nette 15/25", unit: "m3", priceDZD: 2800, priceEUR: 0 },
+        { lot: "TUNNEL", code: "TU.E1.1", name: "Fondation GNT / Temel GNT", unit: "m3", priceDZD: 1862.41, priceEUR: 3.30 },
+        { lot: "TUNNEL", code: "TU.E1.2", name: "Pierre nette 15/25 / Temiz Taş", unit: "m3", priceDZD: 2800, priceEUR: 0 },
         { lot: "TUNNEL", code: "TU.E1.3", name: "Enrobé EME / Modifiye Asfalt", unit: "Tonne", priceDZD: 4812.84, priceEUR: 29.20 },
         { lot: "TUNNEL", code: "TU.E1.4", name: "Couche roulement / Aşınma", unit: "Tonne", priceDZD: 4337.9, priceEUR: 27 },
         { lot: "TUNNEL", code: "TU.E1.5", name: "Imprégnation / Emprime", unit: "m2", priceDZD: 95, priceEUR: 0 },
-        { lot: "TUNNEL", code: "TU.E2.1", name: "Bande 15cm", unit: "ml", priceDZD: 110, priceEUR: 0 },
-        { lot: "TUNNEL", code: "TU.E2.2", name: "Bande 22.5cm", unit: "ml", priceDZD: 125, priceEUR: 0 },
-        { lot: "TUNNEL", code: "TU.2.3", name: "Bande continue", unit: "ml", priceDZD: 135, priceEUR: 0 },
+        { lot: "TUNNEL", code: "TU.E2.1", name: "Bande 15cm / Çizgi 15cm", unit: "ml", priceDZD: 110, priceEUR: 0 },
+        { lot: "TUNNEL", code: "TU.E2.2", name: "Bande 22.5cm / Çizgi 22.5cm", unit: "ml", priceDZD: 125, priceEUR: 0 },
+        { lot: "TUNNEL", code: "TU.E2.3", name: "Bande continue / Sürekli Çizgi", unit: "ml", priceDZD: 135, priceEUR: 0 },
         { lot: "TUNNEL", code: "TU.E3.5", name: "Portique / Gabari Takı", unit: "U", priceDZD: 309995.66, priceEUR: 57575.80 },
         { lot: "TUNNEL", code: "TU.E3.1.1", name: "Panneau Tunnel / Tünel Levhası", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.1.2", name: "Panneau B12", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.1.3", name: "Panneau B14", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.1.4", name: "Panneau B3/B3a", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.1.5", name: "Panneau B18", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.1.6", name: "Panneau Sortie Tunnel", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
-        { lot: "TUNNEL", code: "TU.E3.2.1", name: "Signal B14", unit: "U", priceDZD: 9998.21, priceEUR: 1857.30 },
-        { lot: "TUNNEL", code: "TU.E3.3.1", name: "Signal C30", unit: "U", priceDZD: 2589.45, priceEUR: 480.30 },
+        { lot: "TUNNEL", code: "TU.E3.1.2", name: "Panneau B12 / Levha B12", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
+        { lot: "TUNNEL", code: "TU.E3.1.3", name: "Panneau B14 / Levha B14", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
+        { lot: "TUNNEL", code: "TU.E3.1.4", name: "Panneau B3/B3a / Levha B3", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
+        { lot: "TUNNEL", code: "TU.E3.1.5", name: "Panneau B18 / Levha B18", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
+        { lot: "TUNNEL", code: "TU.E3.1.6", name: "Panneau Sortie / Çıkış Levhası", unit: "U", priceDZD: 11768.62, priceEUR: 2185 },
+        { lot: "TUNNEL", code: "TU.E3.2.1", name: "Signal B14 / Levha B14", unit: "U", priceDZD: 9998.21, priceEUR: 1857.30 },
+        { lot: "TUNNEL", code: "TU.E3.3.1", name: "Signal C30 / Levha C30", unit: "U", priceDZD: 2589.45, priceEUR: 480.30 },
         { lot: "TUNNEL", code: "TU.E3.4.1", name: "Panneau consigne / Güvenlik Panosu", unit: "U", priceDZD: 18750.48, priceEUR: 3482.40 },
         { lot: "TUNNEL", code: "TU.E3.4.2", name: "Panneau incendie / Yangın Panosu", unit: "U", priceDZD: 18750.48, priceEUR: 3482.40 },
-        { lot: "TUNNEL", code: "RU.E3.4.3", name: "Panneau galerie", unit: "U", priceDZD: 18750.48, priceEUR: 3482.40 },
-
+        { lot: "TUNNEL", code: "RU.E3.4.3", name: "Panneau galerie / Galeri Panosu", unit: "U", priceDZD: 18750.48, priceEUR: 3482.40 },
+        { lot: "TUNNEL", code: "TUN-A1", name: "Installation Tunnel / Tünel Şantiye Kurulumu", unit: "Ft", priceDZD: 280633538.70, priceEUR: 1362331.30 },
+        { lot: "TUNNEL", code: "TUN-B1", name: "Déblais dépôt / Tünel Kazısı", unit: "m3", priceDZD: 1126.54, priceEUR: 4.62 },
+        { lot: "TUNNEL", code: "TUN-C1.2", name: "Déblais explosif / Patlatmalı Kazı", unit: "m3", priceDZD: 4883.43, priceEUR: 53.50 },
+        { lot: "TUNNEL", code: "TUN-C2.1", name: "Cintre / İksa Çeliği", unit: "kg", priceDZD: 46.55, priceEUR: 1.50 },
+        { lot: "TUNNEL", code: "TUN-C3.1", name: "Boulons 4m / Kaya Bulonu", unit: "U", priceDZD: 2832.82, priceEUR: 46.60 },
+        { lot: "TUNNEL", code: "TUN-D2.1", name: "Béton projeté / Püskürtme Beton", unit: "m3", priceDZD: 13046.21, priceEUR: 97.30 },
+        { lot: "TUNNEL", code: "TUN-F2.1", name: "Turbo-ventilateurs / Jet Fanlar", unit: "U", priceDZD: 459359.84, priceEUR: 85315.40 },
+        
         // LOT OA
-        { lot: "OA", code: "OUA.A1", name: "Installation chantier / Şantiye Kurulumu", unit: "Ft", priceDZD: 1010357152.02, priceEUR: 4786342.60 },
+        { lot: "OA", code: "OUA.A1", name: "Installation OA / OA Şantiye Kurulumu", unit: "Ft", priceDZD: 1010357152.02, priceEUR: 4786342.60 },
         { lot: "OA", code: "OUA.A2.1", name: "Études exécution / Uygulama Projeleri", unit: "Ft", priceDZD: 455000003.56, priceEUR: 4447702.80 },
         { lot: "OA", code: "OUA.A2.2", name: "Dossier récolement / As-Built", unit: "Ft", priceDZD: 43970223.22, priceEUR: 430398.60 },
         { lot: "OA", code: "OUA.A3", name: "Contrôle externe", unit: "Ft", priceDZD: 30000003.27, priceEUR: 293255.10 },
@@ -497,98 +474,99 @@
         { lot: "OA", code: "OUA.B1.5", name: "Substitution sol / Zemin İyileştirme", unit: "m3", priceDZD: 377.01, priceEUR: 1.30 },
         { lot: "OA", code: "OUA.B1.6", name: "Démolition béton / Beton Kırımı", unit: "m3", priceDZD: 1800, priceEUR: 0 },
         { lot: "OA", code: "OUA.B1.7", name: "Enrochements / Taş Tahkimat", unit: "m3", priceDZD: 1245.4, priceEUR: 2 },
-        { lot: "OA", code: "OUA.B2.1", name: "Pieux 1200 mm / Fore Kazık", unit: "ml", priceDZD: 5404.19, priceEUR: 54.70 },
+        { lot: "OA", code: "OUA.B2.1", name: "Pieux 1200 mm / Fore Kazık 1200", unit: "ml", priceDZD: 5404.19, priceEUR: 54.70 },
         { lot: "OA", code: "OUA.B2.2", name: "PV forage rocheux", unit: "ml", priceDZD: 802.06, priceEUR: 7.80 },
         { lot: "OA", code: "OUA.B2.3", name: "Tubes soniques 50/60", unit: "ml", priceDZD: 115.62, priceEUR: 10.60 },
         { lot: "OA", code: "OUA.B2.4", name: "Tubes soniques 102/114", unit: "ml", priceDZD: 5.15, priceEUR: 19.50 },
         { lot: "OA", code: "OUA.B2.5", name: "Essai sonique", unit: "U", priceDZD: 16000, priceEUR: 0 },
         { lot: "OA", code: "OUA.B2.6", name: "Recépage pieux / Başlık Kırımı", unit: "U", priceDZD: 2237.11, priceEUR: 14.30 },
         { lot: "OA", code: "OUA.B2.7", name: "Essais statiques / Yükleme Deneyi", unit: "U", priceDZD: 1520000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.B3.1", name: "Puits < 3000 mm / Kuyu", unit: "ml", priceDZD: 124999.63, priceEUR: 1221.90 },
-        { lot: "OA", code: "OUA.B3.2", name: "Puits > 3500 mm / Kuyu", unit: "ml", priceDZD: 135004.92, priceEUR: 1319.60 },
-        { lot: "OA", code: "OUA.B4.1.1", name: "Coffrage ordinaire", unit: "m2", priceDZD: 853.21, priceEUR: 7.30 },
-        { lot: "OA", code: "OUA.B4.1.2", name: "Coffrage fin", unit: "m2", priceDZD: 1036.08, priceEUR: 10.40 },
-        { lot: "OA", code: "OUA.B4.1.3", name: "Coffrages voussoirs", unit: "m2", priceDZD: 808.48, priceEUR: 22.40 },
+        { lot: "OA", code: "OUA.B3.1", name: "Puits < 3m / Kuyu <3m", unit: "ml", priceDZD: 124999.63, priceEUR: 1221.90 },
+        { lot: "OA", code: "OUA.B3.2", name: "Puits > 3m / Kuyu >3m", unit: "ml", priceDZD: 135004.92, priceEUR: 1319.60 },
+        { lot: "OA", code: "OUA.B4.1.1", name: "Coffrage ordinaire / Düz Kalıp", unit: "m2", priceDZD: 853.21, priceEUR: 7.30 },
+        { lot: "OA", code: "OUA.B4.1.2", name: "Coffrage fin / İnce Kalıp", unit: "m2", priceDZD: 1036.08, priceEUR: 10.40 },
+        { lot: "OA", code: "OUA.B4.1.3", name: "Coffrages voussoirs / Vusvar Kalıbı", unit: "m2", priceDZD: 808.48, priceEUR: 22.40 },
         { lot: "OA", code: "OUA.B4.2", name: "Étaiements / İskele", unit: "m2", priceDZD: 2177, priceEUR: 10 },
         { lot: "OA", code: "OUA.B4.3", name: "Badigeonnage / Badana", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
-        { lot: "OA", code: "OUA.B5.1", name: "Béton propreté", unit: "m2", priceDZD: 723.79, priceEUR: 2.70 },
-        { lot: "OA", code: "OUA.B5.2.1", name: "Béton RN 40 caisson", unit: "m3", priceDZD: 21343.02, priceEUR: 172.60 },
-        { lot: "OA", code: "OUA.B5.2.2", name: "Béton RN 40 poutres", unit: "m3", priceDZD: 11814.08, priceEUR: 150.40 },
-        { lot: "OA", code: "OUA.B5.2.3", name: "Béton RN 35 poutres", unit: "m3", priceDZD: 11029.87, priceEUR: 113.10 },
-        { lot: "OA", code: "OUA.B5.2.4", name: "Béton RN 27 pieux", unit: "m3", priceDZD: 8627.19, priceEUR: 44.70 },
-        { lot: "OA", code: "OUA.B5.2.5", name: "Béton RN 35 pieux", unit: "m3", priceDZD: 9247.65, priceEUR: 44.50 },
-        { lot: "OA", code: "OUA.B5.2.6", name: "Béton RN 35 piles", unit: "m3", priceDZD: 12538.45, priceEUR: 48.50 },
-        { lot: "OA", code: "OUA.B5.2.7", name: "Béton RN 27 murs", unit: "m3", priceDZD: 10736.15, priceEUR: 49.50 },
-        { lot: "OA", code: "OUA.B5.2.8", name: "Béton RN 27 hourdis", unit: "m3", priceDZD: 11372.71, priceEUR: 42.30 },
-        { lot: "OA", code: "OUA.B5.2.9", name: "PV ciment RN 27", unit: "m3", priceDZD: 1200, priceEUR: 0 },
-        { lot: "OA", code: "OUA.B5.2.10", name: "PV ciment RN 35", unit: "m3", priceDZD: 1500, priceEUR: 0 },
-        { lot: "OA", code: "OUA.B6.1.1", name: "Acier HA", unit: "Tonne", priceDZD: 67033.93, priceEUR: 380.90 },
-        { lot: "OA", code: "OUA.B6.1.2", name: "Treillis soudés", unit: "Tonne", priceDZD: 69026.52, priceEUR: 527.60 },
-        { lot: "OA", code: "OUA.B6.2", name: "Armatures précontrainte", unit: "Tonne", priceDZD: 55688.54, priceEUR: 3170.20 },
-        { lot: "OA", code: "OUA.B7.1.1", name: "Appareil 2100", unit: "U", priceDZD: 260001.71, priceEUR: 3812.30 },
-        { lot: "OA", code: "OUA.B7.1.2", name: "Appareil 7500", unit: "U", priceDZD: 449995.02, priceEUR: 2932.60 },
-        { lot: "OA", code: "OUA.B7.1.3", name: "Appareil 35100/5", unit: "U", priceDZD: 874995.19, priceEUR: 15884.70 },
-        { lot: "OA", code: "OUA.B7.1.4", name: "Appareil 35100/80", unit: "U", priceDZD: 840001.59, priceEUR: 12316.70 },
-        { lot: "OA", code: "OUA.B7.1.5", name: "Appareil 5500/50", unit: "U", priceDZD: 225001.38, priceEUR: 2199.40 },
-        { lot: "OA", code: "OUA.B7.1.6", name: "Appareil 5500/1400", unit: "U", priceDZD: 228000.87, priceEUR: 3343.10 },
-        { lot: "OA", code: "OUA.B7.1.7", name: "Appareil élastomère", unit: "dm3", priceDZD: 106.97, priceEUR: 36.10 },
-        { lot: "OA", code: "B7.2", name: "Chape d'étanchéité", unit: "m2", priceDZD: 1895.4, priceEUR: 2 },
-        { lot: "OA", code: "OUA.B7.3", name: "Gargouilles / Drenaj", unit: "U", priceDZD: 5128.39, priceEUR: 0.70 },
-        { lot: "OA", code: "OUA.B7.4", name: "Caniveau asphalte", unit: "ml", priceDZD: 1951.44, priceEUR: 7.20 },
-        { lot: "OA", code: "OUA.B7.5.1", name: "Joint 240mm / Derz", unit: "ml", priceDZD: 9389.7, priceEUR: 1961 },
-        { lot: "OA", code: "OUA.B7.5.2", name: "Joint 160mm", unit: "ml", priceDZD: 10432.46, priceEUR: 1559.80 },
-        { lot: "OA", code: "OUA.B7.5.3", name: "Joint 80mm", unit: "ml", priceDZD: 2326.43, priceEUR: 905.90 },
-        { lot: "OA", code: "OUA.B7.6.1", name: "Garde-corps N2 / Korkuluk", unit: "ml", priceDZD: 23146.55, priceEUR: 1.50 },
-        { lot: "OA", code: "OUA.B7.6.2", name: "Glissière H3 / Otokorkuluk", unit: "ml", priceDZD: 3761.9, priceEUR: 147 },
-        { lot: "OA", code: "OUA.B7.6.3", name: "Barrière H4b / Bariyer", unit: "ml", priceDZD: 7021.77, priceEUR: 160.10 },
+        { lot: "OA", code: "OUA.B5.1", name: "Béton propreté / Grobeton", unit: "m2", priceDZD: 723.79, priceEUR: 2.70 },
+        { lot: "OA", code: "OUA.B5.2.1", name: "Béton RN 40 caisson / C40 Keson", unit: "m3", priceDZD: 21343.02, priceEUR: 172.60 },
+        { lot: "OA", code: "OUA.B5.2.2", name: "Béton RN 40 poutres / C40 Kiriş", unit: "m3", priceDZD: 11814.08, priceEUR: 150.40 },
+        { lot: "OA", code: "OUA.B5.2.3", name: "Béton RN 35 poutres / C35 Kiriş", unit: "m3", priceDZD: 11029.87, priceEUR: 113.10 },
+        { lot: "OA", code: "OUA.B5.2.4", name: "Béton RN 27 pieux / C27 Kazık", unit: "m3", priceDZD: 8627.19, priceEUR: 44.70 },
+        { lot: "OA", code: "OUA.B5.2.5", name: "Béton RN 35 pieux / C35 Kazık", unit: "m3", priceDZD: 9247.65, priceEUR: 44.50 },
+        { lot: "OA", code: "OUA.B5.2.6", name: "Béton RN 35 piles / C35 Ayak", unit: "m3", priceDZD: 12538.45, priceEUR: 48.50 },
+        { lot: "OA", code: "OUA.B5.2.7", name: "Béton RN 27 murs / C27 Duvar", unit: "m3", priceDZD: 10736.15, priceEUR: 49.50 },
+        { lot: "OA", code: "OUA.B5.2.8", name: "Béton RN 27 hourdis / C27 Tabliye", unit: "m3", priceDZD: 11372.71, priceEUR: 42.30 },
+        { lot: "OA", code: "OUA.B5.2.9", name: "PV ciment RN 27 / Sülfat Çim. Farkı", unit: "m3", priceDZD: 1200, priceEUR: 0 },
+        { lot: "OA", code: "OUA.B5.2.10", name: "PV ciment RN 35 / Sülfat Çim. Farkı", unit: "m3", priceDZD: 1500, priceEUR: 0 },
+        { lot: "OA", code: "OUA.B6.1.1", name: "Acier HA / Demir", unit: "Tonne", priceDZD: 67033.93, priceEUR: 380.90 },
+        { lot: "OA", code: "OUA.B6.1.2", name: "Treillis soudés / Çelik Hasır", unit: "Tonne", priceDZD: 69026.52, priceEUR: 527.60 },
+        { lot: "OA", code: "OUA.B6.2", name: "Précontrainte / Öngerilme", unit: "Tonne", priceDZD: 55688.54, priceEUR: 3170.20 },
+        { lot: "OA", code: "OUA.B7.1.1", name: "Appareil 2100 / Mesnet 2100", unit: "U", priceDZD: 260001.71, priceEUR: 3812.30 },
+        { lot: "OA", code: "OUA.B7.1.2", name: "Appareil 7500 / Mesnet 7500", unit: "U", priceDZD: 449995.02, priceEUR: 2932.60 },
+        { lot: "OA", code: "OUA.B7.1.3", name: "Appareil 35100/5 / Mesnet 35100", unit: "U", priceDZD: 874995.19, priceEUR: 15884.70 },
+        { lot: "OA", code: "OUA.B7.1.4", name: "Appareil 35100/80 / Mesnet 35100M", unit: "U", priceDZD: 840001.59, priceEUR: 12316.70 },
+        { lot: "OA", code: "OUA.B7.1.5", name: "Appareil 5500/50 / Mesnet 5500", unit: "U", priceDZD: 225001.38, priceEUR: 2199.40 },
+        { lot: "OA", code: "OUA.B7.1.6", name: "Appareil 5500/1400 / Mesnet 5500G", unit: "U", priceDZD: 228000.87, priceEUR: 3343.10 },
+        { lot: "OA", code: "OUA.B7.1.7", name: "Appareil élastomère / Elastomer Mesnet", unit: "dm3", priceDZD: 106.97, priceEUR: 36.10 },
+        { lot: "OA", code: "B7.2", name: "Chape étanchéité / Su Yalıtımı", unit: "m2", priceDZD: 1895.4, priceEUR: 2 },
+        { lot: "OA", code: "OUA.B7.3", name: "Gargouilles / Drenaj Borusu", unit: "U", priceDZD: 5128.39, priceEUR: 0.70 },
+        { lot: "OA", code: "OUA.B7.4", name: "Caniveau asphalte / Asfalt Kanal", unit: "ml", priceDZD: 1951.44, priceEUR: 7.20 },
+        { lot: "OA", code: "OUA.B7.5.1", name: "Joint 240mm / Derz 240", unit: "ml", priceDZD: 9389.7, priceEUR: 1961 },
+        { lot: "OA", code: "OUA.B7.5.2", name: "Joint 160mm / Derz 160", unit: "ml", priceDZD: 10432.46, priceEUR: 1559.80 },
+        { lot: "OA", code: "OUA.B7.5.3", name: "Joint 80mm / Derz 80", unit: "ml", priceDZD: 2326.43, priceEUR: 905.90 },
+        { lot: "OA", code: "OUA.B7.6.1", name: "Garde-corps N2 / Korkuluk N2", unit: "ml", priceDZD: 23146.55, priceEUR: 1.50 },
+        { lot: "OA", code: "OUA.B7.6.2", name: "Glissière H3 / Otokorkuluk H3", unit: "ml", priceDZD: 3761.9, priceEUR: 147 },
+        { lot: "OA", code: "OUA.B7.6.3", name: "Barrière H4b / Bariyer H4b", unit: "ml", priceDZD: 7021.77, priceEUR: 160.10 },
         { lot: "OA", code: "OUA.B7.7", name: "Amortisseur / Sönümleyici", unit: "U", priceDZD: 579.41, priceEUR: 12213.30 },
-        { lot: "OA", code: "OUA.B8", name: "Multitubulaires", unit: "ml", priceDZD: 1800, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C1", name: "Rideaux palplanches", unit: "m2", priceDZD: 25000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C2", name: "Perrés maçonnées", unit: "m2", priceDZD: 2554.48, priceEUR: 2.40 },
-        { lot: "OA", code: "OUA.C4.2", name: "Béton projeté / Püskürtme", unit: "m2", priceDZD: 1478.03, priceEUR: 13.90 },
-        { lot: "OA", code: "OUA.C4.3", name: "Treillis soudées", unit: "Kg", priceDZD: 71.85, priceEUR: 0.50 },
-        { lot: "OA", code: "OUA.C4.4.1", name: "Barbacane 50mm", unit: "ml", priceDZD: 500, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C4.4.2", name: "Barbacane 100mm", unit: "ml", priceDZD: 700, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C4.1.1", name: "Clous 16m", unit: "U", priceDZD: 25618.47, priceEUR: 31.10 },
-        { lot: "OA", code: "OUA.C4.1.2", name: "Clous 12m", unit: "U", priceDZD: 19226.64, priceEUR: 23.20 },
-        { lot: "OA", code: "OUA.C5.1", name: "Mur 2-4m", unit: "m2", priceDZD: 18500, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C5.2", name: "Mur 4-6m", unit: "m2", priceDZD: 21000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C5.3", name: "Mur >6m", unit: "m2", priceDZD: 25000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.C6", name: "Mur gabion", unit: "m3", priceDZD: 5500, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP.05", name: "Shock Transmittal", unit: "U", priceDZD: 659476.9, priceEUR: 53097 },
-        { lot: "OA", code: "OUA.NP.06", name: "Isolateur sismique", unit: "U", priceDZD: 134282.61, priceEUR: 15822.32 },
+        { lot: "OA", code: "OUA.B8", name: "Multitubulaires / Çoklu Boru", unit: "ml", priceDZD: 1800, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C1", name: "Rideaux palplanches / Palplanş", unit: "m2", priceDZD: 25000, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C2", name: "Perrés maçonnées / Harçlı Taş", unit: "m2", priceDZD: 2554.48, priceEUR: 2.40 },
+        { lot: "OA", code: "OUA.C4.2", name: "Béton projeté / Püskürtme Beton", unit: "m2", priceDZD: 1478.03, priceEUR: 13.90 },
+        { lot: "OA", code: "OUA.C4.3", name: "Treillis soudées / Çelik Hasır", unit: "Kg", priceDZD: 71.85, priceEUR: 0.50 },
+        { lot: "OA", code: "OUA.C4.4.1", name: "Barbacane 50mm / Barbakan 50", unit: "ml", priceDZD: 500, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C4.4.2", name: "Barbacane 100mm / Barbakan 100", unit: "ml", priceDZD: 700, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C4.1.1", name: "Clous 16m / Zemin Çivisi 16m", unit: "U", priceDZD: 25618.47, priceEUR: 31.10 },
+        { lot: "OA", code: "OUA.C4.1.2", name: "Clous 12m / Zemin Çivisi 12m", unit: "U", priceDZD: 19226.64, priceEUR: 23.20 },
+        { lot: "OA", code: "OUA.C5.1", name: "Mur 2-4m / Duvar 2-4m", unit: "m2", priceDZD: 18500, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C5.2", name: "Mur 4-6m / Duvar 4-6m", unit: "m2", priceDZD: 21000, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C5.3", name: "Mur >6m / Duvar >6m", unit: "m2", priceDZD: 25000, priceEUR: 0 },
+        { lot: "OA", code: "OUA.C6", name: "Mur gabion / Gabion Duvar", unit: "m3", priceDZD: 5500, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP.05", name: "Shock Transmittal / Şok İletici", unit: "U", priceDZD: 659476.9, priceEUR: 53097 },
+        { lot: "OA", code: "OUA.NP.06", name: "Isolateur sismique / Sismik İzolatör", unit: "U", priceDZD: 134282.61, priceEUR: 15822.32 },
         { lot: "OA", code: "OUA.NP.09a", name: "Tirants 45T / Ankraj 45T", unit: "ml", priceDZD: 4260, priceEUR: 89 },
         { lot: "OA", code: "OUA.NP.09b", name: "Tirants 75T / Ankraj 75T", unit: "ml", priceDZD: 4310, priceEUR: 103 },
-        { lot: "OA", code: "OUA.NP.09c", name: "Essais non destructif", unit: "U", priceDZD: 35832.83, priceEUR: 133.77 },
-        { lot: "OA", code: "OUA.NP.09d", name: "Essais destructif", unit: "U", priceDZD: 96892.4, priceEUR: 364.84 },
-        { lot: "OA", code: "OUA.NP.10", name: "Poutre métallique", unit: "kg", priceDZD: 183, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP.35", name: "Joints dalot / Menfez Derz", unit: "ml", priceDZD: 6820, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP.36", name: "Géotextile", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
-        { lot: "OA", code: "OUA.NP.57.1", name: "Appareil 45000 Fixe", unit: "U", priceDZD: 381136.9, priceEUR: 29897 },
-        { lot: "OA", code: "OUA.NP.57.2", name: "Appareil 45000 Mobile", unit: "U", priceDZD: 576958.6, priceEUR: 49018 },
-        { lot: "OA", code: "OUA.NP.57.3", name: "Appareil 12000", unit: "U", priceDZD: 341437.9, priceEUR: 26027 },
-        { lot: "OA", code: "OUA.NP.59", name: "Passerelles", unit: "kg", priceDZD: 550, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP08.01", name: "Précontrainte ext.", unit: "Tonne", priceDZD: 124806.5, priceEUR: 3628.48 },
-        { lot: "OA", code: "OUA.NP08.02", name: "Assemblage voussoirs", unit: "m3", priceDZD: 8711.3, priceEUR: 131.37 },
-        { lot: "OA", code: "OUA.NP08.38", name: "Remblais concassés / Kırma Taş", unit: "m3", priceDZD: 2134.02, priceEUR: 2.60 },
-        { lot: "OA", code: "OUA.NP08.41", name: "Drain perforé / Drenaj", unit: "ml", priceDZD: 2700, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP08.44", name: "Joint Water Stop", unit: "ml", priceDZD: 2550, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP08.60", name: "Grille inox / Izgara", unit: "U", priceDZD: 92769.59, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP.09c", name: "Essais non destructif / Tahribatsız Test", unit: "U", priceDZD: 35832.83, priceEUR: 133.77 },
+        { lot: "OA", code: "OUA.NP.09d", name: "Essais destructif / Tahribatlı Test", unit: "U", priceDZD: 96892.4, priceEUR: 364.84 },
+        { lot: "OA", code: "OUA.NP.10", name: "Poutre métallique / Çelik Kiriş", unit: "kg", priceDZD: 183, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP.35", name: "Joints dalot / Menfez Derzi", unit: "ml", priceDZD: 6820, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP.36", name: "Géotextile / Geotekstil", unit: "m2", priceDZD: 258.27, priceEUR: 5.10 },
+        { lot: "OA", code: "OUA.NP.57.1", name: "Appareil 45000 Fixe / Mesnet 45000", unit: "U", priceDZD: 381136.9, priceEUR: 29897 },
+        { lot: "OA", code: "OUA.NP.57.2", name: "Appareil 45000 Mobile / Mesnet 45000 Mob", unit: "U", priceDZD: 576958.6, priceEUR: 49018 },
+        { lot: "OA", code: "OUA.NP.57.3", name: "Appareil 12000 / Mesnet 12000", unit: "U", priceDZD: 341437.9, priceEUR: 26027 },
+        { lot: "OA", code: "OUA.NP.59", name: "Passerelles / Yürüme Yolu", unit: "kg", priceDZD: 550, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP08.01", name: "Précontrainte ext. / Dış Öngerilme", unit: "Tonne", priceDZD: 124806.5, priceEUR: 3628.48 },
+        { lot: "OA", code: "OUA.NP08.02", name: "Assemblage voussoirs / Vusvar Montajı", unit: "m3", priceDZD: 8711.3, priceEUR: 131.37 },
+        { lot: "OA", code: "OUA.NP08.38", name: "Remblais concassés / Kırma Taş Dolgu", unit: "m3", priceDZD: 2134.02, priceEUR: 2.60 },
+        { lot: "OA", code: "OUA.NP08.41", name: "Drain perforé / Drenaj Borusu", unit: "ml", priceDZD: 2700, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP08.44", name: "Joint Water Stop / Su Tutucu Bant", unit: "ml", priceDZD: 2550, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP08.60", name: "Grille inox / Paslanmaz Izgara", unit: "U", priceDZD: 92769.59, priceEUR: 0 },
         { lot: "OA", code: "OUA.NP08.70", name: "Cales biaises / Eğik Takoz", unit: "U", priceDZD: 25000, priceEUR: 0 },
         { lot: "OA", code: "OUA.NP08.71", name: "Matériaux drainant / Drenaj Malzemesi", unit: "m3", priceDZD: 2200, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP08.72", name: "Joint 100-140mm", unit: "ml", priceDZD: 31500, priceEUR: 1030 },
-        { lot: "OA", code: "OUA.NP11.03", name: "Joint 250-400mm", unit: "ml", priceDZD: 26173.22, priceEUR: 3898.60 },
-        { lot: "OA", code: "OUA.NP.11.04", name: "Joint 500-800mm", unit: "ml", priceDZD: 102606, priceEUR: 9780 },
-        { lot: "OA", code: "OUA.NP11.14a.2", name: "Sondages carottés", unit: "ml", priceDZD: 18000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.14b.2", name: "Sondages pressio", unit: "ml", priceDZD: 15500, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.14c.2", name: "Essais pressio", unit: "ml", priceDZD: 10000, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.14d.2", name: "Essai Tomo", unit: "ml", priceDZD: 851, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.14e.2", name: "Essai Sismique", unit: "ml", priceDZD: 1566, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.58.1", name: "Eléments galvanisé", unit: "kg", priceDZD: 1531.53, priceEUR: 0 },
-        { lot: "OA", code: "OUA.NP11.84", name: "Béton RN35 radier", unit: "m3", priceDZD: 15206.72, priceEUR: 42.14 }
+        { lot: "OA", code: "OUA.NP08.72", name: "Joint 100-140mm / Genleşme Derzi", unit: "ml", priceDZD: 31500, priceEUR: 1030 },
+        { lot: "OA", code: "OUA.NP11.03", name: "Joint 250-400mm / Genleşme Derzi", unit: "ml", priceDZD: 26173.22, priceEUR: 3898.60 },
+        { lot: "OA", code: "OUA.NP.11.04", name: "Joint 500-800mm / Genleşme Derzi", unit: "ml", priceDZD: 102606, priceEUR: 9780 },
+        { lot: "OA", code: "OUA.NP11.14a.2", name: "Sondages carottés / Karotlu Sondaj", unit: "ml", priceDZD: 18000, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.14b.2", name: "Sondages pressio / Presyometre Sondaj", unit: "ml", priceDZD: 15500, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.14c.2", name: "Essais pressio / Presyometre Deneyi", unit: "ml", priceDZD: 10000, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.14d.2", name: "Essai Tomo / Tomografi", unit: "ml", priceDZD: 851, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.14e.2", name: "Essai Sismique / Sismik Deney", unit: "ml", priceDZD: 1566, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.58.1", name: "Eléments galvanisé / Galvaniz Eleman", unit: "kg", priceDZD: 1531.53, priceEUR: 0 },
+        { lot: "OA", code: "OUA.NP11.84", name: "Béton RN35 radier / C35 Temel", unit: "m3", priceDZD: 15206.72, priceEUR: 42.14 }
     ];
 
-    // --- MANTIKSAL İŞLEMLER ---
+    let selectedItem = null;
+
     function toggleDropdown(state) {
         const resultsDiv = document.getElementById("customResults");
         const currentDisplay = window.getComputedStyle(resultsDiv).display;
@@ -676,33 +654,6 @@
             document.getElementById("resultBox").style.display = "none";
         }
     }
-
-    // --- SÖZ MOTORU ---
-    const quotes = [
-        { t: "Mühendislik, hayal gücünün maddeye dönüşmesidir.", a: "Anonim" },
-        { t: "Kalite bir eylem değil, bir alışkanlıktır.", a: "Aristoteles" },
-        { t: "Zor yollar, genellikle güzel yerlere çıkar.", a: "Anonim" },
-        { t: "Şantiyede en önemli kural: Güvenlik, hızdan önce gelir.", a: "Şantiye Kuralı" },
-        { t: "Bir problemi çözmek, onu anlamakla başlar.", a: "Albert Einstein" },
-        { t: "Başarı, hazırlık ve fırsatın karşılaştığı yerdir.", a: "Bobby Unser" },
-        { t: "İnşa etmek, geleceğe inanmaktır.", a: "Anonim" },
-        { t: "Detaylar, tasarımı tasarım yapan unsurlardır.", a: "Charles Eames" },
-        { t: "Planlama yoksa, başarısızlık planlanmıştır.", a: "Anonim" },
-        { t: "En iyi mühendis, en az malzemeyle en sağlam yapıyı kurandır.", a: "Anonim" },
-        { t: "Yol medeniyettir.", a: "Türk Atasözü" },
-        { t: "La route est le symbole de la civilisation.", a: "Proverbe" },
-        { t: "Taş yerinde ağırdır.", a: "Türk Atasözü" },
-        { t: "İşleyen demir ışıldar.", a: "Türk Atasözü" },
-        { t: "La simplicité est la sophistication suprême.", a: "Leonardo da Vinci" }
-    ];
-
-    function getNewQuote() {
-        const random = quotes[Math.floor(Math.random() * quotes.length)];
-        document.getElementById("qText").innerText = '"' + random.t + '"';
-        document.getElementById("qAuthor").innerText = "— " + random.a;
-    }
-
-    getNewQuote(); // Başlangıçta sözü getir
 
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.search-wrapper')) {
