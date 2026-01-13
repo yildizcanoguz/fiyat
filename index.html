@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOT ROUTE PRO (FULL)</title>
+    <title>LOT ROUTE PRO</title>
     <style>
         /* FENERBAHÇE TEMASI */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
             padding: 15px; 
-            /* Arka Plan: Sarı Lacivert Çubuklu */
             background-color: #002d72;
             background-image: linear-gradient(90deg, #002d72 50%, #fde100 50%);
             background-size: 80px 100%; 
@@ -40,9 +39,15 @@
         
         label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 700; font-size: 0.9em; color: #002d72; }
         
-        /* Arama Kutusu ve Inputlar */
-        input[list], .calc-input {
-            width: 100%; padding: 14px; 
+        /* ARAMA KUTUSU TASARIMI (ÖZEL) */
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        input[list] {
+            width: 100%; 
+            padding: 14px 40px 14px 14px; /* Sağdan boşluk bıraktık (Ok ve X için) */
             border: 2px solid #002d72; 
             border-radius: 12px; 
             font-size: 15px; 
@@ -50,6 +55,9 @@
             color: #002d72;
             font-weight: 600;
             box-sizing: border-box;
+            /* Standart oku gizle, biz kendimiz ekleyeceğiz */
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         input:focus { 
@@ -58,74 +66,65 @@
             box-shadow: 0 0 0 4px rgba(253, 225, 0, 0.3); 
         }
 
-        /* Seçilen Kart Tasarımı */
-        .selected-card { 
-            background: #fff; 
-            border: 2px solid #002d72; 
-            padding: 20px; 
-            border-radius: 12px; 
-            margin-top: 20px; 
-            display: none; 
-            box-shadow: 0 4px 10px rgba(0, 45, 114, 0.1);
-        }
-        
-        .selected-card h3 { 
-            margin: 0; 
-            color: #002d72; 
-            font-size: 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
+        /* Sabit Ok İşareti (Her tarayıcıda görünür) */
+        .custom-arrow {
+            position: absolute;
+            right: 40px; /* X butonunun solunda */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #002d72;
+            font-size: 12px;
+            pointer-events: none; /* Tıklamayı engelleme, inputa geçsin */
         }
 
-        .badge-unit { 
-            background: #fde100; 
-            color: #002d72; 
-            padding: 4px 10px; 
-            border-radius: 6px; 
-            font-size: 12px; 
+        /* Temizleme (X) Butonu */
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e74c3c; /* Kırmızı */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none; /* Başlangıçta gizli */
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            border: 1px solid #002d72;
         }
 
-        .price-tag { 
-            margin-top:10px; 
-            font-size:15px; 
-            color:#002d72; 
-            background: #f0f4ff; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border-left: 5px solid #fde100;
-        }
+        .calc-input { width: 100%; padding: 14px; border: 1px solid #e5e5ea; border-radius: 12px; font-size: 16px; background: #f9f9f9; box-sizing: border-box; }
 
-        /* SKORBOARD (Sonuç Ekranı) */
-        .result-box { 
-            margin-top: 25px; 
-            background-color: #002d72; 
-            color: #fde100; 
-            border-radius: 16px; 
-            padding: 20px; 
-            display: none; 
-            border: 2px solid #fde100;
-            box-shadow: 0 5px 15px rgba(0, 45, 114, 0.4);
-        }
+        .selected-card { background: #fff; border: 2px solid #002d72; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; box-shadow: 0 4px 10px rgba(0, 45, 114, 0.1); }
+        .selected-card h3 { margin: 0; color: #002d72; font-size: 20px; display: flex; align-items: center; justify-content: space-between;}
+        .badge-unit { background: #fde100; color: #002d72; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid #002d72; }
+        .price-tag { margin-top:10px; font-size:15px; color:#002d72; background: #f0f4ff; padding: 12px; border-radius: 8px; border-left: 5px solid #fde100; }
 
+        .result-box { margin-top: 25px; background-color: #002d72; color: #fde100; border-radius: 16px; padding: 20px; display: none; border: 2px solid #fde100; box-shadow: 0 5px 15px rgba(0, 45, 114, 0.4); }
         .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid rgba(253, 225, 0, 0.3); padding-bottom: 8px; }
         .result-row:last-child { border: none; margin: 0; padding: 0; }
-        
         .grand-total-label { font-size: 16px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
         .grand-total-val { font-size: 32px; font-weight: 800; color: #fde100; text-align: right; display: block; margin-top: 5px; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
-        
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>LOT ROUTE (TAM LİSTE)</h2>
+    <h2>LOT ROUTE</h2>
 
     <label>İş Kalemi Seçiniz:</label>
-    <input list="itemsList" id="itemInput" placeholder="Kodu veya ismini yazın (Örn: Beton)..." onchange="itemSelected()" oninput="checkInput()">
+    
+    <div class="search-wrapper">
+        <input list="itemsList" id="itemInput" placeholder="Seçiniz veya Yazınız..." onchange="itemSelected()" oninput="checkInput()" onfocus="this.select()">
+        <span class="custom-arrow">▼</span>
+        <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+    </div>
+
     <datalist id="itemsList">
         </datalist>
 
@@ -166,10 +165,8 @@
 </div>
 
 <script>
-    // --- VERITABANI: LOT ROUTE TAMAMI (YENİ GÖRSELDEN GÜNCELLENDİ) ---
-    //
+    // --- VERITABANI: LOT ROUTE (TAM & DÜZELTİLMİŞ) ---
     const database = [
-        // SÉRIE A
         { code: "A.1", name: "Installation et repliement du chantier", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
         { code: "A.2.1", name: "Laboratoire de chantier", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
         { code: "A.2.2", name: "Contrôle externe des travaux", unit: "Ft", priceDZD: 33983960.76, priceEUR: 400938.80 },
@@ -181,8 +178,6 @@
         { code: "A.4.1", name: "Sécurité passive", unit: "Ft", priceDZD: 200000000.00, priceEUR: 0.00 },
         { code: "A.4.2", name: "Sécurité active", unit: "Ft", priceDZD: 400000000.00, priceEUR: 0.00 },
         { code: "A.5", name: "Panneau d'identification", unit: "U", priceDZD: 1775000.00, priceEUR: 0.00 },
-
-        // SÉRIE B
         { code: "B.1.1", name: "Débroussaillage", unit: "Ha", priceDZD: 619820.41, priceEUR: 2543.30 },
         { code: "B.1.2", name: "Abattage arbres", unit: "U", priceDZD: 1600.00, priceEUR: 0.00 },
         { code: "B.1.3", name: "Dépose ouvrages métalliques", unit: "Tonne", priceDZD: 944.25, priceEUR: 2.50 },
@@ -192,8 +187,6 @@
         { code: "B.3.1", name: "Rabotage <= 100mm", unit: "m2", priceDZD: 88.85, priceEUR: 0.50 },
         { code: "B.3.2", name: "Rabotage 100-200mm", unit: "m2", priceDZD: 98.62, priceEUR: 0.60 },
         { code: "B.4", name: "Scarification chaussée", unit: "m2", priceDZD: 28.16, priceEUR: 0.80 },
-
-        // SÉRIE C
         { code: "C.1.1", name: "Décapage terre végétale", unit: "m3", priceDZD: 128.62, priceEUR: 0.60 },
         { code: "C.1.2", name: "Reprise sur stock", unit: "m3", priceDZD: 179.08, priceEUR: 0.40 },
         { code: "C.2.2", name: "Purges", unit: "m3", priceDZD: 2200.00, priceEUR: 0.00 },
@@ -212,8 +205,6 @@
         { code: "C.9.1", name: "Couche de forme", unit: "m3", priceDZD: 1346.55, priceEUR: 1.50 },
         { code: "C.10.1", name: "Transport < 30km", unit: "M3xKM", priceDZD: 12.50, priceEUR: 0.00 },
         { code: "C.10.2", name: "Transport > 30km", unit: "M3xKM", priceDZD: 11.00, priceEUR: 0.00 },
-
-        // SÉRIE D (Eksikler Giderildi)
         { code: "D.1.1", name: "Fossé trapézoïdal non revêtu A", unit: "ml", priceDZD: 495.86, priceEUR: 1.80 },
         { code: "D.1.2", name: "Fossé trapézoïdal non revêtu B", unit: "ml", priceDZD: 594.94, priceEUR: 2.20 },
         { code: "D.1.3", name: "Fossé trapézoïdal non revêtu C", unit: "ml", priceDZD: 897.18, priceEUR: 3.40 },
@@ -272,25 +263,19 @@
         { code: "D.27.1", name: "Béton de propreté", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
         { code: "D.27.2", name: "Béton pour ouvrages divers", unit: "m3", priceDZD: 9553.28, priceEUR: 46.40 },
         { code: "D.27.4", name: "Ferraillage pour ouvrages", unit: "kg", priceDZD: 65.08, priceEUR: 0.40 },
-
-        // SÉRIE E (KODLAR DÜZELTİLDİ)
         { code: "E.1.1", name: "Grave non traitée (GNT 0/31.5)", unit: "m3", priceDZD: 1922.64, priceEUR: 3.20 },
-        { code: "E.2.2", name: "Grave Bitume (GB)", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
-        { code: "E.2.3", name: "Enrobés à module élevé (EME 2)", unit: "Tonne", priceDZD: 4782.15, priceEUR: 29.50 },
+        { code: "E.2.1", name: "Grave Bitume GB 0/20", unit: "Tonne", priceDZD: 3390.32, priceEUR: 21.60 },
+        { code: "E.2.2", name: "Enrobés à module élevé (EME 2)", unit: "Tonne", priceDZD: 4782.15, priceEUR: 29.50 },
         { code: "E.3.1", name: "Couche roulement BB", unit: "Tonne", priceDZD: 4337.90, priceEUR: 27.00 },
         { code: "E.3.2", name: "Couche roulement BBME 0/14", unit: "Tonne", priceDZD: 4650.19, priceEUR: 34.70 },
         { code: "E.3.3", name: "Couche roulement BBME 0/10", unit: "Tonne", priceDZD: 4670.65, priceEUR: 34.50 },
         { code: "E.4.1", name: "Couche d'imprégnation", unit: "m2", priceDZD: 95.00, priceEUR: 0.00 },
         { code: "E.4.2", name: "Couche d'accrochage", unit: "m2", priceDZD: 55.00, priceEUR: 0.00 },
         { code: "E.5.1", name: "Revêtement bicouche", unit: "m2", priceDZD: 540.00, priceEUR: 0.00 },
-
-        // SÉRIE F
         { code: "F.1.1", name: "Marquage axe 150mm", unit: "ml", priceDZD: 680.00, priceEUR: 0.00 },
         { code: "F.1.2", name: "Marquage rive 150mm", unit: "ml", priceDZD: 70.00, priceEUR: 0.00 },
         { code: "F.1.5", name: "Bande largeur 375mm", unit: "ml", priceDZD: 340.00, priceEUR: 0.00 },
         { code: "F.1.8", name: "Marquage flèche", unit: "U", priceDZD: 800.00, priceEUR: 0.00 },
-
-        // SÉRIE G
         { code: "G.1.1", name: "Panneau A, AB, B, C (Petit)", unit: "U", priceDZD: 52000.00, priceEUR: 0.00 },
         { code: "G.1.2", name: "Panneau normal", unit: "U", priceDZD: 42400.00, priceEUR: 0.00 },
         { code: "G.2.1", name: "Panneau type M", unit: "m2", priceDZD: 42000.00, priceEUR: 0.00 },
@@ -299,14 +284,10 @@
         { code: "G.5.1", name: "Poteaux < 50 cm4", unit: "ml", priceDZD: 9776.59, priceEUR: 0.00 },
         { code: "G.5.7", name: "Semelle de fondation", unit: "U", priceDZD: 8020.53, priceEUR: 38.90 },
         { code: "G.7.1", name: "Réflecteur simple face", unit: "U", priceDZD: 1400.00, priceEUR: 0.00 },
-
-        // SÉRIE H
         { code: "H.1.1.1", name: "Glissière GS4", unit: "ml", priceDZD: 1238.45, priceEUR: 48.50 },
         { code: "H.2.1.1", name: "Barrière GBA (Simple)", unit: "ml", priceDZD: 3932.51, priceEUR: 16.30 },
         { code: "H.2.1.2", name: "Barrière DBA (Double)", unit: "ml", priceDZD: 4586.99, priceEUR: 18.70 },
         { code: "H.3.1", name: "Extrémité GBA", unit: "U", priceDZD: 5150.55, priceEUR: 21.50 },
-
-        // SÉRIE I (Eksikler Tamamlandı)
         { code: "I.1.1", name: "Fouilles fondations murs", unit: "m3", priceDZD: 178.16, priceEUR: 0.80 },
         { code: "I.1.3", name: "Béton propreté", unit: "m3", priceDZD: 5919.19, priceEUR: 4.70 },
         { code: "I.1.4", name: "Béton semelles", unit: "m3", priceDZD: 13523.50, priceEUR: 121.70 },
@@ -327,8 +308,6 @@
         { code: "I.9.3", name: "Plantation d'espèces d'arbrisseaux", unit: "m2", priceDZD: 1103.00, priceEUR: 0.00 },
         { code: "I.9.4", name: "Engazonnement", unit: "m2", priceDZD: 637.19, priceEUR: 0.00 },
         { code: "I.9.5", name: "Terre végétale", unit: "m2", priceDZD: 797.00, priceEUR: 0.00 },
-
-        // SÉRIE J
         { code: "J.1.1", name: "Murs en gabions", unit: "m3", priceDZD: 3034.57, priceEUR: 24.10 },
         { code: "J.2.2", name: "Béton B30 murs", unit: "m3", priceDZD: 13478.48, priceEUR: 122.40 },
         { code: "J.2.3.1", name: "Clous 25mm 8m", unit: "U", priceDZD: 16738.61, priceEUR: 14.50 },
@@ -336,14 +315,10 @@
         { code: "J.6.1", name: "Drains subhorizontaux", unit: "ml", priceDZD: 4700.00, priceEUR: 0.00 },
         { code: "J.8.1", name: "Ancrages passifs 32mm", unit: "ml", priceDZD: 470.10, priceEUR: 13.00 },
         { code: "J.9", name: "Géotextile alvéolaire", unit: "m2", priceDZD: 32400.00, priceEUR: 0.00 },
-
-        // SÉRIE K
         { code: "K.1.1", name: "Système vidéosurveillance", unit: "U", priceDZD: 412003.51, priceEUR: 36246.30 },
         { code: "K.1.2", name: "Poteau caméra", unit: "U", priceDZD: 23504.98, priceEUR: 2067.40 },
         { code: "K.1.6", name: "Système DAI", unit: "U", priceDZD: 356431.76, priceEUR: 31168.10 },
         { code: "K.2", name: "Clôture aéroport", unit: "ml", priceDZD: 5200.00, priceEUR: 0.00 },
-
-        // NOUVEAUX PRIX (NP - Güncellendi)
         { code: "NP.11", name: "Poste d'observation", unit: "U", priceDZD: 12200000.00, priceEUR: 0.00 },
         { code: "NP.17", name: "Cable torsadé Cu/Al", unit: "ml", priceDZD: 673.70, priceEUR: 0.00 },
         { code: "NP.18", name: "Badigeonnage parements", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
@@ -363,11 +338,10 @@
         { code: "NP.11.19", name: "Etude adaptation tracé", unit: "Ft", priceDZD: 36723806.00, priceEUR: 358780.00 }
     ];
 
-    // Datalist'i Doldur
     const datalist = document.getElementById("itemsList");
     database.forEach(item => {
         const option = document.createElement("option");
-        option.value = item.code + " - " + item.name; // Görünen metin
+        option.value = item.code + " - " + item.name;
         datalist.appendChild(option);
     });
 
@@ -379,7 +353,27 @@
         if (found) {
             selectedItem = found;
             itemSelected();
+        } else {
+            // Buton görünürlüğü kontrolü (yazı varsa göster)
+            const clearBtn = document.getElementById("clearBtn");
+            if (inputVal.length > 0) {
+                clearBtn.style.display = "flex";
+            } else {
+                clearBtn.style.display = "none";
+                document.getElementById("selectedCard").style.display = "none";
+                document.getElementById("calcArea").style.opacity = "0.5";
+            }
         }
+    }
+
+    function clearSearch() {
+        document.getElementById("itemInput").value = "";
+        document.getElementById("itemInput").focus();
+        document.getElementById("clearBtn").style.display = "none";
+        document.getElementById("selectedCard").style.display = "none";
+        document.getElementById("calcArea").style.opacity = "0.5";
+        document.getElementById("resultBox").style.display = "none";
+        selectedItem = null;
     }
 
     function itemSelected() {
@@ -393,6 +387,7 @@
             document.getElementById("selectedCard").style.display = "block";
             document.getElementById("calcArea").style.opacity = "1";
             document.getElementById("calcArea").style.pointerEvents = "auto";
+            document.getElementById("clearBtn").style.display = "flex";
             
             document.getElementById("quantity").value = "";
             document.getElementById("resultBox").style.display = "none";
