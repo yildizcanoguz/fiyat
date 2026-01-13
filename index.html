@@ -5,110 +5,159 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LOT ROUTE PRO</title>
     <style>
-        /* FENERBAHÇE TEMASI */
+        /* MODERN FERAH TEMA */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
             padding: 15px; 
-            background-color: #002d72;
-            background-image: linear-gradient(90deg, #002d72 50%, #fde100 50%);
-            background-size: 80px 100%; 
+            /* Arka Plan: Soluk Beyaz/Gri */
+            background-color: #f4f6f8;
+            color: #333;
             min-height: 100vh;
         }
 
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.96); 
-            padding: 20px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border: 4px solid #fde100; 
+            background: #ffffff; /* Tam Beyaz Kart */
+            padding: 25px; 
+            border-radius: 20px; 
+            /* Yumuşak Gölge */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            border: 1px solid #e1e4e8;
         }
 
         h2 { 
             text-align: center; 
-            color: #002d72; 
-            margin-bottom: 20px; 
-            font-weight: 900; 
+            color: #2c3e50; /* Koyu Gri/Mavi Başlık */
+            margin-bottom: 25px; 
+            font-weight: 800; 
             letter-spacing: -0.5px;
-            text-transform: uppercase;
-            border-bottom: 3px solid #fde100;
-            padding-bottom: 10px;
+            font-size: 22px;
         }
         
-        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 700; font-size: 0.9em; color: #002d72; }
+        label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; color: #555; }
         
-        /* ARAMA KUTUSU TASARIMI (ÖZEL) */
-        .search-wrapper {
-            position: relative;
-            width: 100%;
-        }
+        /* Arama Kutusu ve Kapsayıcı */
+        .search-wrapper { position: relative; width: 100%; }
 
-        input[list] {
-            width: 100%; 
-            padding: 14px 40px 14px 14px; /* Sağdan boşluk bıraktık (Ok ve X için) */
-            border: 2px solid #002d72; 
+        input[type="text"], .calc-input {
+            width: 100%; padding: 16px 40px 16px 16px; 
+            border: 1px solid #d1d9e6; /* İnce Gri Çerçeve */
             border-radius: 12px; 
-            font-size: 15px; 
-            background: #fff; 
-            color: #002d72;
-            font-weight: 600;
+            font-size: 16px; 
+            background: #f9fbfd; /* Çok açık mavi-beyaz */
+            color: #2c3e50;
+            font-weight: 500;
             box-sizing: border-box;
-            /* Standart oku gizle, biz kendimiz ekleyeceğiz */
+            transition: all 0.3s ease;
             -webkit-appearance: none;
-            appearance: none;
         }
         
         input:focus { 
             outline: none; 
-            border-color: #fde100; 
-            box-shadow: 0 0 0 4px rgba(253, 225, 0, 0.3); 
+            border-color: #3498db; /* Odaklanınca Açık Mavi */
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15); 
         }
 
-        /* Sabit Ok İşareti (Her tarayıcıda görünür) */
-        .custom-arrow {
+        /* ÖZEL ARAMA SONUÇ LİSTESİ */
+        .custom-results {
             position: absolute;
-            right: 40px; /* X butonunun solunda */
-            top: 50%;
-            transform: translateY(-50%);
-            color: #002d72;
-            font-size: 12px;
-            pointer-events: none; /* Tıklamayı engelleme, inputa geçsin */
+            top: 110%; /* Biraz boşluk */
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
-        /* Temizleme (X) Butonu */
-        .clear-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #e74c3c; /* Kırmızı */
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
+        .result-item {
+            padding: 14px;
+            border-bottom: 1px solid #f4f6f8;
             cursor: pointer;
-            display: none; /* Başlangıçta gizli */
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+            transition: background 0.2s;
         }
 
-        .calc-input { width: 100%; padding: 14px; border: 1px solid #e5e5ea; border-radius: 12px; font-size: 16px; background: #f9f9f9; box-sizing: border-box; }
+        .result-item:last-child { border-bottom: none; }
+        /* Hover Rengi: Çok açık mavi */
+        .result-item:hover, .result-item:active { background-color: #eaf6ff; color: #007aff; }
+        
+        .result-item strong { display: block; color: #2c3e50; font-size: 15px; margin-bottom: 3px; }
 
-        .selected-card { background: #fff; border: 2px solid #002d72; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; box-shadow: 0 4px 10px rgba(0, 45, 114, 0.1); }
-        .selected-card h3 { margin: 0; color: #002d72; font-size: 20px; display: flex; align-items: center; justify-content: space-between;}
-        .badge-unit { background: #fde100; color: #002d72; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid #002d72; }
-        .price-tag { margin-top:10px; font-size:15px; color:#002d72; background: #f0f4ff; padding: 12px; border-radius: 8px; border-left: 5px solid #fde100; }
+        /* Temizleme Butonu (X) */
+        .clear-btn {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: #e0e0e0; color: #555; border: none; border-radius: 50%;
+            width: 24px; height: 24px; font-size: 12px; cursor: pointer;
+            display: none; align-items: center; justify-content: center; 
+            transition: 0.2s;
+        }
+        .clear-btn:hover { background: #bbb; color: #fff; }
 
-        .result-box { margin-top: 25px; background-color: #002d72; color: #fde100; border-radius: 16px; padding: 20px; display: none; border: 2px solid #fde100; box-shadow: 0 5px 15px rgba(0, 45, 114, 0.4); }
-        .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid rgba(253, 225, 0, 0.3); padding-bottom: 8px; }
+        /* Seçilen Kart Tasarımı */
+        .selected-card { 
+            background: #f0f7ff; /* Çok hafif mavi zemin */
+            border: 1px solid #cce4ff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-top: 25px; 
+            display: none; 
+        }
+        
+        .selected-card h3 { 
+            margin: 0; 
+            color: #0056b3; 
+            font-size: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+
+        .badge-unit { 
+            background: #3498db; /* Açık Mavi Rozet */
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 12px; 
+            font-weight: 600; 
+        }
+
+        .price-tag { 
+            margin-top:12px; 
+            font-size:15px; 
+            color: #333; 
+            background: #fff; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #e1e4e8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        /* SONUÇ KUTUSU */
+        .result-box { 
+            margin-top: 25px; 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); /* Mavi Gradyan */
+            color: white; 
+            border-radius: 16px; 
+            padding: 25px; 
+            display: none; 
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; }
         .result-row:last-child { border: none; margin: 0; padding: 0; }
-        .grand-total-label { font-size: 16px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .grand-total-val { font-size: 32px; font-weight: 800; color: #fde100; text-align: right; display: block; margin-top: 5px; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        
+        .grand-total-label { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; }
+        .grand-total-val { font-size: 32px; font-weight: 700; color: #fff; text-align: right; display: block; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        
         .rate-input-group { display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
@@ -117,20 +166,17 @@
 <div class="container">
     <h2>LOT ROUTE</h2>
 
-    <label>İş Kalemi Seçiniz:</label>
+    <label>İş Kalemi Ara:</label>
     
     <div class="search-wrapper">
-        <input list="itemsList" id="itemInput" placeholder="Seçiniz veya Yazınız..." onchange="itemSelected()" oninput="checkInput()" onfocus="this.select()">
-        <span class="custom-arrow">▼</span>
+        <input type="text" id="searchInput" placeholder="Kod veya İsim yazın..." onkeyup="filterItems()" onfocus="filterItems()" autocomplete="off">
         <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        <div id="customResults" class="custom-results"></div>
     </div>
-
-    <datalist id="itemsList">
-        </datalist>
 
     <div id="selectedCard" class="selected-card">
         <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">UNIT</span></h3>
-        <p id="selName" style="margin: 8px 0; color: #444; font-weight: 600;">İş Tanımı</p>
+        <p id="selName" style="margin: 8px 0; color: #555; font-weight: 500;">İş Tanımı</p>
         <div class="price-tag">
             Birim Fiyat: <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
         </div>
@@ -140,7 +186,7 @@
         <label>Euro Kuru:</label>
         <div class="rate-input-group">
             <input type="number" class="calc-input" id="exchangeRate" value="102.3" step="0.1" oninput="calculate()">
-            <span style="font-weight:bold; color:#002d72">DZD</span>
+            <span style="font-weight:bold; color:#3498db">DZD</span>
         </div>
 
         <label>Miktar (Metraj):</label>
@@ -158,14 +204,14 @@
             <div style="margin-top: 20px; text-align: center;">
                 <span class="grand-total-label">TOPLAM MALİYET</span>
                 <span class="grand-total-val" id="resGrandTotal">0,00 DZD</span>
-                <small style="color:#ddd; display:block; margin-top:5px; font-size: 11px;">(Euro x 102.3 + Dinar)</small>
+                <small style="color:rgba(255,255,255,0.7); display:block; margin-top:5px; font-size: 11px;">(Euro x 102.3 + Dinar)</small>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- VERITABANI: LOT ROUTE (TAM & DÜZELTİLMİŞ) ---
+    // --- VERITABANI: LOT ROUTE (TAM & EKSİKSİZ) ---
     const database = [
         { code: "A.1", name: "Installation et repliement du chantier", unit: "Ft", priceDZD: 1041277260.86, priceEUR: 4972851.80 },
         { code: "A.2.1", name: "Laboratoire de chantier", unit: "Ft", priceDZD: 41644039.15, priceEUR: 570439.50 },
@@ -324,7 +370,7 @@
         { code: "NP.18", name: "Badigeonnage parements", unit: "m2", priceDZD: 759.08, priceEUR: 0.40 },
         { code: "NP.37", name: "Pompe à main + Hors gél", unit: "Ens", priceDZD: 3405.85, priceEUR: 10.50 },
         { code: "NP.48", name: "Fibres pour Béton", unit: "kg", priceDZD: 974.70, priceEUR: 0.00 },
-        { code: "NP.08.62", name: "Chambre de tirage L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
+        { code: "NP.60.b2", name: "Chambre de tirage L5C", unit: "U", priceDZD: 348873.07, priceEUR: 11.02 },
         { code: "NP.08.65", name: "Grille anti chute K2C/K1C", unit: "U", priceDZD: 41364.79, priceEUR: 0.00 },
         { code: "NP.08.67", name: "Réseau multitubulaire", unit: "ml", priceDZD: 6113.37, priceEUR: 16.49 },
         { code: "NP.08.68", name: "Traversée de chaussée", unit: "U", priceDZD: 6792.85, priceEUR: 2.02 },
@@ -338,61 +384,71 @@
         { code: "NP.11.19", name: "Etude adaptation tracé", unit: "Ft", priceDZD: 36723806.00, priceEUR: 358780.00 }
     ];
 
-    const datalist = document.getElementById("itemsList");
-    database.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.code + " - " + item.name;
-        datalist.appendChild(option);
-    });
-
     let selectedItem = null;
 
-    function checkInput() {
-        const inputVal = document.getElementById("itemInput").value;
-        const found = database.find(item => (item.code + " - " + item.name) === inputVal);
-        if (found) {
-            selectedItem = found;
-            itemSelected();
+    function filterItems() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toLowerCase();
+        const resultsDiv = document.getElementById("customResults");
+        const clearBtn = document.getElementById("clearBtn");
+        
+        resultsDiv.innerHTML = ""; 
+        clearBtn.style.display = filter.length > 0 ? "flex" : "none";
+
+        if (filter.length < 1) {
+            resultsDiv.style.display = "none";
+            return;
+        }
+
+        const filtered = database.filter(item => 
+            item.code.toLowerCase().includes(filter) || 
+            item.name.toLowerCase().includes(filter)
+        );
+
+        if (filtered.length > 0) {
+            filtered.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "result-item";
+                div.innerHTML = `<strong>${item.code}</strong> ${item.name}`;
+                div.onclick = function() { selectItem(item); };
+                resultsDiv.appendChild(div);
+            });
+            resultsDiv.style.display = "block";
         } else {
-            // Buton görünürlüğü kontrolü (yazı varsa göster)
-            const clearBtn = document.getElementById("clearBtn");
-            if (inputVal.length > 0) {
-                clearBtn.style.display = "flex";
-            } else {
-                clearBtn.style.display = "none";
-                document.getElementById("selectedCard").style.display = "none";
-                document.getElementById("calcArea").style.opacity = "0.5";
-            }
+            resultsDiv.style.display = "none";
         }
     }
 
+    function selectItem(item) {
+        selectedItem = item;
+        document.getElementById("searchInput").value = item.code + " - " + item.name;
+        document.getElementById("customResults").style.display = "none";
+        
+        document.getElementById("selCode").innerText = item.code;
+        document.getElementById("selUnit").innerText = item.unit;
+        document.getElementById("selName").innerText = item.name;
+        document.getElementById("selPriceDZD").innerText = item.priceDZD.toLocaleString('tr-TR');
+        document.getElementById("selPriceEUR").innerText = item.priceEUR.toLocaleString('tr-TR');
+
+        document.getElementById("selectedCard").style.display = "block";
+        document.getElementById("calcArea").style.opacity = "1";
+        document.getElementById("calcArea").style.pointerEvents = "auto";
+        document.getElementById("clearBtn").style.display = "flex";
+        
+        document.getElementById("quantity").value = "";
+        document.getElementById("resultBox").style.display = "none";
+        document.getElementById("quantity").focus();
+    }
+
     function clearSearch() {
-        document.getElementById("itemInput").value = "";
-        document.getElementById("itemInput").focus();
+        document.getElementById("searchInput").value = "";
+        document.getElementById("customResults").style.display = "none";
         document.getElementById("clearBtn").style.display = "none";
         document.getElementById("selectedCard").style.display = "none";
         document.getElementById("calcArea").style.opacity = "0.5";
         document.getElementById("resultBox").style.display = "none";
+        document.getElementById("searchInput").focus();
         selectedItem = null;
-    }
-
-    function itemSelected() {
-        if (selectedItem) {
-            document.getElementById("selCode").innerText = selectedItem.code;
-            document.getElementById("selUnit").innerText = selectedItem.unit;
-            document.getElementById("selName").innerText = selectedItem.name;
-            document.getElementById("selPriceDZD").innerText = selectedItem.priceDZD.toLocaleString('tr-TR');
-            document.getElementById("selPriceEUR").innerText = selectedItem.priceEUR.toLocaleString('tr-TR');
-
-            document.getElementById("selectedCard").style.display = "block";
-            document.getElementById("calcArea").style.opacity = "1";
-            document.getElementById("calcArea").style.pointerEvents = "auto";
-            document.getElementById("clearBtn").style.display = "flex";
-            
-            document.getElementById("quantity").value = "";
-            document.getElementById("resultBox").style.display = "none";
-            document.getElementById("quantity").focus();
-        }
     }
 
     function calculate() {
@@ -416,6 +472,12 @@
             document.getElementById("resultBox").style.display = "none";
         }
     }
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.search-wrapper')) {
+            document.getElementById("customResults").style.display = "none";
+        }
+    });
 </script>
 
 </body>
