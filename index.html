@@ -117,6 +117,63 @@
         .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; border: 1px solid #e1e4e8; }
         .login-btn { width: 100%; padding: 15px; margin-top: 20px; background: #3498db; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .logout-btn { background: #e74c3c; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; text-decoration: none; display: inline-block; margin-top: 0; cursor: pointer; border: none; }
+    /* GÜNÜN SÖZÜ MODERN TASARIM */
+    .quote-card {
+        margin-top: 40px;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 25px;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.06); /* Çok yumuşak gölge */
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-bottom: 4px solid #3498db; /* Altına ince mavi çizgi */
+        overflow: hidden;
+    }
+
+    .quote-card:active {
+        transform: scale(0.98); /* Tıklayınca hafif basılma efekti */
+        background-color: #fcfcfc;
+    }
+
+    .quote-icon {
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        font-size: 60px;
+        color: #f0f4f8; /* Çok silik arka plan ikonu */
+        font-family: serif;
+        z-index: 0;
+    }
+
+    .q-text {
+        position: relative;
+        font-size: 15px;
+        font-weight: 500;
+        color: #2c3e50; /* Koyu Gri */
+        font-style: italic;
+        line-height: 1.5;
+        margin: 0 0 10px 0;
+        z-index: 1;
+    }
+
+    .q-author {
+        position: relative;
+        font-size: 12px;
+        font-weight: 700;
+        color: #3498db; /* Mavi yazar ismi */
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 1;
+    }
+
+    .q-hint {
+        margin-top: 15px;
+        font-size: 10px;
+        color: #bdc3c7;
+        font-weight: 400;
+    }
     </style>
 </head>
 <body>
@@ -133,15 +190,21 @@
 
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 style="margin:0;">PROJET MASTER<br><span style="font-size:0.6em; color:#7f8c8d;">PROJE MASTER</span></h2>
+        <h2 style="margin:0;">DQE MASTER BETA :)<br><span style="font-size:0.6em; color:#7f8c8d;">PROJE MASTER</span></h2>
         <button class="logout-btn" onclick="logout()">Déconnexion<br>Çıkış</button>
     </div>
     
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('ALL')">TOUS<br>HEPSİ</button>
         <button class="tab-btn" onclick="switchTab('ROUTE')">ROUTE<br>YOL</button>
-        <button class="tab-btn" onclick="switchTab('OA')">OA<br>SANAT</button>
+        <button class="tab-btn" onclick="switchTab('OA')">OA<br>SANAT YAPILARI</button>
         <button class="tab-btn" onclick="switchTab('TUNNEL')">TUNNEL<br>TÜNEL</button>
+        <div class="quote-card" onclick="getNewQuote()">
+        <div class="quote-icon">❝</div>
+        <p id="qText" class="q-text">Yükleniyor...</p>
+        <div id="qAuthor" class="q-author"></div>
+        <div class="q-hint">Değiştirmek için dokun ↻</div>
+    </div>
     </div>
 
     <label>Sélectionnez l'article / İş Kalemi Seç:</label>
@@ -758,6 +821,41 @@
             document.getElementById("customResults").style.display = "none";
         }
     });
+    // --- GÜNÜN SÖZÜ ---
+    const quotes = [
+        "Mühendislik, hayal gücünün maddeye dönüşmesidir.",
+        "Zor yollar, genellikle güzel yerlere çıkar.",
+        "Kalite bir eylem değil, bir alışkanlıktır.",
+        "Ölçülebilen her şeyi ölçün, ölçülemeyeni ölçülebilir hale getirin.",
+        "Büyük işler, küçük işlerin kusursuz yapılmasıyla ortaya çıkar.",
+        "Şantiyede en önemli kural: Güvenlik, hızdan önce gelir.",
+        "Bir problemi çözmek, onu anlamakla başlar.",
+        "Başarı, hazırlık ve fırsatın karşılaştığı yerdir.",
+        "İnşa etmek, geleceğe inanmaktır.",
+        "Detaylar, tasarımı tasarım yapan unsurlardır.",
+        "Hata yapmaktan korkma, aynı hatayı iki kez yapmaktan kork.",
+        "Planlama yoksa, başarısızlık planlanmıştır.",
+        "En iyi mühendis, en az malzemeyle en sağlam yapıyı kurandır.",
+        "Yol medeniyettir.",
+        "Taş yerinde ağırdır.",
+        "İşleyen demir ışıldar.",
+        "Sabır, acıdır ama meyvesi tatlıdır."
+    ];
+
+    function showDailyQuote() {
+        const today = new Date();
+        // Tarihin gününü al (1 ile 31 arası sayı)
+        // Böylece söz SADECE GÜN DEĞİŞTİĞİNDE değişir.
+        const dayIndex = today.getDate(); 
+        
+        // Listeden o güne denk gelen sözü seç
+        const quote = quotes[dayIndex % quotes.length];
+        
+        document.getElementById("dailyQuote").innerText = '"' + quote + '"';
+    }
+
+    // Uygulama açılır açılmaz sözü göster
+    showDailyQuote();
 </script>
 
 </body>
