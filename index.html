@@ -3,152 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DQE PRO MASTER</title>
+    <title>MASTER DQE (FULL)</title>
     <style>
-        /* MODERN THEME */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f8; color: #333; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 600px; background: #ffffff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e1e4e8; }
+        /* MODERN TASARIM */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f6f8; color: #333; height: 100vh; overflow: hidden; }
 
-        /* TABS */
-        .tabs { display: flex; justify-content: space-between; margin-bottom: 20px; background: #f0f2f5; padding: 4px; border-radius: 12px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 10px 0; border: none; background: transparent; cursor: pointer; font-weight: 700; color: #7f8c8d; border-radius: 8px; font-size: 11px; text-align: center; line-height: 1.2; }
-        .tab-btn.active { background-color: #3498db; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* GİRİŞ EKRANI */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f8; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 85%; max-width: 350px; text-align: center; border: 1px solid #e1e4e8; }
+        .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #e1e4e8; border-radius: 12px; font-size: 24px; text-align: center; letter-spacing: 5px; background: #f9fbfd; }
+        .login-input:focus { border-color: #3498db; background: #fff; }
+        .login-btn { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 15px; font-weight: 800; font-size: 18px; text-transform: uppercase; }
-        label { display: block; margin-top: 15px; margin-bottom: 8px; font-weight: 600; font-size: 0.9em; color: #555; }
-        
-        /* INPUTS */
-        .search-wrapper { position: relative; width: 100%; }
-        input { width: 100%; padding: 14px 40px 14px 14px; border: 1px solid #d1d9e6; border-radius: 12px; font-size: 15px; background: #f9fbfd; color: #2c3e50; font-weight: 500; transition: all 0.3s; }
-        input:focus { outline: none; border-color: #3498db; background: #fff; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15); }
-        .arrow-btn { position: absolute; right: 0; top: 0; bottom: 0; width: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #3498db; font-size: 14px; }
-        
-        /* RESULTS LIST */
-        .custom-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border: 1px solid #eee; border-radius: 12px; max-height: 300px; overflow-y: auto; z-index: 1000; display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        .result-item { padding: 12px 16px; border-bottom: 1px solid #f4f6f8; cursor: pointer; font-size: 13px; line-height: 1.4; }
-        .result-item:last-child { border-bottom: none; }
-        .result-item:hover, .result-item:active { background-color: #eaf6ff; color: #007aff; }
-        .result-item strong { display: block; color: #2c3e50; font-size: 14px; margin-bottom: 2px; }
-        .result-item span { color: #555; font-size: 12px; font-style: italic; }
-        
-        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-bottom: 4px; color: white;}
+        /* ANA UYGULAMA */
+        #appContainer { display: none; max-width: 600px; margin: 0 auto; height: 100%; overflow-y: auto; padding: 15px; padding-bottom: 50px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logout-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+        /* SEKMELER */
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #e0e0e0; padding: 4px; border-radius: 12px; }
+        .tab-btn { flex: 1; padding: 10px 0; border: none; background: transparent; font-weight: 700; color: #666; border-radius: 9px; font-size: 10px; text-align: center; cursor: pointer; }
+        .tab-btn.active { background: #3498db; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* ARAMA VE LİSTE */
+        .search-wrapper { position: relative; margin-bottom: 15px; }
+        .search-input { width: 100%; padding: 16px 40px 16px 16px; border: 2px solid #d1d9e6; border-radius: 12px; font-size: 15px; font-weight: 500; }
+        .results-list { display: none; position: absolute; top: 110%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 12px; max-height: 50vh; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .res-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; line-height: 1.4; }
+        .res-item:active { background: #f0f7ff; }
+        .tag { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; color: white; margin-right: 5px; vertical-align: middle; }
         .tag-route { background: #3498db; } .tag-oa { background: #27ae60; } .tag-tunnel { background: #e67e22; }
 
-        /* CARDS */
-        .selected-card { background: #f0f7ff; border: 1px solid #cce4ff; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; }
-        .selected-card h3 { margin: 0; color: #0056b3; font-size: 16px; display: flex; justify-content: space-between; }
-        .badge-unit { background: #3498db; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
-        .price-tag { margin-top:12px; font-size:14px; color: #333; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e1e4e8; }
+        /* KART VE HESAP */
+        .card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e1e4e8; display: none; }
+        .price-box { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid #eee; }
+        .calc-area { opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
+        .calc-input { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; margin-top: 5px; margin-bottom: 15px; }
+        .total-box { background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 20px; border-radius: 16px; margin-top: 10px; display: none; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .big-total { font-size: 28px; font-weight: 800; text-align: right; display: block; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; }
 
-        .result-box { margin-top: 25px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border-radius: 16px; padding: 25px; display: none; box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3); }
-        .result-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
-        .grand-total-val { font-size: 28px; font-weight: 700; text-align: right; display: block; margin-top: 5px; }
-        
-        /* LOGIN */
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f8; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 90%; max-width: 350px; text-align: center; border: 1px solid #e1e4e8; }
-        .login-btn { width: 100%; padding: 15px; margin-top: 20px; background: #3498db; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .logout-btn { background: #e74c3c; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; border: none; font-weight: bold; }
+        /* SÖZ KARTI */
+        .quote-card { margin-top: 30px; padding: 20px; background: white; border-radius: 16px; text-align: center; border-bottom: 3px solid #3498db; cursor: pointer; }
+        .q-text { font-size: 14px; font-style: italic; color: #555; margin-bottom: 10px; }
+        .q-author { font-size: 11px; font-weight: 700; color: #3498db; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h2 style="margin-bottom: 10px;">🔒 GİRİŞ / CONNEXION</h2>
+        <h2 style="margin-bottom: 10px; color:#2c3e50;">GİRİŞ / CONNEXION</h2>
         <p style="color:#666; margin-bottom: 20px; font-size:14px;">Şifrenizi giriniz / Mot de passe</p>
-        <input type="password" id="passwordInput" placeholder="****" style="text-align: center; letter-spacing: 5px;">
-        <button class="login-btn" onclick="attemptLogin()">GİRİŞ / ENTRER</button>
-        <p id="loginError" style="color:red; margin-top:10px; display:none;">Hatalı Şifre! / Incorrect!</p>
+        <input type="password" id="passInput" class="login-input" placeholder="****" inputmode="numeric">
+        <button class="login-btn" onclick="doLogin()">GİRİŞ / ENTRER</button>
+        <p id="errorMsg" style="color:red; display:none; margin-top:15px; font-weight:bold;">Hatalı Şifre!</p>
     </div>
 </div>
 
-<div class="container" id="mainApp" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 style="margin:0;">PROJET MASTER</h2>
-        <button class="logout-btn" onclick="logout()">Çıkış / Déco</button>
+<div id="appContainer">
+    <div class="header">
+        <h3 style="margin:0; color:#2c3e50;">PROJE MASTER</h3>
+        <button class="logout-btn" onclick="doLogout()">ÇIKIŞ</button>
     </div>
-    
+
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('ALL', this)">HEPSİ<br>TOUS</button>
-        <button class="tab-btn" onclick="switchTab('ROUTE', this)">YOL<br>ROUTE</button>
-        <button class="tab-btn" onclick="switchTab('OA', this)">SANAT<br>OA</button>
-        <button class="tab-btn" onclick="switchTab('TUNNEL', this)">TÜNEL<br>TUNNEL</button>
+        <button class="tab-btn active" onclick="setTab('ALL', this)">HEPSİ<br>TOUS</button>
+        <button class="tab-btn" onclick="setTab('ROUTE', this)">YOL<br>ROUTE</button>
+        <button class="tab-btn" onclick="setTab('OA', this)">SANAT<br>OA</button>
+        <button class="tab-btn" onclick="setTab('TUNNEL', this)">TÜNEL<br>TUNNEL</button>
     </div>
 
-    <label>İş Kalemi Seç / Sélectionnez l'article:</label>
-    
+    <label style="font-weight:600; color:#555;">İş Kalemi / Article:</label>
     <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Örn: Béton, Kazı, Buse..." onkeyup="filterItems()" onfocus="this.select(); toggleDropdown(true);" autocomplete="off">
-        <div class="arrow-btn" onclick="toggleDropdown('toggle')">▼</div>
-        <div id="customResults" class="custom-results"></div>
+        <input type="text" id="searchBox" class="search-input" placeholder="Ara / Rechercher..." onkeyup="filterList()" onfocus="showList()" autocomplete="off">
+        <div style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#3498db;">▼</div>
+        <div id="resultsList" class="results-list"></div>
     </div>
 
-    <div id="selectedCard" class="selected-card">
-        <h3><span id="selCode">CODE</span> <span class="badge-unit" id="selUnit">BİRİM</span></h3>
-        <p id="selName" style="margin: 10px 0; color: #333; font-weight: 600; line-height: 1.4;">İş Tanımı</p>
-        <div class="price-tag">
-            Birim Fiyat / P.U: <br>
-            <b><span id="selPriceDZD">0</span> DZD</b> + <b><span id="selPriceEUR">0</span> €</b>
+    <div id="detailCard" class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <b id="dCode" style="color:#3498db; font-size:18px;">CODE</b>
+            <span id="dUnit" style="background:#3498db; color:white; padding:3px 8px; border-radius:6px; font-size:12px;">UN</span>
+        </div>
+        <p id="dName" style="margin:10px 0; font-weight:500; color:#333; line-height:1.4;">İsim</p>
+        <div class="price-box">
+            <div style="font-size:11px; color:#777; margin-bottom:4px;">Birim Fiyat / P.U:</div>
+            <b id="dDZD">0</b> DZD + <b id="dEUR">0</b> €
         </div>
     </div>
 
-    <div id="calcArea" style="opacity: 0.5; pointer-events: none; margin-top: 20px;">
-        <label>Euro Kuru / Taux Euro:</label>
-        <input type="number" style="width:100%; margin-bottom:10px;" id="exchangeRate" value="102.3" step="0.1" oninput="calculate()">
-
-        <label>Miktar / Quantité:</label>
-        <input type="number" style="width:100%;" id="quantity" placeholder="Miktar giriniz..." oninput="calculate()">
-
-        <div class="result-box" id="resultBox">
-            <div class="result-row">
-                <span>Montant DZD:</span> <span id="resDZD">0 DZD</span>
-            </div>
-            <div class="result-row">
-                <span>Montant EUR:</span> <span id="resEUR">0 €</span>
-            </div>
-            <div style="margin-top: 20px; text-align: center;">
-                <span class="grand-total-label">TOPLAM / TOTAL</span>
-                <span class="grand-total-val" id="resGrandTotal">0,00 DZD</span>
-            </div>
+    <div id="calcSec" class="calc-area">
+        <label style="font-weight:600; color:#555;">Euro Kuru / Taux:</label>
+        <input type="number" id="rateIn" class="calc-input" value="102.3" oninput="calculate()">
+        <label style="font-weight:600; color:#555;">Miktar / Quantité:</label>
+        <input type="number" id="qtyIn" class="calc-input" placeholder="0" oninput="calculate()">
+        <div id="totalBox" class="total-box">
+            <div class="total-row"><span>Dinar:</span> <span id="tDZD">0</span></div>
+            <div class="total-row"><span>Euro:</span> <span id="tEUR">0</span></div>
+            <span class="big-total" id="tGrand">0 DZD</span>
         </div>
+    </div>
+
+    <div class="quote-card" onclick="getNewQuote()">
+        <div style="font-size:30px; color:#f0f4f8; margin-top:-10px;">❝</div>
+        <p id="qText" class="q-text">...</p>
+        <div id="qAuthor" class="q-author"></div>
+        <div class="q-hint">Değiştirmek için dokun ↻</div>
     </div>
 </div>
 
 <script>
     const APP_PASSWORD = "1907";
-    let currentFilter = 'ALL'; 
+    let currentFilter = 'ALL';
     let selectedItem = null;
 
-    function attemptLogin() {
-        const input = document.getElementById("passwordInput").value;
-        if(input.trim() === APP_PASSWORD) {
-            localStorage.setItem("isLoggedIn", "true");
-            showApp();
+    function doLogin() {
+        if (document.getElementById("passInput").value.trim() === APP_PASSWORD) {
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("appContainer").style.display = "block";
+            localStorage.setItem("dqe_auth", "ok");
+            document.body.style.overflow = "auto";
+            getNewQuote();
         } else {
-            document.getElementById("loginError").style.display = "block";
+            document.getElementById("errorMsg").style.display = "block";
         }
     }
 
-    document.getElementById("passwordInput").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") attemptLogin();
-    });
-
-    function showApp() {
-        document.getElementById("loginOverlay").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
-    }
-
-    function logout() {
-        localStorage.removeItem("isLoggedIn");
+    function doLogout() {
+        localStorage.removeItem("dqe_auth");
         location.reload();
     }
 
-    window.onload = function() {
-        if(localStorage.getItem("isLoggedIn") === "true") {
-            showApp();
+    if (localStorage.getItem("dqe_auth") === "ok") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("appContainer").style.display = "block";
+        document.body.style.overflow = "auto";
+        getNewQuote();
+    }
+
+    // --- CSV'DEN AKTARILAN %100 TAM LİSTE ---
+    const database = [
+        {l:"ROUTE", c:"A1", n:"Installation chantier / Şantiye Kurulumu", u:"Ft", d:1041277260.86, e:4972851.80},
+        {l:"ROUTE", c:"A2.1", n:"Laboratoire / Laboratuvar", u:"Ft", d:41644039.15, e:570439.50},
+        {l:"ROUTE", c:"A2.2", n:"Contrôle externe / Dış Kontrol", u:"Ft", d:33983960.76, e:400938.80},
+        {l:"ROUTE", c:"A3.1", n:"Études d'exécution / Uygulama Projeleri", u:"Ft", d:212842500, e:2025000},
+        {l:"ROUTE", c:"A3.2", n:"Contrôle externe études / Proje Kontrolü", u:"Ft", d:45999996.83, e:449657.90},
+        {l:"ROUTE", c:"A3.3", n:"Dossier de récolement / As-Built", u:"Ft", d:33568500, e:405000},
+        {l:"ROUTE", c:"A3.4", n:"Étude des méthodes / Metodoloji", u:"Ft", d:7500069.87, e:73313.10},
+        {l:"ROUTE", c:"A3.5", n:"Reconnaissances géotechniques / Jeoteknik", u:"Ft", d:40209555.68, e:388958.40},
+        {l:"ROUTE", c:"A4.1", n:"Sécurité passive", u:"Ft", d:200000000, e:0},
+        {l:"ROUTE", c:"A4.2", n:"Sécurité active", u:"Ft", d:400000000, e:0},
+        {l:"ROUTE", c:"A5", n:"Panneau d'identification / Tabela", u:"U", d:1775000, e:0},
+        {l:"ROUTE", c:"B1.1", n:"Débroussaillage / Sıyırma", u:"Ha", d:619820.41, e:2543.30},
+        {l:"ROUTE", c:"B1.2", n:"Abattage arbres / Ağaç Kesimi", u:"U", d:1600, e:0},
+        {l:"ROUTE", c:"B1.3", n:"Dépose ouvrages / Metal Sökümü", u:"Tonne", d:944.25, e:2.50},
+        {l:"ROUTE", c:"B2.1", n:"Démolition divers / Yıkım", u:"m3", d:1335.05, e:6.50},
+        {l:"ROUTE", c:"B2.2", n:"Démolition béton / Beton Yıkımı", u:"m3", d:1620.22, e:8.60},
+        {l:"ROUTE", c:"B2.3", n:"Démolition chaussée / Asfalt Sökümü", u:"m3", d:207.7, e:1},
+        {l:"ROUTE", c:"B3.1", n:"Rabotage <100mm / Frezeleme", u:"m2", d:88.85, e:0.50},
+        {l:"ROUTE", c:"B3.2", n:"Rabotage 100-200mm / Frezeleme", u:"m2", d:98.62, e:0.60},
+        {l:"ROUTE", c:"B4", n:"Scarification / Kazıma", u:"m2", d:28.16, e:0.80},
+        {l:"ROUTE", c:"C1.1", n:"Décapage terre vég. / Sıyırma", u:"m3", d:128.62, e:0.60},
+        {l:"ROUTE", c:"C1.2", n:"Reprise stock / Stoktan Dolgu", u:"m3", d:179.08, e:0.40},
+        {l:"ROUTE", c:"C2.2", n:"Purges / Zayıf Zemin", u:"m3", d:2200, e:0},
+        {l:"ROUTE", c:"C3.1", n:"Déblai meuble > Remblai", u:"m3", d:257.24, e:1.20},
+        {l:"ROUTE", c:"C3.2", n:"Déblai semi-dur > Remblai", u:"m3", d:386.32, e:1.60},
+        {l:"ROUTE", c:"C3.3", n:"Déblai rocheux > Remblai", u:"m3", d:1308.96, e:4.80},
+        {l:"ROUTE", c:"C4.1", n:"Déblai meuble > Dépôt", u:"m3", d:148.16, e:0.80},
+        {l:"ROUTE", c:"C4.2", n:"Déblai semi-dur > Dépôt", u:"m3", d:307.7, e:1},
+        {l:"ROUTE", c:"C4.3", n:"Déblai rocheux > Dépôt", u:"m3", d:893.1, e:3},
+        {l:"ROUTE", c:"C5.1", n:"Remblai emprunt / Ariyet", u:"m3", d:555.63, e:1.90},
+        {l:"ROUTE", c:"C6.1", n:"Assise drainante / Blokaj", u:"m3", d:1166.55, e:1.50},
+        {l:"ROUTE", c:"C7.1", n:"Géotextile renfort / Geotekstil", u:"m2", d:290.8, e:4},
+        {l:"ROUTE", c:"C7.2", n:"Géotextile anti-contam", u:"m2", d:258.27, e:5.10},
+        {l:"ROUTE", c:"C7.3", n:"Géogrille", u:"m2", d:418.04, e:5.20},
+        {l:"ROUTE", c:"C8.1", n:"Arrondi de crête / Şev Yuvarlama", u:"ml", d:317.01, e:1.30},
+        {l:"ROUTE", c:"C9.1", n:"Couche de forme / Form", u:"m3", d:1346.55, e:1.50},
+        {l:"ROUTE", c:"C10.1", n:"Transport < 30km", u:"M3xKM", d:12.5, e:0},
+        {l:"ROUTE", c:"C10.2", n:"Transport > 30km", u:"M3xKM", d:11, e:0},
+        {l:"ROUTE", c:"D1.1", n:"Fossé type A", u:"ml", d:495.86, e:1.80},
+        {l:"ROUTE", c:"D1.2", n:"Fossé type B", u:"ml", d:594.94, e:2.20},
+        {l:"ROUTE", c:"D1.3", n:"Fossé type C", u:"ml", d:897.18, e:3.40},
+        {l:"ROUTE", c:"D1.4", n:"Végétalisation / Çimleme", u:"ml", d:874.94, e:2.20},
+        {l:"ROUTE", c:"D2.1", n:"Bétonnage fossé A", u:"ml", d:4448.37, e:18.10},
+        {l:"ROUTE", c:"D2.2", n:"Bétonnage fossé B", u:"ml", d:5662.5, e:25},
+        {l:"ROUTE", c:"D2.3", n:"Bétonnage fossé C", u:"ml", d:6316.17, e:32.10},
+        {l:"ROUTE", c:"D3.1", n:"Cunettes végétalisées", u:"ml", d:3402.4, e:12},
+        {l:"ROUTE", c:"D3.2", n:"Cunettes béton", u:"ml", d:4304.81, e:15.30},
+        {l:"ROUTE", c:"D3.3", n:"Cunettes symétriques", u:"ml", d:4829.18, e:13.40},
+        {l:"ROUTE", c:"D4.1", n:"Descente d'eau A", u:"ml", d:2912.86, e:11.80},
+        {l:"ROUTE", c:"D4.2", n:"Descente d'eau B", u:"ml", d:3357.57, e:14.10},
+        {l:"ROUTE", c:"D4.3", n:"Descente d'eau C", u:"ml", d:3634.81, e:15.30},
+        {l:"ROUTE", c:"D4.4", n:"Descente d'eau D", u:"ml", d:4119.98, e:17.40},
+        {l:"ROUTE", c:"D5.1", n:"Descente Tuile A", u:"ml", d:2200, e:0},
+        {l:"ROUTE", c:"D5.2", n:"Descente Tuile B", u:"ml", d:3520, e:0},
+        {l:"ROUTE", c:"D5.3", n:"Descente Tuile C", u:"ml", d:4200, e:0},
+        {l:"ROUTE", c:"D6.1", n:"Caniveau U 30x40", u:"ml", d:4800, e:0},
+        {l:"ROUTE", c:"D6.2", n:"Caniveau U 40x50", u:"ml", d:5800, e:0},
+        {l:"ROUTE", c:"D6.3", n:"Caniveau U 45x55", u:"ml", d:6300, e:0},
+        {l:"ROUTE", c:"D7.1", n:"Caniveau fente 300", u:"ml", d:22200, e:0},
+        {l:"ROUTE", c:"D7.2", n:"Caniveau fente 400", u:"ml", d:26600, e:0},
+        {l:"ROUTE", c:"D7.3", n:"Caniveau fente 500", u:"ml", d:29300, e:0},
+        {l:"ROUTE", c:"D7.4", n:"Renforcement caniveaux", u:"ml", d:11191.83, e:7.90},
+        {l:"ROUTE", c:"D8.1", n:"Demi-buse 300", u:"ml", d:4400, e:0},
+        {l:"ROUTE", c:"D8.2", n:"Demi-buse 400", u:"ml", d:5700, e:0},
+        {l:"ROUTE", c:"D8.3", n:"Demi-buse 500", u:"ml", d:7800, e:0},
+        {l:"ROUTE", c:"D9.1", n:"Tranchée < 2m", u:"m3", d:217.93, e:0.90},
+        {l:"ROUTE", c:"D9.2", n:"Tranchée 2-4m", u:"m3", d:277.24, e:1.20},
+        {l:"ROUTE", c:"D9.3", n:"Tranchée 4-6m", u:"m3", d:326.55, e:1.50},
+        {l:"ROUTE", c:"D9.4", n:"PV Roche (Tranchée)", u:"m3", d:1500, e:0},
+        {l:"ROUTE", c:"D10.1", n:"Lit de pose sable", u:"m3", d:1455.51, e:6.30},
+        {l:"ROUTE", c:"D10.2", n:"Lit de pose béton", u:"m3", d:5962.17, e:12.10},
+        {l:"ROUTE", c:"D11.1", n:"Enrobage grave", u:"m3", d:1437.35, e:5.50},
+        {l:"ROUTE", c:"D11.2", n:"Enrobage béton", u:"m3", d:5593.89, e:15.70},
+        {l:"ROUTE", c:"D11.3", n:"Enrobage drainant", u:"m3", d:1739.65, e:4.50},
+        {l:"ROUTE", c:"D12.1", n:"Tuyau 400mm", u:"ml", d:7769.31, e:0.30},
+        {l:"ROUTE", c:"D12.2", n:"Tuyau 600mm", u:"ml", d:9369.31, e:0.30},
+        {l:"ROUTE", c:"D13.1", n:"Buse 800mm", u:"ml", d:15498.73, e:4.90},
+        {l:"ROUTE", c:"D13.2", n:"Buse 1000mm", u:"ml", d:21631.72, e:3.60},
+        {l:"ROUTE", c:"D13.3", n:"Buse 1200mm", u:"ml", d:36375.97, e:6.10},
+        {l:"ROUTE", c:"D13.4", n:"Buse 1500mm", u:"ml", d:50775.97, e:6.10},
+        {l:"ROUTE", c:"D14.1", n:"Collecteur 150mm", u:"ml", d:2700, e:0},
+        {l:"ROUTE", c:"D17.1", n:"Tuyau PEHD 75mm", u:"ml", d:1236, e:0},
+        {l:"ROUTE", c:"D17.2", n:"Tuyau PEHD 90mm", u:"ml", d:1500, e:0},
+        {l:"ROUTE", c:"D18.1", n:"Chambre K1C", u:"U", d:112000, e:0},
+        {l:"ROUTE", c:"D18.2", n:"Chambre K2C", u:"U", d:125000, e:0},
+        {l:"ROUTE", c:"D19.1", n:"Regard 1000mm", u:"U", d:120000, e:0},
+        {l:"ROUTE", c:"D20.1", n:"Puisard / Rogar", u:"U", d:150000, e:0},
+        {l:"ROUTE", c:"D20.2", n:"Puisard 1300", u:"U", d:174000, e:0},
+        {l:"ROUTE", c:"D20.3", n:"Puisard 1500", u:"U", d:188000, e:0},
+        {l:"ROUTE", c:"D20.4", n:"Puisard 1800", u:"U", d:215000, e:0},
+        {l:"ROUTE", c:"D20.5", n:"Puisard 2000", u:"U", d:220000, e:0},
+        {l:"ROUTE", c:"D20.6", n:"Puisard 2500", u:"U", d:260000, e:0},
+        {l:"ROUTE", c:"D21.1", n:"Grille 700x700", u:"U", d:32000, e:0},
+        {l:"ROUTE", c:"D21.2", n:"Grille 250x400", u:"U", d:26826.09, e:1.70},
+        {l:"ROUTE", c:"D21.3", n:"Caillebotis 1x1m", u:"U", d:5400, e:0},
+        {l:"ROUTE", c:"D21.4", n:"Caillebotis 1x2m", u:"U", d:9200, e:0},
+        {l:"ROUTE", c:"D22.1", n:"Tête buse 600", u:"U", d:60925.34, e:154.20},
+        {l:"ROUTE", c:"D22.2", n:"Tête buse 800", u:"U", d:68921.05, e:186.50},
+        {l:"ROUTE", c:"D22.3", n:"Tête buse 1000", u:"U", d:76992.73, e:224.90},
+        {l:"ROUTE", c:"D22.4", n:"Tête buse 1200", u:"U", d:90558.06, e:287.80},
+        {l:"ROUTE", c:"D22.5", n:"Tête buse 1500", u:"U", d:125386.97, e:436.10},
+        {l:"ROUTE", c:"D23.1", n:"Bourrelet enrobé", u:"ml", d:3000, e:0},
+        {l:"ROUTE", c:"D24.1", n:"Enrochement Type A", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D24.2", n:"Enrochement Type B", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D24.3", n:"Enrochement Type C", u:"m3", d:1879.3, e:9},
+        {l:"ROUTE", c:"D25.1", n:"Enrochement lié", u:"m3", d:2042.98, e:7.40},
+        {l:"ROUTE", c:"D26.1", n:"Barbacane", u:"ml", d:1700, e:0},
+        {l:"ROUTE", c:"D27.1", n:"Béton propreté", u:"m3", d:178.16, e:0.80},
+        {l:"ROUTE", c:"D27.2", n:"Béton ouvrages", u:"m3", d:9553.28, e:46.40},
+        {l:"ROUTE", c:"D27.3", n:"Coffrage ouvrages", u:"m2", d:920.22, e:8.60},
+        {l:"ROUTE", c:"D27.4", n:"Ferraillage", u:"Kg", d:65.08, e:0.40},
+        {l:"ROUTE", c:"E1.1", n:"Grave GNT (PMT)", u:"m3", d:1922.64, e:3.20},
+        {l:"ROUTE", c:"E2.1", n:"Grave Bitume (GB)", u:"Tonne", d:3390.32, e:21.60},
+        {l:"ROUTE", c:"E2.2", n:"Enrobés EME 2", u:"Tonne", d:4782.15, e:29.50},
+        {l:"ROUTE", c:"E3.1", n:"Couche BB / Aşınma", u:"Tonne", d:4337.90, e:27.00},
+        {l:"ROUTE", c:"E3.2", n:"Couche BBM / Aşınma", u:"Tonne", d:4650.19, e:34.70},
+        {l:"ROUTE", c:"E3.3", n:"Couche BBME / Aşınma", u:"Tonne", d:4670.65, e:34.50},
+        {l:"ROUTE", c:"E4.1", n:"Imprégnation", u:"m2", d:95, e:0},
+        {l:"ROUTE", c:"E4.2", n:"Accrochage", u:"m2", d:70, e:0},
+        {l:"ROUTE", c:"E5.1", n:"Bicouche / Sathi Kaplama", u:"m2", d:540, e:0},
+        {l:"ROUTE", c:"E6.1", n:"Bordure A2 / Bordür", u:"ml", d:2000, e:0},
+        {l:"ROUTE", c:"F1.1", n:"Hachures / Taralı Alan", u:"m2", d:680, e:0},
+        {l:"ROUTE", c:"F1.2", n:"Bande 100mm", u:"ml", d:70, e:0},
+        {l:"ROUTE", c:"F1.3", n:"Bande 150mm", u:"ml", d:145, e:0},
+        {l:"ROUTE", c:"F1.4", n:"Bande 225mm", u:"ml", d:200, e:0},
+        {l:"ROUTE", c:"F1.5", n:"Bande 375mm", u:"ml", d:340, e:0},
+        {l:"ROUTE", c:"F1.6", n:"Bande 500mm", u:"ml", d:420, e:0},
+        {l:"ROUTE", c:"F1.7", n:"Flèche rabattement", u:"U", d:600, e:0},
+        {l:"ROUTE", c:"F1.8", n:"Flèche simple", u:"U", d:800, e:0},
+        {l:"ROUTE", c:"F1.9", n:"Flèche double", u:"U", d:820, e:0},
+        {l:"ROUTE", c:"F2.1", n:"Bande préfa.", u:"ml", d:800, e:0},
+        {l:"ROUTE", c:"G1.1", n:"Panneau A/AB", u:"U", d:52000, e:0},
+        {l:"ROUTE", c:"G1.2", n:"Panneau Triangle", u:"U", d:42400, e:0},
+        {l:"ROUTE", c:"G1.3", n:"Panneau Circulaire", u:"U", d:48600, e:0},
+        {l:"ROUTE", c:"G1.4", n:"Panneau 850mm", u:"U", d:41500, e:0},
+        {l:"ROUTE", c:"G1.5", n:"Panneau Carré 1050", u:"U", d:43000, e:0},
+        {l:"ROUTE", c:"G1.6", n:"Panneau Carré 700", u:"U", d:38800, e:0},
+        {l:"ROUTE", c:"G1.7", n:"Panneau Octogonal", u:"U", d:40700, e:0},
+        {l:"ROUTE", c:"G2.1", n:"Panonceau M", u:"m2", d:42000, e:0},
+        {l:"ROUTE", c:"G2.2", n:"Panneau E", u:"m2", d:57000, e:0},
+        {l:"ROUTE", c:"G3.1", n:"Panneau Direction", u:"m2", d:64000, e:0},
+        {l:"ROUTE", c:"G4.1", n:"Balise J1", u:"U", d:18000, e:0},
+        {l:"ROUTE", c:"G4.2", n:"Balise J3", u:"U", d:26700, e:0},
+        {l:"ROUTE", c:"G4.3", n:"Balise J4", u:"U", d:64000, e:0},
+        {l:"ROUTE", c:"G4.4", n:"Balise J5", u:"U", d:22500, e:0},
+        {l:"ROUTE", c:"G4.5", n:"Balise J6", u:"U", d:24000, e:0},
+        {l:"ROUTE", c:"G4.6", n:"Balise J14a", u:"U", d:46000, e:0},
+        {l:"ROUTE", c:"G5.1", n:"Poteaux < 50", u:"ml", d:9776.59, e:0},
+        {l:"ROUTE", c:"G5.2", n:"Poteaux < 100", u:"ml", d:13035.47, e:0},
+        {l:"ROUTE", c:"G5.3", n:"Poteaux < 200", u:"ml", d:16294.33, e:0},
+        {l:"ROUTE", c:"G5.4", n:"Poteaux < 800", u:"ml", d:19553.22, e:0},
+        {l:"ROUTE", c:"G5.5", n:"Poteaux < 1600", u:"ml", d:26070.91, e:0},
+        {l:"ROUTE", c:"G5.6", n:"Poteaux < 3200", u:"ml", d:32588.67, e:0},
+        {l:"ROUTE", c:"G5.7", n:"Semelle / Temel", u:"m3", d:8020.53, e:38.90},
+        {l:"ROUTE", c:"G6.1", n:"Jalonneur 1 réflect.", u:"U", d:8450, e:0},
+        {l:"ROUTE", c:"G6.2", n:"Jalonneur 2 réflect.", u:"U", d:9380, e:0},
+        {l:"ROUTE", c:"G7.1.1", n:"Réflecteur GBA", u:"U", d:1670, e:0},
+        {l:"ROUTE", c:"G7.1.2", n:"Réflecteur glissière", u:"U", d:1400, e:0},
+        {l:"ROUTE", c:"G7.2", n:"Plots / Kedi Gözü", u:"U", d:2280, e:0},
+        {l:"ROUTE", c:"G7.3", n:"Écran anti-éblouissement", u:"U", d:21300, e:0},
+        {l:"ROUTE", c:"H1.1.1", n:"Glissière GS4", u:"ml", d:1238.45, e:48.50},
+        {l:"ROUTE", c:"H2.1.1", n:"Barrière GBA", u:"ml", d:3932.51, e:16.30},
+        {l:"ROUTE", c:"H2.1.2", n:"Barrière DBA", u:"ml", d:4586.99, e:18.70},
+        {l:"ROUTE", c:"H2.2", n:"Semelles GBA", u:"ml", d:723.79, e:2.70},
+        {l:"ROUTE", c:"H3.1", n:"Extrémité GBA 20m", u:"U", d:5150.55, e:21.50},
+        {l:"ROUTE", c:"H3.2", n:"Extrémité GBA 1.65m", u:"U", d:6032.27, e:25.10},
+        {l:"ROUTE", c:"I1.1", n:"Fouilles / Kazı", u:"m3", d:178.16, e:0.80},
+        {l:"ROUTE", c:"I1.2", n:"Remblaiement / Dolgu", u:"m3", d:822.41, e:3.30},
+        {l:"ROUTE", c:"I1.3", n:"Béton propreté", u:"m3", d:5919.19, e:4.70},
+        {l:"ROUTE", c:"I1.4", n:"Coffrage fondations", u:"m2", d:812.29, e:7.70},
+        {l:"ROUTE", c:"I1.5", n:"Coffrage longrines", u:"m2", d:1349.88, e:4.40},
+        {l:"ROUTE", c:"I1.6", n:"Béton fondations", u:"m3", d:8973.98, e:37.40},
+        {l:"ROUTE", c:"I1.7", n:"Aciers / Demir", u:"Kg", d:66.08, e:0.40},
+        {l:"ROUTE", c:"I2.1", n:"Support HEA 140", u:"U", d:9600, e:0},
+        {l:"ROUTE", c:"I2.2", n:"Support HEA 160", u:"U", d:14500, e:0},
+        {l:"ROUTE", c:"I2.3", n:"Support HEA 180", u:"U", d:18220, e:0},
+        {l:"ROUTE", c:"I2.4", n:"Support HEA 220", u:"U", d:28300, e:0},
+        {l:"ROUTE", c:"I2.5", n:"Support HEA 260", u:"U", d:41300, e:0},
+        {l:"ROUTE", c:"I2.6", n:"Support HEA 280", u:"U", d:52500, e:0},
+        {l:"ROUTE", c:"I3.1", n:"Panneaux antibruit / Gürültü Paneli", u:"m2", d:88750, e:0},
+        {l:"ROUTE", c:"I4.1", n:"Déblais bassins", u:"m3", d:168.16, e:0.80},
+        {l:"ROUTE", c:"I5.1", n:"Argile compactée", u:"m3", d:474.48, e:2.40},
+        {l:"ROUTE", c:"I5.2", n:"Terre végétale", u:"m3", d:268.39, e:0.70},
+        {l:"ROUTE", c:"I5.3", n:"Enrochement", u:"m3", d:2205.85, e:10.50},
+        {l:"ROUTE", c:"I5.4", n:"Grave GNT", u:"m3", d:2179.54, e:0.20},
+        {l:"ROUTE", c:"I6.1", n:"Séparateur hydro.", u:"U", d:4400000, e:0},
+        {l:"ROUTE", c:"I7.1", n:"Regard siphoïde", u:"U", d:280000, e:0},
+        {l:"ROUTE", c:"I7.2.1", n:"Vanne dérivation", u:"U", d:282000, e:0},
+        {l:"ROUTE", c:"I8.1", n:"Clôtures", u:"ml", d:5934.02, e:2.60},
+        {l:"ROUTE", c:"I8.2", n:"Portail", u:"U", d:250000, e:0},
+        {l:"ROUTE", c:"I9.1", n:"Plantation arbres", u:"m2", d:1545.17, e:0},
+        {l:"ROUTE", c:"I9.2", n:"Plantation baliveaux", u:"m2", d:1822.86, e:0},
+        {l:"ROUTE", c:"I9.3", n:"Plantation arbrisseaux", u:"m2", d:1103, e:0},
+        {l:"ROUTE", c:"I9.4", n:"Engazonnement", u:"m2", d:637.19, e:0},
+        {l:"ROUTE", c:"I9.5", n:"Plantation arbustes", u:"m2", d:797, e:0},
+        {l:"ROUTE", c:"J1.1", n:"Mur gabions", u:"m3", d:3034.57, e:24.10},
+        {l:"ROUTE", c:"J2.1", n:"Béton projeté", u:"m3", d:13478.48, e:122.40},
+        {l:"ROUTE", c:"J2.2", n:"Treillis soudés", u:"Kg", d:71.85, e:0.50},
+        {l:"ROUTE", c:"J2.3.1", n:"Clous 12m", u:"U", d:19236.87, e:23.10},
+        {l:"ROUTE", c:"J2.3.2", n:"Clous 16m", u:"U", d:25638.93, e:30.90},
+        {l:"ROUTE", c:"J2.3.3", n:"Clous 20m", u:"U", d:32010.3, e:39},
+        {l:"ROUTE", c:"J3.1", n:"Merlons", u:"m3", d:217.7, e:1},
+        {l:"ROUTE", c:"J4.1", n:"Éperons drainants", u:"m3", d:1870, e:0},
+        {l:"ROUTE", c:"J5", n:"Masque poids", u:"m3", d:1200, e:0},
+        {l:"ROUTE", c:"J6.1", n:"Drains", u:"ml", d:4700, e:0},
+        {l:"ROUTE", c:"J7", n:"Barbacanes PVC", u:"ml", d:980, e:0},
+        {l:"ROUTE", c:"J8.1", n:"Ancrages 32mm", u:"ml", d:470.1, e:13},
+        {l:"ROUTE", c:"J8.2", n:"Ancrages 28mm", u:"ml", d:531.48, e:12.40},
+        {l:"ROUTE", c:"J8.3", n:"Ancrages 25mm", u:"ml", d:664.47, e:11.10},
+        {l:"ROUTE", c:"J8.4", n:"Essais ancrages", u:"U", d:32400, e:0},
+        {l:"ROUTE", c:"J9", n:"Géotextile alvéolaire", u:"m2", d:780, e:0},
+        {l:"ROUTE", c:"J10", n:"Grillage boulonné", u:"m2", d:9957.81, e:5.30},
+        {l:"ROUTE", c:"J11", n:"Atalus", u:"m2", d:18500, e:0},
+        {l:"ROUTE", c:"J12.1", n:"Terre Armée <15m", u:"m2", d:13600, e:0},
+        {l:"ROUTE", c:"J12.2", n:"Terre Armée >15m", u:"m2", d:15700, e:0},
+        {l:"ROUTE", c:"J13", n:"Rideau palplanches", u:"m2", d:25200, e:0},
+        {l:"ROUTE", c:"J14", n:"Perrés maçonnés", u:"m2", d:2554.48, e:2.40},
+        {l:"ROUTE", c:"K1.1", n:"Caméra / Kamera", u:"U", d:412003.51, e:36246.30},
+        {l:"ROUTE", c:"K1.2", n:"Poteau caméra", u:"U", d:23504.98, e:2067.40},
+        {l:"ROUTE", c:"K1.3", n:"Conduits", u:"ml", d:832.1, e:73},
+        {l:"ROUTE", c:"K1.4", n:"Câblage", u:"ml", d:448.69, e:39.70},
+        {l:"ROUTE", c:"K1.5", n:"Système CCTV", u:"U", d:1811998.95, e:159413.50},
+        {l:"ROUTE", c:"K1.6", n:"Système DAI", u:"U", d:356431.76, e:31168.80},
+        {l:"ROUTE", c:"K2", n:"Clôture aéroport", u:"ml", d:5200, e:0},
+        {l:"ROUTE", c:"NP.11", n:"Poste observation", u:"U", d:12200000, e:0},
+        {l:"ROUTE", c:"NP.18", n:"Badigeonnage", u:"m2", d:759.08, e:0.40},
+        {l:"ROUTE", c:"NP.26", n:"Géocomposite", u:"m2", d:764.73, e:26.64},
+        {l:"ROUTE", c:"NP.27", n:"Masque poids", u:"MC", d:3405.85, e:10.50},
+        {l:"ROUTE", c:"NP32", n:"Fibres béton", u:"Kg", d:974.7, e:0},
+        {l:"ROUTE", c:"NP.48", n:"Déplacement cimetière", u:"U", d:22275, e:0},
+        {l:"ROUTE", c:"NP08.62", n:"PV plaque d'appui", u:"U", d:630, e:0},
+        {l:"ROUTE", c:"NP08.64", n:"Chambre L5C", u:"U", d:348873.07, e:11.02},
+        {l:"ROUTE", c:"NP08.65", n:"Grille anti chute", u:"U", d:41364.79, e:0},
+        {l:"ROUTE", c:"NP08.67", n:"Réseau multitub", u:"ml", d:6113.37, e:16.49},
+        {l:"ROUTE", c:"NP08.68", n:"Traversée chaussée", u:"ml", d:6792.85, e:2.02},
+        {l:"ROUTE", c:"NP08.74", n:"Couche forme sélec.", u:"m3", d:1950, e:0},
+        {l:"ROUTE", c:"NP08.14m", n:"Inclinomètre", u:"U", d:209998.56, e:2052.80},
+        {l:"ROUTE", c:"NP11.14a", n:"Sondage carotté", u:"ml", d:18000, e:0},
+        {l:"ROUTE", c:"NP11.14b", n:"Sondage pressio", u:"ml", d:15500, e:0},
+        {l:"ROUTE", c:"NP11.14c", n:"Essais pressio", u:"ml", d:10000, e:0},
+        {l:"ROUTE", c:"NP11.14d", n:"Essai Tomo", u:"ml", d:851, e:0},
+        {l:"ROUTE", c:"NP11.14e", n:"Essai Sismique", u:"ml", d:1566, e:0},
+        {l:"ROUTE", c:"NP11.19", n:"Etude adaptation", u:"ft", d:36723806, e:358780},
+        
+        // OA
+        {l:"OA", c:"OUA.A1", n:"Installation OA", u:"Ft", d:1010357152.02, e:4786342.60},
+        {l:"OA", c:"OUA.A2.1", n:"Études exécution", u:"Ft", d:455000003.56, e:4447702.80},
+        {l:"OA", c:"OUA.A2.2", n:"Dossier récolement", u:"Ft", d:43970223.22, e:430398.60},
+        {l:"OA", c:"OUA.A3", n:"Contrôle externe", u:"Ft", d:30000003.27, e:293255.10},
+        {l:"OA", c:"OUA.A4", n:"Reconnaissance géotech", u:"Ft", d:210000002.43, e:2052785.90},
+        {l:"OA", c:"OUA.A5", n:"Environnement", u:"Ft", d:34999998.7, e:342131},
+        {l:"OA", c:"OUA.A6", n:"Épreuve ouvrage", u:"Ft", d:19218104.53, e:906958.90},
+        {l:"OA", c:"OUA.B1.1", n:"Déblais fouilles", u:"m3", d:178.16, e:0.80},
+        {l:"OA", c:"OUA.B1.2", n:"PV Roche", u:"m3", d:1113.56, e:2.80},
+        {l:"OA", c:"OUA.B1.3", n:"Remblaiement", u:"m3", d:613.56, e:2.80},
+        {l:"OA", c:"OUA.B1.4", n:"Remblais abords", u:"m3", d:734.02, e:2.60},
+        {l:"OA", c:"OUA.B1.5", n:"Substitution sol", u:"m3", d:377.01, e:1.30},
+        {l:"OA", c:"OUA.B1.6", n:"Démolition béton", u:"m3", d:1800, e:0},
+        {l:"OA", c:"OUA.B1.7", n:"Enrochements", u:"m3", d:1245.4, e:2},
+        {l:"OA", c:"OUA.B2.1", n:"Pieux 1200mm", u:"ml", d:5404.19, e:54.70},
+        {l:"OA", c:"OUA.B2.2", n:"PV forage rocheux", u:"ml", d:802.06, e:7.80},
+        {l:"OA", c:"OUA.B2.3", n:"Tubes soniques 50/60", u:"ml", d:115.62, e:10.60},
+        {l:"OA", c:"OUA.B2.4", n:"Tubes soniques 102/114", u:"ml", d:5.15, e:19.50},
+        {l:"OA", c:"OUA.B2.5", n:"Essai sonique", u:"U", d:16000, e:0},
+        {l:"OA", c:"OUA.B2.6", n:"Recépage pieux", u:"U", d:2237.11, e:14.30},
+        {l:"OA", c:"OUA.B2.7", n:"Essais statiques", u:"U", d:1520000, e:0},
+        {l:"OA", c:"OUA.B3.1", n:"Puits <3m", u:"ml", d:124999.63, e:1221.90},
+        {l:"OA", c:"OUA.B3.2", n:"Puits >3m", u:"ml", d:135004.92, e:1319.60},
+        {l:"OA", c:"OUA.B4.1.1", n:"Coffrage ordinaire", u:"m2", d:853.21, e:7.30},
+        {l:"OA", c:"OUA.B4.1.2", n:"Coffrage fin", u:"m2", d:1036.08, e:10.40},
+        {l:"OA", c:"OUA.B4.1.3", n:"Coffrages voussoirs", u:"m2", d:808.48, e:22.40},
+        {l:"OA", c:"OUA.B4.2", n:"Étaiements", u:"m2", d:2177, e:10},
+        {l:"OA", c:"OUA.B4.3", n:"Badigeonnage", u:"m2", d:759.08, e:0.40},
+        {l:"OA", c:"OUA.B5.1", n:"Béton propreté", u:"m2", d:723.79, e:2.70},
+        {l:"OA", c:"OUA.B5.2.1", n:"Béton C40 Caisson", u:"m3", d:21343.02, e:172.60},
+        {l:"OA", c:"OUA.B5.2.2", n:"Béton C40 Poutres", u:"m3", d:11814.08, e:150.40},
+        {l:"OA", c:"OUA.B5.2.3", n:"Béton C35 Poutres", u:"m3", d:11029.87, e:113.10},
+        {l:"OA", c:"OUA.B5.2.4", n:"Béton C27 Pieux", u:"m3", d:8627.19, e:44.70},
+        {l:"OA", c:"OUA.B5.2.5", n:"Béton C35 Pieux", u:"m3", d:9247.65, e:44.50},
+        {l:"OA", c:"OUA.B5.2.6", n:"Béton C35 Piles", u:"m3", d:12538.45, e:48.50},
+        {l:"OA", c:"OUA.B5.2.7", n:"Béton C27 Murs", u:"m3", d:10736.15, e:49.50},
+        {l:"OA", c:"OUA.B5.2.8", n:"Béton C27 Hourdis", u:"m3", d:11372.71, e:42.30},
+        {l:"OA", c:"OUA.B5.2.9", n:"PV Ciment RN27", u:"m3", d:1200, e:0},
+        {l:"OA", c:"OUA.B5.2.10", n:"PV Ciment RN35", u:"m3", d:1500, e:0},
+        {l:"OA", c:"OUA.B6.1.1", n:"Acier HA", u:"Tonne", d:67033.93, e:380.90},
+        {l:"OA", c:"OUA.B6.1.2", n:"Treillis soudés", u:"Tonne", d:69026.52, e:527.60},
+        {l:"OA", c:"OUA.B6.2", n:"Précontrainte", u:"Tonne", d:55688.54, e:3170.20},
+        {l:"OA", c:"OUA.B7.1.1", n:"Appareil 2100", u:"U", d:260001.71, e:3812.30},
+        {l:"OA", c:"OUA.B7.1.2", n:"Appareil 7500", u:"U", d:449995.02, e:2932.60},
+        {l:"OA", c:"OUA.B7.1.3", n:"Appareil 35100", u:"U", d:874995.19, e:15884.70},
+        {l:"OA", c:"OUA.B7.1.4", n:"Appareil 35100M", u:"U", d:840001.59, e:12316.70},
+        {l:"OA", c:"OUA.B7.1.5", n:"Appareil 5500", u:"U", d:225001.38, e:2199.40},
+        {l:"OA", c:"OUA.B7.1.6", n:"Appareil 5500G", u:"U", d:228000.87, e:3343.10},
+        {l:"OA", c:"OUA.B7.1.7", n:"Appareil élastomère", u:"dm3", d:106.97, e:36.10},
+        {l:"OA", c:"B7.2", n:"Chape étanchéité", u:"m2", d:1895.4, e:2},
+        {l:"OA", c:"OUA.B7.3", n:"Gargouilles", u:"U", d:5128.39, e:0.70},
+        {l:"OA", c:"OUA.B7.4", n:"Caniveau asphalte", u:"ml", d:1951.44, e:7.20},
+        {l:"OA", c:"OUA.B7.5.1", n:"Joint 240mm", u:"ml", d:9389.7, e:1961},
+        {l:"OA", c:"OUA.B7.5.2", n:"Joint 160mm", u:"ml", d:10432.46, e:1559.80},
+        {l:"OA", c:"OUA.B7.5.3", n:"Joint 80mm", u:"ml", d:2326.43, e:905.90},
+        {l:"OA", c:"OUA.B7.6.1", n:"Garde-corps N2", u:"ml", d:23146.55, e:1.50},
+        {l:"OA", c:"OUA.B7.6.2", n:"Glissière H3", u:"ml", d:3761.9, e:147},
+        {l:"OA", c:"OUA.B7.6.3", n:"Barrière H4b", u:"ml", d:7021.77, e:160.10},
+        {l:"OA", c:"OUA.B7.7", n:"Amortisseur", u:"U", d:579.41, e:12213.30},
+        {l:"OA", c:"OUA.B8", n:"Multitubulaires", u:"ml", d:1800, e:0},
+        {l:"OA", c:"OUA.C1", n:"Palplanches", u:"m2", d:25000, e:0},
+        {l:"OA", c:"OUA.C2", n:"Perrés maçonnés", u:"m2", d:2554.48, e:2.40},
+        {l:"OA", c:"OUA.C4.2", n:"Béton projeté", u:"m2", d:1478.03, e:13.90},
+        {l:"OA", c:"OUA.C4.3", n:"Treillis soudées", u:"Kg", d:71.85, e:0.50},
+        {l:"OA", c:"OUA.C4.4.1", n:"Barbacane 50mm", u:"ml", d:500, e:0},
+        {l:"OA", c:"OUA.C4.4.2", n:"Barbacane 100mm", u:"ml", d:700, e:0},
+        {l:"OA", c:"OUA.C4.1.1", n:"Clous 16m", u:"U", d:25618.47, e:31.10},
+        {l:"OA", c:"OUA.C4.1.2", n:"Clous 12m", u:"U", d:19226.64, e:23.20},
+        {l:"OA", c:"OUA.C5.1", n:"Mur 2-4m", u:"m2", d:18500, e:0},
+        {l:"OA", c:"OUA.C5.2", n:"Mur 4-6m", u:"m2", d:21000, e:0},
+        {l:"OA", c:"OUA.C5.3", n:"Mur >6m", u:"m2", d:25000, e:0},
+        {l:"OA", c:"OUA.C6", n:"Mur gabion", u:"m3", d:5500, e:0},
+        {l:"OA", c:"OUA.NP.05", n:"Shock Transmittal", u:"U", d:659476.9, e:53097},
+        {l:"OA", c:"OUA.NP.06", n:"Isolateur sismique", u:"U", d:134282.61, e:15822.32},
+        {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T", u:"ml", d:4260, e:89},
+        {l:"OA", c:"OUA.NP.09b", n:"Tirants 75T", u:"ml", d:4310, e:103},
+        {l:"OA", c:"OUA.NP.09c", n:"Essais non destr.", u:"U", d:35832.83, e:133.77},
+        {l:"OA", c:"OUA.NP.09d", n:"Essais destr.", u:"U", d:96892.4, e:364.84},
+        {l:"OA", c:"OUA.NP.10", n:"Poutre métallique", u:"kg", d:183, e:0},
+        {l:"OA", c:"OUA.NP.35", n:"Joints dalot", u:"ml", d:6820, e:0},
+        {l:"OA", c:"OUA.NP.36", n:"Géotextile", u:"m2", d:258.27, e:5.10},
+        {l:"OA", c:"OUA.NP.57.1", n:"Appareil 45000 Fixe", u:"U", d:381136.9, e:29897},
+        {l:"OA", c:"OUA.NP.57.2", n:"Appareil 45000 Mob", u:"U", d:576958.6, e:49018},
+        {l:"OA", c:"OUA.NP.57.3", n:"Appareil 12000", u:"U", d:341437.9, e:26027},
+        {l:"OA", c:"OUA.NP.59", n:"Passerelles", u:"kg", d:550, e:0},
+        {l:"OA", c:"OUA.NP08.01", n:"Précontrainte ext.", u:"Tonne", d:124806.5, e:3628.48},
+        {l:"OA", c:"OUA.NP08.02", n:"Assemblage voussoirs", u:"m3", d:8711.3, e:131.37},
+        {l:"OA", c:"OUA.NP08.38", n:"Remblais concassés", u:"m3", d:2134.02, e:2.60},
+        {l:"OA", c:"OUA.NP08.41", n:"Drain perforé", u:"ml", d:2700, e:0},
+        {l:"OA", c:"OUA.NP08.44", n:"Joint Water Stop", u:"ml", d:2550, e:0},
+        {l:"OA", c:"OUA.NP08.60", n:"Grille inox", u:"U", d:92769.59, e:0},
+        {l:"OA", c:"OUA.NP08.70", n:"Cales biaises", u:"U", d:25000, e:0},
+        {l:"OA", c:"OUA.NP08.71", n:"Matériaux drainant", u:"m3", d:2200, e:0},
+        {l:"OA", c:"OUA.NP08.72", n:"Joint 100-140mm", u:"ml", d:31500, e:1030},
+        {l:"OA", c:"OUA.NP11.03", n:"Joint 250-400mm", u:"ml", d:26173.22, e:3898.60},
+        {l:"OA", c:"OUA.NP.11.04", n:"Joint 500-800mm", u:"ml", d:102606, e:9780},
+        {l:"OA", c:"OUA.NP11.14a.2", n:"Sondage carotté", u:"ml", d:18000, e:0},
+        {l:"OA", c:"OUA.NP11.14b.2", n:"Sondage pressio", u:"ml", d:15500, e:0},
+        {l:"OA", c:"OUA.NP11.14c.2", n:"Essais pressio", u:"ml", d:10000, e:0},
+        {l:"OA", c:"OUA.NP11.14d.2", n:"Essai Tomo", u:"ml", d:851, e:0},
+        {l:"OA", c:"OUA.NP11.14e.2", n:"Essai Sismique", u:"ml", d:1566, e:0},
+        {l:"OA", c:"OUA.NP11.58.1", n:"Eléments galvanisé", u:"kg", d:1531.53, e:0},
+        {l:"OA", c:"OUA.NP11.84", n:"Béton RN35 radier", u:"m3", d:15206.72, e:42.14},
+
+        // TUNNEL
+        {l:"TUNNEL", c:"TU.E1.1", n:"Fondation GNT", u:"m3", d:1862.41, e:3.30},
+        {l:"TUNNEL", c:"TU.E1.2", n:"Pierre nette", u:"m3", d:2800, e:0},
+        {l:"TUNNEL", c:"TU.E1.3", n:"Enrobé EME", u:"Tonne", d:4812.84, e:29.20},
+        {l:"TUNNEL", c:"TU.E1.4", n:"Couche roulement", u:"Tonne", d:4337.9, e:27},
+        {l:"TUNNEL", c:"TU.E1.5", n:"Imprégnation", u:"m2", d:95, e:0},
+        {l:"TUNNEL", c:"TU.E2.1", n:"Bande 15cm", u:"ml", d:110, e:0},
+        {l:"TUNNEL", c:"TU.E2.2", n:"Bande 22.5cm", u:"ml", d:125, e:0},
+        {l:"TUNNEL", c:"TU.2.3", n:"Bande continue", u:"ml", d:135, e:0},
+        {l:"TUNNEL", c:"TU.E3.5", n:"Portique / Gabari Takı", u:"U", d:309995.66, e:57575.80},
+        {l:"TUNNEL", c:"TU.E3.1.1", n:"Panneau Tunnel", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.1.2", n:"Panneau B12", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.1.3", n:"Panneau B14", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.1.4", n:"Panneau B3", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.1.5", n:"Panneau B18", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.1.6", n:"Panneau Sortie", u:"U", d:11768.62, e:2185},
+        {l:"TUNNEL", c:"TU.E3.2.1", n:"Signal B14", u:"U", d:9998.21, e:1857.30},
+        {l:"TUNNEL", c:"TU.E3.3.1", n:"Signal C30", u:"U", d:2589.45, e:480.30},
+        {l:"TUNNEL", c:"TU.E3.4.1", n:"Panneau consigne", u:"U", d:18750.48, e:3482.40},
+        {l:"TUNNEL", c:"TU.E3.4.2", n:"Panneau incendie", u:"U", d:18750.48, e:3482.40},
+        {l:"TUNNEL", c:"RU.E3.4.3", n:"Panneau galerie", u:"U", d:18750.48, e:3482.40},
+        {l:"TUNNEL", c:"TUN.A1", n:"Installation Tunnel", u:"Ft", d:280633538.7, e:1362331.3},
+        {l:"TUNNEL", c:"TUN.B1", n:"Déblais dépôt", u:"m3", d:1126.54, e:4.62},
+        {l:"TUNNEL", c:"TUN.C1.1", n:"Déblais mécanique", u:"m3", d:2711.25, e:12.50},
+        {l:"TUNNEL", c:"TUN.C1.2", n:"Déblais explosif", u:"m3", d:4883.43, e:53.50},
+        {l:"TUNNEL", c:"TUN.C2.1", n:"Cintre", u:"kg", d:46.55, e:1.50},
+        {l:"TUNNEL", c:"TUN.C3.1", n:"Boulons 4m", u:"U", d:2832.82, e:46.60},
+        {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté", u:"m3", d:13046.21, e:97.30},
+        {l:"TUNNEL", c:"TUN.D3.1", n:"Béton revêtement", u:"m3", d:13046.21, e:97.30},
+        {l:"TUNNEL", c:"TUN.E1.3", n:"Grave Bitume", u:"Tonne", d:4812.84, e:29.20},
+        {l:"TUNNEL", c:"TUN.F2.1", n:"Turbo-ventilateurs", u:"U", d:459359.84, e:85315.40},
+        {l:"TUNNEL", c:"TUN.G1.2", n:"Tableau moyenne tension", u:"U", d:204600, e:38000}
+    ];
+
+    let currentFilter = 'ALL'; 
+    let selectedItem = null;
+
+    function doLogin() {
+        const input = document.getElementById("passInput").value;
+        if(input.trim() === "1907") {
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("appContainer").style.display = "block";
+            localStorage.setItem("dqe_auth", "ok");
+            getNewQuote();
+        } else {
+            document.getElementById("errorMsg").style.display = "block";
         }
+    }
+
+    // Enter
+    document.getElementById("passInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") doLogin();
+    });
+
+    function doLogout() {
+        localStorage.removeItem("dqe_auth");
+        location.reload();
+    }
+
+    if (localStorage.getItem("dqe_auth") === "ok") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("appContainer").style.display = "block";
+        getNewQuote();
     }
 
     function switchTab(tab, btn) {
@@ -156,309 +564,115 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        document.getElementById("searchInput").value = "";
-        document.getElementById("customResults").style.display = "none";
-        document.getElementById("selectedCard").style.display = "none";
-        document.getElementById("calcArea").style.opacity = "0.5";
-        document.getElementById("resultBox").style.display = "none";
+        document.getElementById("searchBox").value = "";
+        document.getElementById("resultsList").style.display = "none";
+        document.getElementById("detailCard").style.display = "none";
+        document.getElementById("calcSec").style.opacity = "0.5";
+        document.getElementById("calcSec").style.pointerEvents = "none";
     }
 
-    // --- TAM VE DOĞRU TÜRKÇE LİSTE (CSV'DEN) ---
-    const database = [
-        // ROUTE
-        {l:"ROUTE", c:"A1", n:"Installation chantier / Şantiye Kurulumu", u:"Ft", d:1041277260.86, e:4972851.8},
-        {l:"ROUTE", c:"A2.1", n:"Laboratoire / Şantiye Laboratuvarı", u:"Ft", d:41644039.15, e:570439.5},
-        {l:"ROUTE", c:"A2.2", n:"Contrôle externe / Dış Kontrol (Müşavir)", u:"Ft", d:33983960.76, e:400938.8},
-        {l:"ROUTE", c:"A3.1", n:"Études exécution / Uygulama Projeleri", u:"Ft", d:212842500, e:2025000},
-        {l:"ROUTE", c:"A3.2", n:"Contrôle études / Proje Kontrolü", u:"Ft", d:45999996.83, e:449657.9},
-        {l:"ROUTE", c:"A3.3", n:"Dossier récolement / As-Built Projeler", u:"Ft", d:33568500, e:405000},
-        {l:"ROUTE", c:"A3.4", n:"Méthodes / Metodoloji", u:"Ft", d:7500069.87, e:73313.1},
-        {l:"ROUTE", c:"A3.5", n:"Géotechnique / Jeoteknik Etütler", u:"Ft", d:40209555.68, e:388958.4},
-        {l:"ROUTE", c:"A4.1", n:"Sécurité passive / Pasif Güvenlik", u:"Ft", d:200000000, e:0},
-        {l:"ROUTE", c:"A4.2", n:"Sécurité active / Aktif Güvenlik", u:"Ft", d:400000000, e:0},
-        {l:"ROUTE", c:"A5", n:"Panneau chantier / Proje Tabelası", u:"U", d:1775000, e:0},
-        {l:"ROUTE", c:"B1.1", n:"Débroussaillage / Saha Temizliği & Sıyırma", u:"Ha", d:619820.41, e:2543.3},
-        {l:"ROUTE", c:"B1.2", n:"Abattage arbres / Ağaç Kesimi", u:"U", d:1600, e:0},
-        {l:"ROUTE", c:"B1.3", n:"Dépose métal / Metal Yapı Sökümü", u:"Tonne", d:944.25, e:2.5},
-        {l:"ROUTE", c:"B2.1", n:"Démolition divers / Yapı Yıkımı", u:"m3", d:1335.05, e:6.5},
-        {l:"ROUTE", c:"B2.2", n:"Démolition béton / Betonarme Yıkımı", u:"m3", d:1620.22, e:8.6},
-        {l:"ROUTE", c:"B2.3", n:"Démolition chaussée / Asfalt Sökümü", u:"m3", d:207.7, e:1},
-        {l:"ROUTE", c:"B3.1", n:"Rabotage <10cm / Frezeleme (İnce)", u:"m2", d:88.85, e:0.5},
-        {l:"ROUTE", c:"B3.2", n:"Rabotage 10-20cm / Frezeleme (Kalın)", u:"m2", d:98.62, e:0.6},
-        {l:"ROUTE", c:"B4", n:"Scarification / Yol Kazıma", u:"m2", d:28.16, e:0.8},
-        {l:"ROUTE", c:"C1.1", n:"Décapage / Bitkisel Toprak Sıyırma", u:"m3", d:128.62, e:0.6},
-        {l:"ROUTE", c:"C1.2", n:"Reprise stock / Stoktan Dolgu", u:"m3", d:179.08, e:0.4},
-        {l:"ROUTE", c:"C2.2", n:"Purges / Zayıf Zemin Kazısı", u:"m3", d:2200, e:0},
-        {l:"ROUTE", c:"C3.1", n:"Déblai meuble > Remblai / Yumuşak Kazı (Dolgu)", u:"m3", d:257.24, e:1.2},
-        {l:"ROUTE", c:"C3.2", n:"Déblai semi-dur > Remblai / Küskülük Kazı (Dolgu)", u:"m3", d:386.32, e:1.6},
-        {l:"ROUTE", c:"C3.3", n:"Déblai rocheux > Remblai / Kaya Kazısı (Dolgu)", u:"m3", d:1308.96, e:4.8},
-        {l:"ROUTE", c:"C4.1", n:"Déblai meuble > Dépôt / Yumuşak Kazı (Depo)", u:"m3", d:148.16, e:0.8},
-        {l:"ROUTE", c:"C4.2", n:"Déblai semi-dur > Dépôt / Küskülük Kazı (Depo)", u:"m3", d:307.7, e:1},
-        {l:"ROUTE", c:"C4.3", n:"Déblai rocheux > Dépôt / Kaya Kazısı (Depo)", u:"m3", d:893.1, e:3},
-        {l:"ROUTE", c:"C5.1", n:"Remblai emprunt / Ariyet Dolgusu", u:"m3", d:555.63, e:1.9},
-        {l:"ROUTE", c:"C6.1", n:"Assise drainante / Drenaj Tabakası", u:"m3", d:1166.55, e:1.5},
-        {l:"ROUTE", c:"C7.1", n:"Géotextile renfort / Güçlendirme Geotekstili", u:"m2", d:290.8, e:4},
-        {l:"ROUTE", c:"C7.2", n:"Géotextile anti-contam / Ayırıcı Geotekstil", u:"m2", d:258.27, e:5.1},
-        {l:"ROUTE", c:"C7.3", n:"Géogrille / Geogrid", u:"m2", d:418.04, e:5.2},
-        {l:"ROUTE", c:"C8.1", n:"Arrondi talus / Şev Yuvarlama", u:"ml", d:317.01, e:1.3},
-        {l:"ROUTE", c:"C9.1", n:"Couche forme / Form Tabakası", u:"m3", d:1346.55, e:1.5},
-        {l:"ROUTE", c:"C10.1", n:"Transport <30km / Nakliye", u:"M3xKM", d:12.5, e:0},
-        {l:"ROUTE", c:"C10.2", n:"Transport >30km / Nakliye", u:"M3xKM", d:11, e:0},
-        {l:"ROUTE", c:"D1.1", n:"Fossé A / Kaplamasız Hendek A", u:"ml", d:495.86, e:1.8},
-        {l:"ROUTE", c:"D1.2", n:"Fossé B / Kaplamasız Hendek B", u:"ml", d:594.94, e:2.2},
-        {l:"ROUTE", c:"D1.3", n:"Fossé C / Kaplamasız Hendek C", u:"ml", d:897.18, e:3.4},
-        {l:"ROUTE", c:"D1.4", n:"Végétalisation / Hendek Çimleme", u:"ml", d:874.94, e:2.2},
-        {l:"ROUTE", c:"D2.1", n:"Bétonnage A / Beton Hendek A", u:"ml", d:4448.37, e:18.1},
-        {l:"ROUTE", c:"D2.2", n:"Bétonnage B / Beton Hendek B", u:"ml", d:5662.5, e:25},
-        {l:"ROUTE", c:"D2.3", n:"Bétonnage C / Beton Hendek C", u:"ml", d:6316.17, e:32.1},
-        {l:"ROUTE", c:"D3.1", n:"Cunette végétalisée / Çim Kaplı Künvet", u:"ml", d:3402.4, e:12},
-        {l:"ROUTE", c:"D3.2", n:"Cunette béton / Beton Künvet", u:"ml", d:4304.81, e:15.3},
-        {l:"ROUTE", c:"D3.3", n:"Cunette symétrique / Simetrik Künvet", u:"ml", d:4829.18, e:13.4},
-        {l:"ROUTE", c:"D4.1", n:"Descente A / İniş Kanalı A", u:"ml", d:2912.86, e:11.8},
-        {l:"ROUTE", c:"D4.2", n:"Descente B / İniş Kanalı B", u:"ml", d:3357.57, e:14.1},
-        {l:"ROUTE", c:"D4.3", n:"Descente C / İniş Kanalı C", u:"ml", d:3634.81, e:15.3},
-        {l:"ROUTE", c:"D4.4", n:"Descente D / İniş Kanalı D", u:"ml", d:4119.98, e:17.4},
-        {l:"ROUTE", c:"D5.1", n:"Descente Tuile A / Kiremit Kanal A", u:"ml", d:2200, e:0},
-        {l:"ROUTE", c:"D5.2", n:"Descente Tuile B / Kiremit Kanal B", u:"ml", d:3520, e:0},
-        {l:"ROUTE", c:"D5.3", n:"Descente Tuile C / Kiremit Kanal C", u:"ml", d:4200, e:0},
-        {l:"ROUTE", c:"D6.1", n:"Caniveau U 30x40 / U Kanal", u:"ml", d:4800, e:0},
-        {l:"ROUTE", c:"D6.2", n:"Caniveau U 40x50 / U Kanal", u:"ml", d:5800, e:0},
-        {l:"ROUTE", c:"D6.3", n:"Caniveau U 45x55 / U Kanal", u:"ml", d:6300, e:0},
-        {l:"ROUTE", c:"D7.1", n:"Caniveau fente 300 / Yarık Kanal", u:"ml", d:22200, e:0},
-        {l:"ROUTE", c:"D7.2", n:"Caniveau fente 400 / Yarık Kanal", u:"ml", d:26600, e:0},
-        {l:"ROUTE", c:"D7.3", n:"Caniveau fente 500 / Yarık Kanal", u:"ml", d:29300, e:0},
-        {l:"ROUTE", c:"D7.4", n:"Renforcement / Kanal Güçlendirme", u:"ml", d:11191.83, e:7.9},
-        {l:"ROUTE", c:"D8.1", n:"Demi-buse 300 / Yarım Büz", u:"ml", d:4400, e:0},
-        {l:"ROUTE", c:"D8.2", n:"Demi-buse 400 / Yarım Büz", u:"ml", d:5700, e:0},
-        {l:"ROUTE", c:"D8.3", n:"Demi-buse 500 / Yarım Büz", u:"ml", d:7800, e:0},
-        {l:"ROUTE", c:"D9.1", n:"Tranchée <2m / Hendek Kazısı", u:"m3", d:217.93, e:0.9},
-        {l:"ROUTE", c:"D9.2", n:"Tranchée 2-4m / Hendek Kazısı", u:"m3", d:277.24, e:1.2},
-        {l:"ROUTE", c:"D9.3", n:"Tranchée 4-6m / Hendek Kazısı", u:"m3", d:326.55, e:1.5},
-        {l:"ROUTE", c:"D9.4", n:"PV Roche / Kaya Farkı", u:"m3", d:1500, e:0},
-        {l:"ROUTE", c:"D10.1", n:"Lit sable / Kum Yataklama", u:"m3", d:1455.51, e:6.3},
-        {l:"ROUTE", c:"D10.2", n:"Lit béton / Beton Yataklama", u:"m3", d:5962.17, e:12.1},
-        {l:"ROUTE", c:"D11.1", n:"Enrobage grave / Doğal Gömlekleme", u:"m3", d:1437.35, e:5.5},
-        {l:"ROUTE", c:"D11.2", n:"Enrobage béton / Beton Gömlekleme", u:"m3", d:5593.89, e:15.7},
-        {l:"ROUTE", c:"D11.3", n:"Enrobage drainant / Drenaj Gömlekleme", u:"m3", d:1739.65, e:4.5},
-        {l:"ROUTE", c:"D12.1", n:"Tuyau 400mm / BA Boru", u:"ml", d:7769.31, e:0.3},
-        {l:"ROUTE", c:"D12.2", n:"Tuyau 600mm / BA Boru", u:"ml", d:9369.31, e:0.3},
-        {l:"ROUTE", c:"D13.1", n:"Buse 800mm / Büz", u:"ml", d:15498.73, e:4.9},
-        {l:"ROUTE", c:"D13.2", n:"Buse 1000mm / Büz", u:"ml", d:21631.72, e:3.6},
-        {l:"ROUTE", c:"D13.3", n:"Buse 1200mm / Büz", u:"ml", d:36375.97, e:6.1},
-        {l:"ROUTE", c:"D13.4", n:"Buse 1500mm / Büz", u:"ml", d:50775.97, e:6.1},
-        {l:"ROUTE", c:"D14.1", n:"Collecteur 150 / Drenaj Kollektörü", u:"ml", d:2700, e:0},
-        {l:"ROUTE", c:"D17.1", n:"Tuyau PEHD 75mm", u:"ml", d:1236, e:0},
-        {l:"ROUTE", c:"D17.2", n:"Tuyau PEHD 90mm", u:"ml", d:1500, e:0},
-        {l:"ROUTE", c:"D18.1", n:"Chambre K1C / Menhol K1C", u:"U", d:112000, e:0},
-        {l:"ROUTE", c:"D18.2", n:"Chambre K2C / Menhol K2C", u:"U", d:125000, e:0},
-        {l:"ROUTE", c:"D19.1", n:"Regard 1000mm / Muayene Bacası", u:"U", d:120000, e:0},
-        {l:"ROUTE", c:"D20.1", n:"Puisard / Rogar", u:"U", d:150000, e:0},
-        {l:"ROUTE", c:"D20.2", n:"Puisard 1500x1300 / Rogar", u:"U", d:174000, e:0},
-        {l:"ROUTE", c:"D20.3", n:"Puisard 1500x1500 / Rogar", u:"U", d:188000, e:0},
-        {l:"ROUTE", c:"D20.4", n:"Puisard 1500x1800 / Rogar", u:"U", d:215000, e:0},
-        {l:"ROUTE", c:"D20.5", n:"Puisard 1500x2000 / Rogar", u:"U", d:220000, e:0},
-        {l:"ROUTE", c:"D20.6", n:"Puisard 1500x2500 / Rogar", u:"U", d:260000, e:0},
-        {l:"ROUTE", c:"D21.1", n:"Grille 700x700 / Izgara", u:"U", d:32000, e:0},
-        {l:"ROUTE", c:"D21.2", n:"Grille 250x400 / Izgara", u:"U", d:26826.09, e:1.7},
-        {l:"ROUTE", c:"D21.3", n:"Caillebotis 1x1m / Izgara", u:"U", d:5400, e:0},
-        {l:"ROUTE", c:"D21.4", n:"Caillebotis 1x2m / Izgara", u:"U", d:9200, e:0},
-        {l:"ROUTE", c:"D22.1", n:"Tête buse 600 / Büz Ağzı", u:"U", d:60925.34, e:154.2},
-        {l:"ROUTE", c:"D22.2", n:"Tête buse 800 / Büz Ağzı", u:"U", d:68921.05, e:186.5},
-        {l:"ROUTE", c:"D22.3", n:"Tête buse 1000 / Büz Ağzı", u:"U", d:76992.73, e:224.9},
-        {l:"ROUTE", c:"D22.4", n:"Tête buse 1200 / Büz Ağzı", u:"U", d:90558.06, e:287.8},
-        {l:"ROUTE", c:"D22.5", n:"Tête buse 1500 / Büz Ağzı", u:"U", d:125386.97, e:436.1},
-        {l:"ROUTE", c:"D23.1", n:"Bourrelet / Asfalt Bordür", u:"ml", d:3000, e:0},
-        {l:"ROUTE", c:"D24.1", n:"Enrochement A / Taş Tahkimat A", u:"m3", d:1879.3, e:9},
-        {l:"ROUTE", c:"D24.2", n:"Enrochement B / Taş Tahkimat B", u:"m3", d:1879.3, e:9},
-        {l:"ROUTE", c:"D24.3", n:"Enrochement C / Taş Tahkimat C", u:"m3", d:1879.3, e:9},
-        {l:"ROUTE", c:"D25.1", n:"Enrochement lié / Harçlı Taş", u:"m3", d:2042.98, e:7.4},
-        {l:"ROUTE", c:"D26.1", n:"Barbacane / Barbakan", u:"ml", d:1700, e:0},
-        {l:"ROUTE", c:"D27.1", n:"Béton propreté / Grobeton", u:"m3", d:178.16, e:0.8},
-        {l:"ROUTE", c:"D27.2", n:"Béton ouvrages / Yapı Betonu", u:"m3", d:9553.28, e:46.4},
-        {l:"ROUTE", c:"D27.3", n:"Coffrage / Kalıp", u:"m2", d:920.22, e:8.6},
-        {l:"ROUTE", c:"D27.4", n:"Ferraillage / Demir Donatı", u:"Kg", d:65.08, e:0.4},
-        {l:"ROUTE", c:"E1.1", n:"Grave GNT / Plentmiks (PMT)", u:"m3", d:1922.64, e:3.2},
-        {l:"ROUTE", c:"E2.1", n:"Grave Bitume / Bitümlü Temel", u:"Tonne", d:3390.32, e:21.6},
-        {l:"ROUTE", c:"E2.2", n:"Enrobés EME 2 / Modifiye Asfalt", u:"Tonne", d:4782.15, e:29.5},
-        {l:"ROUTE", c:"E3.1", n:"Couche BB / Aşınma (BB)", u:"Tonne", d:4337.9, e:27},
-        {l:"ROUTE", c:"E3.2", n:"Couche BBM / Aşınma (BBM)", u:"Tonne", d:4650.19, e:34.7},
-        {l:"ROUTE", c:"E3.3", n:"Couche BBME / Aşınma (BBME)", u:"Tonne", d:4670.65, e:34.5},
-        {l:"ROUTE", c:"E4.1", n:"Imprégnation / Emprime", u:"m2", d:95, e:0},
-        {l:"ROUTE", c:"E4.2", n:"Accrochage / Yapıştırıcı", u:"m2", d:70, e:0},
-        {l:"ROUTE", c:"E5.1", n:"Bicouche / Sathi Kaplama", u:"m2", d:540, e:0},
-        {l:"ROUTE", c:"E6.1", n:"Bordure A2 / Bordür A2", u:"ml", d:2000, e:0},
-        {l:"ROUTE", c:"F1.1", n:"Hachures / Taralı Alan", u:"m2", d:680, e:0},
-        {l:"ROUTE", c:"F1.2", n:"Bande 100mm / Çizgi", u:"ml", d:70, e:0},
-        {l:"ROUTE", c:"F1.3", n:"Bande 150mm / Çizgi", u:"ml", d:145, e:0},
-        {l:"ROUTE", c:"F1.5", n:"Bande 375mm / Çizgi", u:"ml", d:340, e:0},
-        {l:"ROUTE", c:"F1.8", n:"Flèche / Ok İşareti", u:"U", d:800, e:0},
-        {l:"ROUTE", c:"F2.1", n:"Bande préfa / Hazır Çizgi", u:"ml", d:800, e:0},
-        {l:"ROUTE", c:"G1.1", n:"Panneau A/AB / Levha", u:"U", d:52000, e:0},
-        {l:"ROUTE", c:"G1.3", n:"Panneau Circulaire / Levha", u:"U", d:48600, e:0},
-        {l:"ROUTE", c:"G2.1", n:"Panonceau M / M Tipi", u:"m2", d:42000, e:0},
-        {l:"ROUTE", c:"G3.1", n:"Panneau Direction / Yön", u:"m2", d:64000, e:0},
-        {l:"ROUTE", c:"G4.1", n:"Balise J1 / Viraj Yön", u:"U", d:18000, e:0},
-        {l:"ROUTE", c:"G5.1", n:"Poteau <50 / Direk", u:"ml", d:9776.59, e:0},
-        {l:"ROUTE", c:"G5.7", n:"Semelle / Levha Temeli", u:"m3", d:8020.53, e:38.9},
-        {l:"ROUTE", c:"G7.1", n:"Réflecteur / Reflektör", u:"U", d:1670, e:0},
-        {l:"ROUTE", c:"H1.1", n:"Glissière GS4 / Otokorkuluk", u:"ml", d:1238.45, e:48.5},
-        {l:"ROUTE", c:"H2.1", n:"Barrière GBA / Beton Bariyer", u:"ml", d:3932.51, e:16.3},
-        {l:"ROUTE", c:"I1.1", n:"Fouilles / Temel Kazısı", u:"m3", d:178.16, e:0.8},
-        {l:"ROUTE", c:"I1.3", n:"Béton propreté / Grobeton", u:"m3", d:5919.19, e:4.7},
-        {l:"ROUTE", c:"I1.6", n:"Béton fondation / Temel Betonu", u:"m3", d:8973.98, e:37.4},
-        {l:"ROUTE", c:"I2.1", n:"Support HEA 140 / Destek", u:"U", d:9600, e:0},
-        {l:"ROUTE", c:"I3.1", n:"Panneau antibruit / Gürültü Paneli", u:"m2", d:88750, e:0},
-        {l:"ROUTE", c:"I5.1", n:"Argile compactée / Kil Dolgu", u:"m3", d:474.48, e:2.4},
-        {l:"ROUTE", c:"I5.3", n:"Enrochement / Taş Dolgu", u:"m3", d:2205.85, e:10.5},
-        {l:"ROUTE", c:"I6.1", n:"Séparateur hydro / Yağ Ayırıcı", u:"U", d:4400000, e:0},
-        {l:"ROUTE", c:"I8.1", n:"Clôture / Çit", u:"ml", d:5934.02, e:2.6},
-        {l:"ROUTE", c:"I9.1", n:"Plantation arbres / Ağaç", u:"m2", d:1545.17, e:0},
-        {l:"ROUTE", c:"J1.1", n:"Gabions / Gabion Duvar", u:"m3", d:3034.57, e:24.1},
-        {l:"ROUTE", c:"J2.1", n:"Béton projeté / Püskürtme Beton", u:"m3", d:13478.48, e:122.4},
-        {l:"ROUTE", c:"J2.3", n:"Clous / Zemin Çivisi", u:"U", d:19236.87, e:23.1},
-        {l:"ROUTE", c:"J6.1", n:"Drains / Drenaj", u:"ml", d:4700, e:0},
-        {l:"ROUTE", c:"J8.1", n:"Ancrages 32mm / Ankraj", u:"ml", d:470.1, e:13},
-        {l:"ROUTE", c:"J9", n:"Géotextile alv. / Hücresel Geotekstil", u:"m2", d:780, e:0},
-        {l:"ROUTE", c:"K1.1", n:"Caméra / Kamera", u:"U", d:412003.51, e:36246.3},
-        {l:"ROUTE", c:"NP.11", n:"Poste observation / Kule", u:"U", d:12200000, e:0},
-        {l:"ROUTE", c:"NP.26", n:"Géocomposite / Geokompozit", u:"m2", d:764.73, e:26.64},
-        {l:"ROUTE", c:"NP.36", n:"Massif ancrage / Ankraj Bloğu", u:"m3", d:3405.85, e:10.5},
-        {l:"ROUTE", c:"NP.64", n:"Chambre L5C / Menhol L5C", u:"U", d:348873.07, e:11.02},
-        {l:"ROUTE", c:"NP.67", n:"Réseau multitub / Çoklu Boru", u:"ml", d:6113.37, e:16.49},
-        {l:"ROUTE", c:"NP.74", n:"Couche forme / Form", u:"m3", d:1950, e:0},
-        {l:"ROUTE", c:"NP.14m", n:"Inclinomètre / İnklinometre", u:"U", d:209998.56, e:2052.8},
-        {l:"ROUTE", c:"NP11.14", n:"Sondage / Sondaj", u:"ml", d:18000, e:0},
-        {l:"ROUTE", c:"NP11.19", n:"Etude adaptation / Güzergah Değişikliği", u:"Ft", d:36723806, e:358780},
-
-        // OA
-        {l:"OA", c:"OUA.A1", n:"Installation OA / Şantiye Kurulumu", u:"Ft", d:1010357152, e:4786342},
-        {l:"OA", c:"OUA.B1.1", n:"Déblais fouilles / Temel Kazısı", u:"m3", d:178.16, e:0.8},
-        {l:"OA", c:"OUA.B2.1", n:"Pieux 1200mm / Fore Kazık", u:"ml", d:5404.19, e:54.7},
-        {l:"OA", c:"OUA.B2.2", n:"PV Roche / Kaya Farkı", u:"ml", d:802.06, e:7.8},
-        {l:"OA", c:"OUA.B2.7", n:"Essais pieux / Yükleme Deneyi", u:"U", d:1520000, e:0},
-        {l:"OA", c:"OUA.B3.1", n:"Puits <3m / Kuyu", u:"ml", d:124999.6, e:1221.9},
-        {l:"OA", c:"OUA.B4.1", n:"Coffrage / Kalıp", u:"m2", d:853.21, e:7.3},
-        {l:"OA", c:"OUA.B5.1", n:"Béton propreté / Grobeton", u:"m2", d:723.79, e:2.7},
-        {l:"OA", c:"OUA.B5.2.1", n:"Béton C40 / Beton C40", u:"m3", d:21343.02, e:172.6},
-        {l:"OA", c:"OUA.B5.2.6", n:"Béton C35 / Beton C35", u:"m3", d:12538.45, e:48.5},
-        {l:"OA", c:"OUA.B5.2.7", n:"Béton C27 / Beton C27", u:"m3", d:10736.15, e:49.5},
-        {l:"OA", c:"OUA.B6.1", n:"Acier HA / Demir", u:"Tonne", d:67033.93, e:380.9},
-        {l:"OA", c:"OUA.B6.2", n:"Précontrainte / Öngerilme", u:"Tonne", d:55688.54, e:3170.2},
-        {l:"OA", c:"OUA.B7.1", n:"Appareil 2100 / Mesnet 2100", u:"U", d:260001.7, e:3812.3},
-        {l:"OA", c:"OUA.B7.5", n:"Joint 240mm / Derz", u:"ml", d:9389.7, e:1961},
-        {l:"OA", c:"OUA.NP.05", n:"Shock Transmittal / Şok İletici", u:"U", d:659476.9, e:53097},
-        {l:"OA", c:"OUA.NP.06", n:"Isolateur / Sismik İzolatör", u:"U", d:134282.6, e:15822.3},
-        {l:"OA", c:"OUA.NP.09b", n:"Tirants 75T / Ankraj 75T", u:"ml", d:4310, e:103},
-        {l:"OA", c:"OUA.NP08.44", n:"Water Stop / Su Bandı", u:"ml", d:2550, e:0},
-        {l:"OA", c:"OUA.NP11.04", n:"Joint 800mm / Genleşme Derzi", u:"ml", d:102606, e:9780},
-
-        // TUNNEL
-        {l:"TUNNEL", c:"TUN.E1.1", n:"Fondation GNT / Temel GNT", u:"m3", d:1862.41, e:3.3},
-        {l:"TUNNEL", c:"TUN.E1.3", n:"Enrobé EME / Modifiye Asfalt", u:"Tonne", d:4812.84, e:29.2},
-        {l:"TUNNEL", c:"TUN.E3.5", n:"Portique / Gabari Takı", u:"U", d:309995.6, e:57575.8},
-        {l:"TUNNEL", c:"TU.E3.1", n:"Panneau Tunnel / Levha", u:"U", d:11768.62, e:2185},
-        {l:"TUNNEL", c:"TUN.A1", n:"Installation / Kurulum", u:"Ft", d:280633538, e:1362331},
-        {l:"TUNNEL", c:"TUN.B1", n:"Déblais / Tünel Kazısı", u:"m3", d:1126.54, e:4.62},
-        {l:"TUNNEL", c:"TUN.C1.2", n:"Explosif / Patlatmalı Kazı", u:"m3", d:4883.43, e:53.5},
-        {l:"TUNNEL", c:"TUN.C2.1", n:"Cintre / İksa Çeliği", u:"kg", d:46.55, e:1.5},
-        {l:"TUNNEL", c:"TUN.C3.1", n:"Boulons 4m / Kaya Bulonu", u:"U", d:2832.82, e:46.6},
-        {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Püskürtme", u:"m3", d:13046.21, e:97.3},
-        {l:"TUNNEL", c:"TUN.F2.1", n:"Ventilateurs / Fanlar", u:"U", d:459359.8, e:85315.4}
-    ];
-
     function toggleDropdown(state) {
-        const resultsDiv = document.getElementById("customResults");
-        const currentDisplay = window.getComputedStyle(resultsDiv).display;
-        if (state === true || (state === 'toggle' && currentDisplay === "none")) {
-            renderAllItems();
-            resultsDiv.style.display = "block";
+        const list = document.getElementById("resultsList");
+        if (state === true || (state === 'toggle' && list.style.display === "none")) {
+            showList();
         } else {
-            resultsDiv.style.display = "none";
+            list.style.display = "none";
         }
     }
 
-    function renderAllItems() {
-        const resultsDiv = document.getElementById("customResults");
-        resultsDiv.innerHTML = "";
-        let filtered = (currentFilter === 'ALL') ? database : database.filter(i => i.l === currentFilter);
+    function showList() {
+        const val = document.getElementById("searchBox").value.toLowerCase();
+        const list = document.getElementById("resultsList");
+        list.innerHTML = "";
         
-        filtered.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "result-item";
-            const parts = item.n.split(" / ");
-            let tagHTML = `<span class="tag tag-${item.l.toLowerCase()}">${item.l}</span>`;
-            div.innerHTML = `${tagHTML} <strong>${item.c}</strong> ${parts[0]} <br> <span style="color:#007aff;">${parts[1]||""}</span>`;
-            div.onclick = function() { selectItem(item); };
-            resultsDiv.appendChild(div);
-        });
-    }
-
-    function filterItems() {
-        const filter = document.getElementById("searchInput").value.toLowerCase();
-        if (filter.length < 1) { renderAllItems(); return; }
-        
-        const resultsDiv = document.getElementById("customResults");
-        resultsDiv.innerHTML = "";
         const filtered = database.filter(item => {
-            const match = item.c.toLowerCase().includes(filter) || item.n.toLowerCase().includes(filter);
+            const match = item.c.toLowerCase().includes(val) || item.n.toLowerCase().includes(val);
             return match && (currentFilter === 'ALL' || item.l === currentFilter);
         });
-        
-        filtered.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "result-item";
-            const parts = item.n.split(" / ");
-            let tagHTML = `<span class="tag tag-${item.l.toLowerCase()}">${item.l}</span>`;
-            div.innerHTML = `${tagHTML} <strong>${item.c}</strong> ${parts[0]} <br> <span style="color:#007aff;">${parts[1]||""}</span>`;
-            div.onclick = function() { selectItem(item); };
-            resultsDiv.appendChild(div);
-        });
-        resultsDiv.style.display = "block";
+
+        if (filtered.length === 0) {
+            list.innerHTML = "<div class='res-item'>Sonuç yok / Aucun résultat...</div>";
+        } else {
+            filtered.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "res-item";
+                let color = "#95a5a6";
+                if(item.l === "ROUTE") color="#3498db";
+                else if(item.l === "OA") color="#27ae60";
+                else if(item.l === "TUNNEL") color="#e67e22";
+
+                const parts = item.n.split(" / ");
+                div.innerHTML = `<span class='tag' style='background:${color}'>${item.l}</span> <strong>${item.c}</strong> ${parts[0]} <br> <span style="color:#007aff;">${parts[1]||""}</span>`;
+                div.onclick = () => selectItem(item);
+                list.appendChild(div);
+            });
+        }
+        list.style.display = "block";
+    }
+
+    function filterList() {
+        showList();
     }
 
     function selectItem(item) {
         selectedItem = item;
-        document.getElementById("searchInput").value = item.c + " - " + item.n.split(" / ")[0];
-        document.getElementById("customResults").style.display = "none";
-        
-        document.getElementById("selCode").innerText = item.c;
-        document.getElementById("selUnit").innerText = item.u;
-        document.getElementById("selName").innerText = item.n;
-        document.getElementById("selPriceDZD").innerText = item.d.toLocaleString('tr-TR', {minimumFractionDigits: 2});
-        document.getElementById("selPriceEUR").innerText = item.e.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+        document.getElementById("searchBox").value = item.c + " - " + item.n.split(" / ")[0];
+        document.getElementById("resultsList").style.display = "none";
 
-        document.getElementById("selectedCard").style.display = "block";
-        document.getElementById("calcArea").style.opacity = "1";
-        document.getElementById("calcArea").style.pointerEvents = "auto";
-        document.getElementById("quantity").value = "";
-        document.getElementById("resultBox").style.display = "none";
-        document.getElementById("quantity").focus();
+        document.getElementById("dCode").innerText = item.c;
+        document.getElementById("dUnit").innerText = item.u;
+        document.getElementById("dName").innerText = item.n;
+        document.getElementById("dDZD").innerText = item.d.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+        document.getElementById("dEUR").innerText = item.e.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+
+        document.getElementById("detailCard").style.display = "block";
+        document.getElementById("calcSec").style.opacity = "1";
+        document.getElementById("calcSec").style.pointerEvents = "auto";
+        document.getElementById("qtyIn").value = "";
+        document.getElementById("totalBox").style.display = "none";
+        document.getElementById("qtyIn").focus();
     }
 
     function calculate() {
         if (!selectedItem) return;
-        const qty = parseFloat(document.getElementById("quantity").value);
-        const rate = parseFloat(document.getElementById("exchangeRate").value);
+        const q = parseFloat(document.getElementById("qtyIn").value);
+        const r = parseFloat(document.getElementById("rateIn").value);
 
-        if (qty > 0) {
-            const totalDZD = qty * selectedItem.d;
-            const totalEUR = qty * selectedItem.e;
-            const grandTotal = totalDZD + (totalEUR * rate);
+        if (q > 0) {
+            const totD = q * selectedItem.d;
+            const totE = q * selectedItem.e;
+            const grand = totD + (totE * r);
 
-            document.getElementById("resDZD").innerText = totalDZD.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
-            document.getElementById("resEUR").innerText = totalEUR.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " €";
-            document.getElementById("resGrandTotal").innerText = grandTotal.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
-            document.getElementById("resultBox").style.display = "block";
+            document.getElementById("tDZD").innerText = totD.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
+            document.getElementById("tEUR").innerText = totE.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " €";
+            document.getElementById("tGrand").innerText = grand.toLocaleString('tr-TR', {minimumFractionDigits: 2}) + " DZD";
+            document.getElementById("totalBox").style.display = "block";
         } else {
-            document.getElementById("resultBox").style.display = "none";
+            document.getElementById("totalBox").style.display = "none";
         }
     }
 
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.search-wrapper')) {
-            document.getElementById("customResults").style.display = "none";
+    const quotes = [
+        { t: "Mühendislik, hayal gücünün maddeye dönüşmesidir.", a: "Anonim" },
+        { t: "Kalite bir eylem değil, bir alışkanlıktır.", a: "Aristoteles" },
+        { t: "Zor yollar, genellikle güzel yerlere çıkar.", a: "Anonim" },
+        { t: "Şantiyede güvenlik, hızdan önce gelir.", a: "Kural" },
+        { t: "Yol medeniyettir.", a: "Atasözü" },
+        { t: "La route est le symbole de la civilisation.", a: "Proverbe" }
+    ];
+
+    function getNewQuote() {
+        const r = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById("qText").innerText = '"' + r.t + '"';
+        document.getElementById("qAuthor").innerText = "— " + r.a;
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-wrapper')) {
+            document.getElementById("resultsList").style.display = "none";
         }
     });
+
 </script>
 
 </body>
