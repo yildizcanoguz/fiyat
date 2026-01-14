@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hakediş & Maliyet</title>
+  <style>
+    :root{
+      --bg:#f4f6f8; --card:#fff; --text:#0f172a; --muted:#64748b;
+      --border:#e2e8f0; --shadow:0 10px 30px rgba(15,23,42,.08);
+      --primary:#2d7ff9; --danger:#ef4444; --good:#16a34a;
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 14px 40px}
+    h1{margin:0 0 14px;font-size:28px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    @media (max-width: 960px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+    .card h2{margin:0 0 12px;font-size:16px;color:var(--muted);letter-spacing:.2px}
+    .row{display:grid;grid-template-columns:1fr 160px 160px;gap:10px;align-items:end}
+    @media (max-width: 720px){.row{grid-template-columns:1fr}}
+    label{font-size:12px;color:var(--muted);font-weight:800;display:block;margin-bottom:6px}
+    input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--text);outline:none}
+    input[readonly]{opacity:.85}
+    .btn{border:1px solid var(--border);background:var(--card);color:var(--text);
+      padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:8px}
+    .btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+    .btn.danger{background:var(--danger);border-color:transparent;color:#fff}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+    th{font-size:12px;color:var(--muted);font-weight:900}
+    tr:last-child td{border-bottom:none}
+    .right{text-align:right}
+    .bar{margin-top:12px;padding:14px;border-radius:16px;background:var(--primary);color:#fff;
+      display:flex;justify-content:space-between;align-items:center;font-weight:900}
+    .sticky{
+      position:sticky;top:10px;z-index:20;display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px
+    }
+    .sum{flex:1;min-width:220px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);
+      display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .sum b{font-size:12px;color:var(--muted)}
+    .sum strong{font-size:16px}
+    .sum.good strong{color:var(--good)}
+    .sum.bad strong{color:var(--danger)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HAKEDİŞ & MALİYET</h1>
+
+    <div class="sticky">
+      <div class="sum"><div><b>TOPLAM GELİR</b></div><strong id="sumIncome">0,00 DZD</strong></div>
+      <div class="sum"><div><b>TOPLAM GİDER</b></div><strong id="sumExpense">0,00 DZD</strong></div>
+      <div class="sum" id="sumNetBox"><div><b>NET</b></div><strong id="sumNet">0,00 DZD</strong></div>
+      <div class="sum"><div><b>MARJ</b></div><strong id="sumMargin">%0,00</strong></div>
+    </div>
+
+    <div class="grid">
+      <!-- GELİR -->
+      <div class="card">
+        <h2>1) Hakediş (Gelir) — İş kalemi seç, miktar gir, satıra ekle</h2>
+
+        <div class="row">
+          <div>
+            <label>İş Kalemi</label>
+            <select id="jobSelect"></select>
+          </div>
+          <div>
+            <label>Birim</label>
+            <input id="jobUnit" readonly placeholder="-" />
+          </div>
+          <div>
+            <label>Birim Fiyat (DZD)</label>
+            <input id="jobUnitPrice" readonly placeholder="0.00" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px">
+          <div>
+            <label>Açıklama/Not (opsiyonel)</label>
+            <input id="jobNote" placeholder="PK / taşeron / açıklama..." />
+          </div>
+          <div>
+            <label>Miktar</label>
+            <input id="jobQty" type="number" step="0.01" min="0" placeholder="0" inputmode="decimal" />
+          </div>
+          <div>
+            <label>Satır Toplamı</label>
+            <input id="jobLineTotal" readonly placeholder="0.00" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="addJobLine">➕ Gelire Ekle</button>
+          <button class="btn" id="clearJobForm">Temizle</button>
+        </div>
+
+        <div class="bar"><div>Gelir Satırları</div><div id="incomeCount">0 satır</div></div>
+
+        <div style="margin-top:10px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Kalem</th>
+                <th>Not</th>
+                <th>Birim</th>
+                <th class="right">Birim Fiyat</th>
+                <th class="right">Miktar</th>
+                <th class="right">Toplam</th>
+                <th class="right">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="incomeTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GİDER -->
+      <div class="card">
+        <h2>2) Gider — Makine + Diğer giderler</h2>
+
+        <!-- Makine -->
+        <div style="padding:12px;border:1px dashed var(--border);border-radius:16px">
+          <div class="row" style="grid-template-columns:1fr 160px 160px">
+            <div>
+              <label>Makine Seç</label>
+              <select id="machineSelect"></select>
+            </div>
+            <div>
+              <label>Günlük Kira (DZD)</label>
+              <input id="machineDaily" readonly placeholder="0.00" />
+            </div>
+            <div>
+              <label>Gün Sayısı</label>
+              <input id="machineDays" type="number" step="1" min="0" placeholder="0" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px">
+            <div>
+              <label>Açıklama/Not (opsiyonel)</label>
+              <input id="machineNote" placeholder="PK / operatör / vardiya..." />
+            </div>
+            <div>
+              <label>Satır Toplamı</label>
+              <input id="machineLineTotal" readonly placeholder="0.00" />
+            </div>
+            <div class="actions" style="margin:0">
+              <button class="btn primary" id="addMachineLine">➕ Makineyi Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar" style="margin-top:12px"><div>Gider Satırları</div><div id="expenseCount">0 satır</div></div>
+
+        <div style="margin-top:10px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Tip</th>
+                <th>Ad</th>
+                <th>Not</th>
+                <th class="right">B.Fiyat</th>
+                <th class="right">Miktar</th>
+                <th class="right">Toplam</th>
+                <th class="right">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
+          </table>
+        </div>
+
+        <!-- Diğer gider -->
+        <div style="margin-top:12px;padding:12px;border:1px dashed var(--border);border-radius:16px">
+          <div class="row" style="grid-template-columns:1fr 160px 160px">
+            <div>
+              <label>Diğer Gider Adı</label>
+              <input id="otherName" placeholder="Örn: Mazot / Nakliye / Malzeme..." />
+            </div>
+            <div>
+              <label>Birim Fiyat (DZD)</label>
+              <input id="otherUnitPrice" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal" />
+            </div>
+            <div>
+              <label>Miktar</label>
+              <input id="otherQty" type="number" step="0.01" min="0" placeholder="0" inputmode="decimal" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px">
+            <div>
+              <label>Not (opsiyonel)</label>
+              <input id="otherNote" placeholder="Fiş no / PK / açıklama..." />
+            </div>
+            <div>
+              <label>Satır Toplamı</label>
+              <input id="otherLineTotal" readonly placeholder="0.00" />
+            </div>
+            <div class="actions" style="margin:0">
+              <button class="btn primary" id="addOtherLine">➕ Diğer Gider Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn danger" id="resetAll">🧹 Sıfırla</button>
+          <button class="btn" id="exportJson">⬇️ JSON</button>
+          <button class="btn" id="exportCsv">⬇️ CSV</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/** ---------------------------
+ *  LISTELER (Dropbox menü datası)
+ *  Buraları senin gerçek kalemlerinle dolduracağız.
+ * --------------------------- */
+const JOB_ITEMS = [
+  { id:"nakliye_77", name:"Nakliye (77 km otoyol)", unit:"ton", unitPrice:325 },
+  { id:"nakliye_62", name:"Nakliye (62 km otoyol)", unit:"ton", unitPrice:310 },
+  { id:"kazi", name:"Kazı", unit:"m³", unitPrice:230 },
+  { id:"dolgu", name:"Dolgu", unit:"m³", unitPrice:185 },
+];
+
+const MACHINES = [
+  { id:"exc_336", name:"Ekskavatör CAT 336", daily: 45000 },
+  { id:"loader_950h", name:"Loader CAT 950H", daily: 32000 },
+  { id:"roller_bomag", name:"Silindir BOMAG", daily: 18000 },
+  { id:"tanker", name:"Su Tankeri", daily: 22000 },
+];
+
+const state = {
+  income: [],   // {jobId, name, note, unit, unitPrice, qty}
+  expense: []   // {type:"Makine|Diğer", name, note, unitPrice, qty}
+};
+
+const el = (id)=>document.getElementById(id);
+const nf = new Intl.NumberFormat("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const money = (v)=> nf.format(Number(v||0)) + " DZD";
+const pct = (v)=> "%"+ nf.format(Number(v||0));
+
+function num(v){ const n = Number(v); return isFinite(n)?n:0; }
+
+function fillSelect(selectEl, placeholder, list){
+  selectEl.innerHTML = "";
+  const opt0 = document.createElement("option");
+  opt0.value = "";
+  opt0.textContent = placeholder;
+  selectEl.appendChild(opt0);
+  list.forEach(x=>{
+    const o = document.createElement("option");
+    o.value = x.id;
+    o.textContent = x.name;
+    selectEl.appendChild(o);
+  });
+}
+
+function updateJobFields(){
+  const id = el("jobSelect").value;
+  const item = JOB_ITEMS.find(x=>x.id===id);
+  el("jobUnit").value = item ? item.unit : "-";
+  el("jobUnitPrice").value = item ? money(item.unitPrice) : "0,00 DZD";
+  recalcJobLine();
+}
+function recalcJobLine(){
+  const id = el("jobSelect").value;
+  const item = JOB_ITEMS.find(x=>x.id===id);
+  const qty = num(el("jobQty").value);
+  const total = (item?num(item.unitPrice):0) * qty;
+  el("jobLineTotal").value = money(total);
+}
+
+function updateMachineFields(){
+  const id = el("machineSelect").value;
+  const m = MACHINES.find(x=>x.id===id);
+  el("machineDaily").value = m ? money(m.daily) : "0,00 DZD";
+  recalcMachineLine();
+}
+function recalcMachineLine(){
+  const id = el("machineSelect").value;
+  const m = MACHINES.find(x=>x.id===id);
+  const days = num(el("machineDays").value);
+  const total = (m?num(m.daily):0) * days;
+  el("machineLineTotal").value = money(total);
+}
+
+function recalcOtherLine(){
+  const up = num(el("otherUnitPrice").value);
+  const qty = num(el("otherQty").value);
+  el("otherLineTotal").value = money(up * qty);
+}
+
+function renderTables(){
+  // Income
+  const it = el("incomeTable");
+  it.innerHTML = "";
+  state.income.forEach((ln, idx)=>{
+    const tr = document.createElement("tr");
+    const total = num(ln.unitPrice) * num(ln.qty);
+    tr.innerHTML = `
+      <td>${ln.name}</td>
+      <td>${ln.note||""}</td>
+      <td>${ln.unit}</td>
+      <td class="right">${money(ln.unitPrice)}</td>
+      <td class="right">${nf.format(num(ln.qty))}</td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right"><button data-del-income="${idx}">✖</button></td>
+    `;
+    it.appendChild(tr);
+  });
+  el("incomeCount").textContent = `${state.income.length} satır`;
+
+  // Expense
+  const et = el("expenseTable");
+  et.innerHTML = "";
+  state.expense.forEach((ln, idx)=>{
+    const total = num(ln.unitPrice) * num(ln.qty);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${ln.type}</td>
+      <td>${ln.name}</td>
+      <td>${ln.note||""}</td>
+      <td class="right">${money(ln.unitPrice)}</td>
+      <td class="right">${nf.format(num(ln.qty))}</td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right"><button data-del-exp="${idx}">✖</button></td>
+    `;
+    et.appendChild(tr);
+  });
+  el("expenseCount").textContent = `${state.expense.length} satır`;
+
+  recalcSummary();
+}
+
+function recalcSummary(){
+  const income = state.income.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const expense = state.expense.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const net = income - expense;
+  const margin = income>0 ? (net/income)*100 : 0;
+
+  el("sumIncome").textContent = money(income);
+  el("sumExpense").textContent = money(expense);
+  el("sumNet").textContent = money(net);
+  el("sumMargin").textContent = pct(margin);
+
+  const box = el("sumNetBox");
+  box.classList.remove("good","bad");
+  box.classList.add(net>=0 ? "good" : "bad");
+}
+
+// Events
+el("jobSelect").addEventListener("change", updateJobFields);
+el("jobQty").addEventListener("input", recalcJobLine);
+
+el("machineSelect").addEventListener("change", updateMachineFields);
+el("machineDays").addEventListener("input", recalcMachineLine);
+
+el("otherUnitPrice").addEventListener("input", recalcOtherLine);
+el("otherQty").addEventListener("input", recalcOtherLine);
+
+// Add lines
+el("addJobLine").onclick = ()=>{
+  const id = el("jobSelect").value;
+  const item = JOB_ITEMS.find(x=>x.id===id);
+  const qty = num(el("jobQty").value);
+  if(!item) return alert("İş kalemi seç.");
+  if(qty<=0) return alert("Miktar 0 olamaz.");
+
+  state.income.push({
+    jobId:id, name:item.name, note: el("jobNote").value.trim(),
+    unit:item.unit, unitPrice:num(item.unitPrice), qty: qty
+  });
+
+  el("jobQty").value = "";
+  el("jobNote").value = "";
+  recalcJobLine();
+  renderTables();
+};
+
+el("clearJobForm").onclick = ()=>{
+  el("jobSelect").value = "";
+  updateJobFields();
+  el("jobQty").value = "";
+  el("jobNote").value = "";
+  el("jobLineTotal").value = "0,00 DZD";
+};
+
+el("addMachineLine").onclick = ()=>{
+  const id = el("machineSelect").value;
+  const m = MACHINES.find(x=>x.id===id);
+  const days = num(el("machineDays").value);
+  if(!m) return alert("Makine seç.");
+  if(days<=0) return alert("Gün sayısı 0 olamaz.");
+
+  state.expense.push({
+    type:"Makine",
+    name:m.name,
+    note: el("machineNote").value.trim(),
+    unitPrice:num(m.daily),
+    qty: days
+  });
+
+  el("machineDays").value = "";
+  el("machineNote").value = "";
+  recalcMachineLine();
+  renderTables();
+};
+
+el("addOtherLine").onclick = ()=>{
+  const name = el("otherName").value.trim();
+  const up = num(el("otherUnitPrice").value);
+  const qty = num(el("otherQty").value);
+  if(!name) return alert("Gider adı yaz.");
+  if(qty<=0) return alert("Miktar 0 olamaz.");
+
+  state.expense.push({
+    type:"Diğer",
+    name:name,
+    note: el("otherNote").value.trim(),
+    unitPrice: up,
+    qty: qty
+  });
+
+  el("otherName").value = "";
+  el("otherUnitPrice").value = "";
+  el("otherQty").value = "";
+  el("otherNote").value = "";
+  recalcOtherLine();
+  renderTables();
+};
+
+// Delete
+el("incomeTable").addEventListener("click",(e)=>{
+  const b = e.target.closest("[data-del-income]");
+  if(!b) return;
+  const idx = Number(b.getAttribute("data-del-income"));
+  state.income.splice(idx,1);
+  renderTables();
+});
+el("expenseTable").addEventListener("click",(e)=>{
+  const b = e.target.closest("[data-del-exp]");
+  if(!b) return;
+  const idx = Number(b.getAttribute("data-del-exp"));
+  state.expense.splice(idx,1);
+  renderTables();
+});
+
+// Reset
+el("resetAll").onclick = ()=>{
+  if(!confirm("Her şeyi sıfırlayayım mı?")) return;
+  state.income = [];
+  state.expense = [];
+  renderTables();
+};
+
+// Export
+function downloadFile(filename, content, type){
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+el("exportJson").onclick = ()=>{
+  const payload = {
+    generatedAt: new Date().toISOString(),
+    currency:"DZD",
+    income: state.income,
+    expense: state.expense
+  };
+  downloadFile("hakedis_maliyet.json", JSON.stringify(payload,null,2), "application/json");
+};
+el("exportCsv").onclick = ()=>{
+  const rows = [];
+  rows.push(["TIP","AD","NOT","BIRIM_FIYAT","MIKTAR","TOPLAM"]);
+  state.income.forEach(ln=>{
+    rows.push(["GELIR", ln.name, ln.note||"", ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+  });
+  state.expense.forEach(ln=>{
+    rows.push(["GIDER-"+ln.type, ln.name, ln.note||"", ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+  });
+  const csv = rows.map(r=> r.map(x=>{
+    const s = String(x ?? "");
+    return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+  }).join(",")).join("\n");
+  downloadFile("hakedis_maliyet.csv", csv, "text/csv;charset=utf-8");
+};
+
+// Init
+fillSelect(el("jobSelect"), "Listeden seçin...", JOB_ITEMS);
+fillSelect(el("machineSelect"), "Makine seçin...", MACHINES);
+updateJobFields();
+updateMachineFields();
+recalcOtherLine();
+renderTables();
+</script>
+</body>
+</html>
