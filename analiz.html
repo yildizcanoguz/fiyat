@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MALİYET ANALİZİ (14 DOSYA)</title>
+    <title>MALİYET ANALİZİ (14 POZ)</title>
     <style>
-        /* --- MODERN VE TEMİZ TASARIM --- */
+        /* --- MODERN VE SAĞLAM TASARIM --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; padding: 0; background-color: #f4f6f8; color: #333; 
-            height: 100vh; overflow: hidden;
+            height: 100vh; overflow: hidden; /* Kaydırmayı engelle */
         }
 
-        /* GİRİŞ EKRANI */
+        /* GİRİŞ EKRANI (TAM EKRAN) */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #f4f6f8 0%, #dbe2e8 100%);
@@ -33,17 +33,19 @@
         .login-btn {
             width: 100%; padding: 15px; background: #007aff; color: white;
             border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,122,255,0.3);
         }
 
-        /* ANA EKRAN */
+        /* ANA UYGULAMA KUTUSU */
         #appContainer {
-            display: none; max-width: 600px; margin: 0 auto; height: 100%; overflow-y: auto;
+            display: none; /* Giriş yapılınca açılacak */
+            max-width: 600px; margin: 0 auto; height: 100%; overflow-y: auto;
             padding: 15px; padding-bottom: 100px;
         }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .app-title { font-size: 18px; font-weight: 900; color: #007aff; text-transform: uppercase; }
-        .logout-btn { background: #ff3b30; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .logout-btn { background: #ff3b30; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
         /* PARAMETRELER */
         .params-panel {
@@ -55,30 +57,41 @@
         .param-label { font-size: 11px; color: #007aff; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
         .param-input { width: 100%; padding: 10px; border: 2px solid #e1e4e8; border-radius: 10px; font-size: 16px; font-weight: 700; text-align: center; background: #f9fbfd; color: #333; }
 
-        /* DROPBOX MENÜ */
+        /* DROPBOX MENÜSÜ */
         .search-container { position: relative; margin-bottom: 20px; z-index: 1000; }
         .search-box-wrapper {
             display: flex; align-items: center; background: #fff; border: 2px solid #007aff;
-            border-radius: 14px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,122,255,0.1);
+            border-radius: 14px; overflow: visible; box-shadow: 0 4px 10px rgba(0,122,255,0.1);
         }
         
         .search-input { 
-            flex: 1; padding: 16px; border: none; font-size: 15px; font-weight: 600; outline: none;
+            flex: 1; padding: 16px; border: none; font-size: 15px; font-weight: 600; outline: none; border-radius: 14px 0 0 14px;
         }
+        /* Liste Açma Butonu */
         .dropdown-btn {
             padding: 16px 20px; background: #f0f2f5; color: #007aff; font-size: 12px; cursor: pointer;
-            border-left: 1px solid #e1e4e8; font-weight: 800; user-select: none;
+            border-left: 1px solid #e1e4e8; font-weight: 800; user-select: none; border-radius: 0 14px 14px 0;
         }
         .dropdown-btn:active { background: #e0e6ed; }
 
+        /* AÇILIR LİSTE */
         .results-list {
-            display: none; position: absolute; top: 110%; left: 0; right: 0;
+            display: none; /* JS ile açılacak */
+            position: absolute; top: 115%; left: 0; right: 0;
             background: white; border-radius: 14px; max-height: 350px; overflow-y: auto;
             box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: 1px solid #e1e4e8; padding: 5px;
+            z-index: 9999; /* En üstte durması için */
         }
-        .res-item { padding: 14px; border-radius: 8px; cursor: pointer; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; }
+        .res-item { 
+            padding: 14px; border-radius: 8px; cursor: pointer; 
+            border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; 
+        }
         .res-item:active { background: #f2f7ff; }
-        .res-icon { width: 32px; height: 32px; border-radius: 8px; background: #eaf3ff; color: #007aff; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 16px; font-weight: bold; flex-shrink: 0; }
+        .res-icon { 
+            width: 32px; height: 32px; border-radius: 8px; background: #eaf3ff; 
+            color: #007aff; display: flex; align-items: center; justify-content: center; 
+            margin-right: 12px; font-size: 16px; font-weight: bold; flex-shrink: 0; 
+        }
 
         /* ANALİZ KARTI */
         .analysis-card {
@@ -98,13 +111,18 @@
         .ac-total-label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         .ac-total-val { font-size: 24px; font-weight: 900; color: #007aff; display: block; margin-top: 5px; }
 
-        /* HESAPLAMA */
+        /* HESAPLAMA ALANI */
         .calc-area { margin-top: 20px; display: none; }
         .calc-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; font-weight: bold; text-align: center; }
         .grand-result { text-align: center; font-size: 22px; font-weight: 900; color: #333; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #ddd; }
 
-        /* GÜNÜN SÖZÜ */
-        .quote-card { margin-top: 40px; padding: 20px; background: white; border-radius: 16px; text-align: center; border-bottom: 4px solid #007aff; cursor: pointer; color: #555; }
+        /* GÜNÜN SÖZÜ KARTI */
+        .quote-card { 
+            margin-top: 40px; padding: 20px; background: white; 
+            border-radius: 16px; text-align: center; 
+            border-bottom: 4px solid #007aff; cursor: pointer; color: #555;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
         .q-text { font-size: 13px; font-style: italic; margin-bottom: 8px; line-height: 1.4; }
         .q-author { font-size: 10px; font-weight: 800; color: #007aff; text-transform: uppercase; }
 
@@ -117,8 +135,8 @@
         <h2 style="margin:0 0 10px 0; color:#2c3e50;">MALİYET ANALİZİ</h2>
         <p style="color:#666; font-size:13px; margin-bottom:20px;">GİRİŞ / CONNEXION</p>
         <input type="password" id="passInput" class="login-input" placeholder="****" inputmode="numeric">
-        <button class="login-btn" onclick="app.login()">GİRİŞ YAP</button>
-        <p id="errorMsg" style="color:#ff3b30; display:none; margin-top:15px; font-weight:bold; font-size:13px;">Hatalı Şifre!</p>
+        <button class="login-btn" onclick="app.login()">GİRİŞ / ENTRER</button>
+        <p id="errorMsg" style="color:red; display:none; margin-top:15px; font-weight:bold; font-size:13px;">Hatalı Şifre!</p>
     </div>
 </div>
 
@@ -173,34 +191,36 @@
     var app = {
         PASS: "1907",
         selItem: null,
+        currentUnitPrice: 0, // DZD cinsinden birim fiyatı tutar
         
-        // --- SADECE SENİN GÖNDERDİĞİN 14 DOSYA ---
-        // Veri Yapısı: n:İsim, u:Birim, prod:Günlük Üretim, fuel:Günlük Yakıt(Lt), fixed:Günlük Sabit Gider(Euro)
-        // Not: Sabit Gider (Makine Amortisman + İşçilik + Malzeme vs.) yaklaşık hesaplanmıştır.
+        // --- SADECE YÜKLEDİĞİN 14 DOSYA ---
+        // {n: İsim, u: Birim, prod: Günlük Üretim, fuel: Günlük Yakıt(Lt), fixed: Günlük Sabit Gider(Euro)}
         db: [
             {n:"Kazı İşi (Genel) / Déblai", u:"m3", prod:3600, fuel:1200, fixed:850}, // Kazı.csv
             {n:"Dolgu İşi / Remblai", u:"m3", prod:1800, fuel:400, fixed:600}, // Dolgu.csv
-            {n:"Shotcrete (Püskürtme Beton)", u:"m3", prod:80, fuel:150, fixed:1200}, // Shotcrete.csv (Malzeme dahil pahalı)
+            {n:"Shotcrete (Püskürtme Beton)", u:"m3", prod:80, fuel:150, fixed:1200}, // Shotcrete.csv
             {n:"Ankraj (Pasif) / Tirants", u:"ml", prod:100, fuel:80, fixed:450}, // Ankraj.csv
             {n:"Hasır Çelik / Treillis Soudés", u:"Ton", prod:12, fuel:20, fixed:600}, // Hasır Çelik.csv
             {n:"Barbakan / Barbacane PVC", u:"ml", prod:150, fuel:5, fixed:100}, // Barbakan.csv
             {n:"Ankraj Testi / Essai Tirants", u:"Adet", prod:6, fuel:20, fixed:200}, // Ankraj Testi.csv
             {n:"Anrochman (Taş Dolgu)", u:"m3", prod:780, fuel:250, fixed:500}, // Anrochman.csv
             {n:"Riprap (Taş Tahkimat)", u:"m3", prod:120, fuel:60, fixed:300}, // riprap.csv
-            {l:"GNT (Temel Malzemesi)", u:"m3", prod:96, fuel:10, fixed:150}, // gnt.csv
+            {n:"GNT (Temel Malzemesi)", u:"m3", prod:96, fuel:10, fixed:150}, // gnt.csv
             {n:"CDF (Form Tabakası)", u:"m3", prod:960, fuel:300, fixed:550}, // cdf.csv
             {n:"Toprakarme / Terre Armée", u:"m2", prod:1000, fuel:400, fixed:800}, // Toprekarme.csv
             {n:"Nebati Sıyırma / Décapage", u:"m3", prod:192, fuel:50, fixed:150}, // nebati.csv
             {n:"Çevre Düzenlemesi / Plantation", u:"m2", prod:1000, fuel:20, fixed:200} // çevre düzenlemesi.csv
         ],
 
-        // --- 1. FONKSİYONLAR ---
+        // --- FONKSİYONLAR ---
+        
+        // 1. GİRİŞ
         login: function() {
             var val = document.getElementById("passInput").value;
             if(val.trim() === this.PASS) {
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("appContainer").style.display = "block";
-                localStorage.setItem("master_v11", "ok");
+                localStorage.setItem("master_analyze_v1", "ok");
                 this.newQuote();
             } else {
                 document.getElementById("errorMsg").style.display = "block";
@@ -208,97 +228,130 @@
         },
 
         logout: function() {
-            localStorage.removeItem("master_v11");
+            localStorage.removeItem("master_analyze_v1");
             location.reload();
         },
 
+        // 2. LİSTE AÇMA / KAPAMA
         toggleList: function(event) {
-            if(event) event.stopPropagation(); 
-            var list = document.getElementById("resultsList");
-            if(list.style.display === "block") list.style.display = "none";
-            else this.showList();
+            // Tıklamanın "body"ye gitmesini engelle (yoksa hemen kapanır)
+            if(event) event.stopPropagation();
+            
+            var list = document.getElementById("resList");
+            if(list.style.display === "block") {
+                list.style.display = "none";
+            } else {
+                this.showList(); // Listeyi doldur ve aç
+            }
         },
 
+        // 3. LİSTEYİ GÖSTERME VE FİLTRELEME
         showList: function() {
             var val = document.getElementById("searchBox").value.toLocaleLowerCase('tr');
-            var list = document.getElementById("resultsList");
+            var list = document.getElementById("resList");
             list.innerHTML = "";
             
-            var filtered = this.db.filter(i => i.n.toLocaleLowerCase('tr').includes(val));
-
-            filtered.forEach(item => {
-                var div = document.createElement("div");
-                div.className = "res-item";
-                div.innerHTML = `<div class="res-icon">➤</div><div><strong>${item.n}</strong></div>`;
-                div.onmousedown = () => { this.selectItem(item); };
-                list.appendChild(div);
+            // Filtreleme
+            var filtered = this.db.filter(function(i) {
+                return i.n.toLocaleLowerCase('tr').includes(val);
             });
+
+            if(filtered.length === 0) {
+                list.innerHTML = "<div style='padding:10px; color:#999; font-style:italic;'>Bulunamadı...</div>";
+            } else {
+                filtered.forEach(function(item) {
+                    var div = document.createElement("div");
+                    div.className = "res-item";
+                    div.innerHTML = `<div class="res-icon">➤</div><div><strong>${item.n}</strong></div>`;
+                    
+                    // ÖNEMLİ: onmousedown kullanıyoruz ki input'tan blur olmadan yakalayalım
+                    div.onmousedown = function() { app.selectItem(item); };
+                    list.appendChild(div);
+                });
+            }
             list.style.display = "block";
         },
 
-        filterList: function() { this.showList(); },
+        filterList: function() {
+            this.showList();
+        },
 
+        // 4. SEÇİM VE ANALİZ
         selectItem: function(item) {
             this.selItem = item;
             document.getElementById("searchBox").value = item.n;
-            document.getElementById("resultsList").style.display = "none";
+            document.getElementById("resList").style.display = "none";
             this.renderCard();
         },
 
         renderCard: function() {
+            if(!this.selItem) return;
             var item = this.selItem;
-            var card = document.getElementById("analysisCard");
-            var dieselP = parseFloat(document.getElementById("dieselPrice").value.replace(',','.'));
-            var euroR = parseFloat(document.getElementById("euroRate").value.replace(',','.'));
+            
+            // Virgüllü sayıları düzelt (29,01 -> 29.01)
+            var dPrice = parseFloat(document.getElementById("dieselPrice").value.replace(',','.'));
+            var eRate = parseFloat(document.getElementById("euroRate").value.replace(',','.'));
 
+            // HESAPLAMA FORMÜLÜ (Excel'deki mantık)
+            // Günlük Toplam Gider = (Yakıt Lt * Mazot Fiyatı / Euro Kuru) + Sabit Giderler(Euro)
+            // Birim Fiyat (Euro) = Günlük Toplam Gider / Günlük Üretim
+            
+            var dailyFuelCostEUR = (item.fuel * dPrice) / eRate;
+            var totalDailyCostEUR = dailyFuelCostEUR + item.fixed;
+            var unitPriceEUR = totalDailyCostEUR / item.prod;
+            var unitPriceDZD = unitPriceEUR * eRate;
+
+            this.currentUnitPrice = unitPriceDZD; // Global değişkene ata (Hesaplama için)
+
+            // Ekrana Yazdır
             document.getElementById("acName").innerText = item.n;
-            card.style.display = "block";
+            document.getElementById("analysisCard").style.display = "block";
             document.getElementById("calcSec").style.display = "block";
 
-            // ANALİZ HESABI
-            // Günlük Toplam = (Yakıt Lt * Mazot Fiyatı / Euro Kuru) + Sabit Giderler
-            // Birim Fiyat = Günlük Toplam / Günlük Üretim
-            
-            var dailyFuelCostEUR = (item.fuel * dieselP) / euroR;
-            var totalDailyEUR = dailyFuelCostEUR + item.fixed;
-            var unitPriceEUR = totalDailyEUR / item.prod;
-            var unitPriceDZD = unitPriceEUR * euroR;
-
-            this.currentUnitPrice = unitPriceDZD; // Global kaydet
-
-            document.querySelector(".ac-body").innerHTML = `
+            var html = `
                 <div class="ac-row"><span class="ac-label">Günlük Üretim:</span> <span class="ac-val">${item.prod} ${item.u}</span></div>
                 <div class="ac-row"><span class="ac-label">Günlük Yakıt:</span> <span class="ac-val">${item.fuel} Lt</span></div>
                 <div class="ac-row"><span class="ac-label">Sabit Gider (Makine+İşçi):</span> <span class="ac-val">${item.fixed} €</span></div>
-                
-                <div class="ac-total" style="background:#eaf3ff; border-color:#007aff;">
-                    <span class="ac-total-label">ANALİZ EDİLEN BİRİM FİYAT</span>
-                    <span class="ac-total-val" style="color:#007aff">${this.fmt(unitPriceDZD)} DZD</span>
-                    <small>(${this.fmt(unitPriceEUR)} €)</small>
+                <div class="ac-total" style="background:#eaf3ff; border:2px solid #007aff; border-radius:12px; padding:15px; margin-top:15px; text-align:center;">
+                    <div style="font-size:11px; font-weight:bold; color:#888;">ANALİZ BİRİM FİYATI</div>
+                    <div style="font-size:24px; font-weight:900; color:#007aff;">${this.fmt(unitPriceDZD)} DZD</div>
+                    <div style="font-size:13px; color:#555;">(${this.fmt(unitPriceEUR)} €)</div>
                 </div>
             `;
+            document.querySelector(".ac-body").innerHTML = html;
             
+            // Alt hesaplamayı sıfırla
             document.getElementById("qtyIn").value = "";
             document.getElementById("grandTotalDisplay").innerText = "0 DZD";
         },
 
-        recalcAnalysis: function() { if(this.selItem) this.renderCard(); },
+        // Parametre değişince yeniden hesapla
+        recalcAnalysis: function() {
+            if(this.selItem) this.renderCard();
+        },
 
+        // Miktar girince toplam hesapla
         calculateTotal: function() {
-            if(!this.selItem) return;
             var q = parseFloat(document.getElementById("qtyIn").value);
-            if(q>0) {
-                 var total = q * this.currentUnitPrice;
-                 document.getElementById("grandTotalDisplay").innerText = this.fmt(total) + " DZD";
+            if(q > 0 && this.currentUnitPrice > 0) {
+                var total = q * this.currentUnitPrice;
+                document.getElementById("grandTotalDisplay").innerText = this.fmt(total) + " DZD";
+            } else {
+                document.getElementById("grandTotalDisplay").innerText = "0 DZD";
             }
         },
 
-        fmt: function(n) { return n.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); },
+        fmt: function(n) {
+            return n.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        },
 
+        // 5. GÜNÜN SÖZÜ
         quotes: [
             {t:"İşleyen demir ışıldar.", a:"Atasözü"},
             {t:"Yol medeniyettir.", a:"Atasözü"},
-            {t:"Şantiyede güvenlik, hızdan önce gelir.", a:"Kural"}
+            {t:"Şantiyede güvenlik, hızdan önce gelir.", a:"Kural"},
+            {t:"Planlama yoksa, başarısızlık planlanmıştır.", a:"Anonim"},
+            {t:"Kalite bir eylem değil, bir alışkanlıktır.", a:"Aristoteles"}
         ],
         newQuote: function() {
             var r = this.quotes[Math.floor(Math.random() * this.quotes.length)];
@@ -307,17 +360,22 @@
         }
     };
 
-    // --- BAŞLANGIÇ ---
+    // --- BAŞLATMA ---
+    // Enter tuşu ile giriş
     document.getElementById("passInput").addEventListener("keypress", function(e){ if(e.key==="Enter") app.login(); });
     
-    if(localStorage.getItem("master_v11") === "ok") {
+    // Otomatik giriş kontrolü
+    if(localStorage.getItem("master_analyze_v1") === "ok") {
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("appContainer").style.display = "block";
         app.newQuote();
     }
     
+    // Boşluğa tıklayınca listeyi kapat
     document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) document.getElementById("resultsList").style.display = "none";
+        if (!e.target.closest('.search-container')) {
+            document.getElementById("resultsList").style.display = "none";
+        }
     });
 
 </script>
