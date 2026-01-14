@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hakediş & Maliyet</title>
+  <style>
+    :root{
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --shadow:0 12px 32px rgba(15,23,42,.10);
+      --primary:#2d7ff9;
+      --danger:#ef4444;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --radius:20px;
+      --chip:#eef2ff;
+      --chipText:#1e3a8a;
+      --focus: rgba(45,127,249,.18);
+    }
+    body.dark{
+      --bg:#0b1220;
+      --card:#0f1a2e;
+      --text:#e5e7eb;
+      --muted:#93a4bd;
+      --border:#233553;
+      --shadow:0 14px 40px rgba(0,0,0,.38);
+      --primary:#4ea1ff;
+      --chip:#12234a;
+      --chipText:#b9d7ff;
+      --focus: rgba(78,161,255,.22);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1180px;margin:22px auto;padding:0 14px 40px;}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:14px;
+    }
+    h1{margin:0;font-size:28px;letter-spacing:.2px}
+    .btn{
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      padding:10px 14px;border-radius:14px;
+      cursor:pointer;font-weight:800;
+      display:inline-flex;align-items:center;gap:8px;
+      user-select:none;
+    }
+    .btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+    .btn.danger{background:var(--danger);border-color:transparent;color:#fff}
+    .btn:active{transform:translateY(1px)}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 12px;
+      font-size:16px;
+      color:var(--muted);
+      letter-spacing:.15px;
+    }
+    .sticky-summary{
+      position:sticky;top:10px;z-index:20;
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .sum{
+      flex:1;min-width:220px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px 14px;
+      box-shadow:var(--shadow);
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    .sum b{font-size:12px;color:var(--muted);letter-spacing:.2px}
+    .sum strong{font-size:16px}
+    .sum.good strong{color:var(--good)}
+    .sum.bad strong{color:var(--danger)}
+    .row{display:grid;grid-template-columns:1fr 160px 160px;gap:10px;align-items:end}
+    @media (max-width: 760px){.row{grid-template-columns:1fr}}
+    label{font-size:12px;color:var(--muted);font-weight:900;display:block;margin-bottom:6px}
+    input,select,textarea{
+      width:100%;
+      padding:12px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:transparent;
+      color:var(--text);
+      outline:none;
+    }
+    input:focus, textarea:focus{
+      box-shadow:0 0 0 4px var(--focus);
+      border-color:transparent;
+    }
+    input[readonly]{opacity:.9}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .bar{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background:var(--primary);
+      color:#fff;
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px;vertical-align:top}
+    th{font-size:12px;color:var(--muted);font-weight:950}
+    tr:last-child td{border-bottom:none}
+    .right{text-align:right}
+    .mini{font-size:12px;color:var(--muted)}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border-radius:999px;
+      background:var(--chip);color:var(--chipText);
+      border:1px solid rgba(255,255,255,.0);
+      font-weight:900;font-size:12px;
+      user-select:none;
+    }
+    .section{
+      border:1px dashed var(--border);
+      border-radius:18px;
+      padding:12px;
+    }
+
+    /* Searchable dropdown */
+    .sdd{position:relative}
+    .sdd .input{
+      display:flex;gap:8px;align-items:center;
+      padding:10px 12px;border:1px solid var(--border);
+      border-radius:14px;
+      background:transparent;
+    }
+    .sdd .input input{
+      border:none;padding:0;outline:none;background:transparent;
+    }
+    .sdd .input input:focus{box-shadow:none}
+    .sdd .input .tag{
+      padding:6px 10px;border-radius:999px;background:rgba(45,127,249,.12);
+      color:var(--text);font-weight:900;font-size:12px;border:1px solid var(--border);
+      white-space:nowrap;
+    }
+    .sdd .panel{
+      position:absolute;left:0;right:0;top:calc(100% + 8px);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      max-height:280px;
+      overflow:auto;
+      display:none;
+      z-index:60;
+    }
+    .sdd.open .panel{display:block}
+    .sdd .item{
+      width:100%;
+      text-align:left;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      padding:10px 12px;
+      color:var(--text);
+    }
+    .sdd .item:hover{background:rgba(45,127,249,.10)}
+    .sdd .item b{display:block}
+    .sdd .item .meta{font-size:12px;color:var(--muted)}
+    .kbd{font-size:12px;color:var(--muted);font-weight:900}
+    .toast{
+      position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+      background:var(--card);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      padding:10px 12px;border-radius:14px;
+      display:none;z-index:100;
+      max-width:min(780px, 92vw);
+    }
+
+    @media print{
+      .no-print{display:none!important}
+      body{background:white}
+      .card{box-shadow:none}
+      .wrap{max-width:none}
+      .sticky-summary{position:static}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>HAKEDİŞ & MALİYET</h1>
+      <div class="actions no-print" style="margin:0">
+        <span class="pill">DZD</span>
+        <button class="btn" id="toggleTheme">🌙 Tema</button>
+        <button class="btn" id="printBtn">🖨️ Yazdır</button>
+        <button class="btn" id="saveBtn">💾 Kaydet</button>
+        <button class="btn" id="loadBtn">📥 Yükle</button>
+        <button class="btn danger" id="resetBtn">🧹 Sıfırla</button>
+      </div>
+    </div>
+
+    <div class="sticky-summary">
+      <div class="sum"><div><b>TOPLAM GELİR</b><div class="mini">İş kalemleri toplamı</div></div><strong id="sumIncome">0,00 DZD</strong></div>
+      <div class="sum"><div><b>TOPLAM GİDER</b><div class="mini">Makine + diğer giderler</div></div><strong id="sumExpense">0,00 DZD</strong></div>
+      <div class="sum" id="sumNetBox"><div><b>NET</b><div class="mini">Gelir - Gider</div></div><strong id="sumNet">0,00 DZD</strong></div>
+      <div class="sum"><div><b>MARJ</b><div class="mini">Net / Gelir</div></div><strong id="sumMargin">%0,00</strong></div>
+    </div>
+
+    <div class="grid">
+      <!-- GELİR -->
+      <div class="card">
+        <h2>1) Hakediş (Gelir)</h2>
+
+        <div class="section">
+          <div class="row">
+            <div>
+              <label>İş Kalemi (arama + seç)</label>
+              <div class="sdd" id="jobSdd">
+                <div class="input">
+                  <span class="tag" id="jobTag">Seçilmedi</span>
+                  <input id="jobSearch" placeholder="Yaz: kazı, béton, GNT, buse..." autocomplete="off" />
+                  <span class="kbd">⌄</span>
+                </div>
+                <div class="panel" id="jobPanel"></div>
+              </div>
+            </div>
+            <div>
+              <label>Birim</label>
+              <input id="jobUnit" readonly placeholder="-" />
+            </div>
+            <div>
+              <label>Birim Fiyat (DZD)</label>
+              <input id="jobPrice" readonly placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px;">
+            <div>
+              <label>Not (PK / ekip / taşeron)</label>
+              <input id="jobNote" placeholder="Opsiyonel" />
+            </div>
+            <div>
+              <label>Miktar</label>
+              <input id="jobQty" type="number" step="0.01" min="0" placeholder="0" inputmode="decimal" />
+            </div>
+            <div>
+              <label>Satır Toplamı</label>
+              <input id="jobLineTotal" readonly placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="actions no-print">
+            <button class="btn primary" id="addJob">➕ Gelire Ekle</button>
+            <button class="btn" id="clearJob">Temizle</button>
+          </div>
+        </div>
+
+        <div class="bar" style="margin-top:14px;">
+          <div>Gelir Satırları</div>
+          <div id="incomeCount">0 satır</div>
+        </div>
+
+        <div style="margin-top:10px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Kalem</th>
+                <th>Not</th>
+                <th>Birim</th>
+                <th class="right">B.Fiyat</th>
+                <th class="right">Miktar</th>
+                <th class="right">Toplam</th>
+                <th class="right no-print">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="incomeTable"></tbody>
+          </table>
+        </div>
+
+        <div class="actions no-print">
+          <button class="btn" id="exportIncomeCsv">⬇️ Gelir CSV</button>
+        </div>
+      </div>
+
+      <!-- GİDER -->
+      <div class="card">
+        <h2>2) Gider (Makine + Diğer)</h2>
+
+        <!-- Makine -->
+        <div class="section">
+          <div class="row" style="grid-template-columns:1fr 160px 160px;">
+            <div>
+              <label>Makine (seç)</label>
+              <div class="sdd" id="macSdd">
+                <div class="input">
+                  <span class="tag" id="macTag">Seçilmedi</span>
+                  <input id="macSearch" placeholder="Yaz: ekskavatör, kamyon, dozer..." autocomplete="off" />
+                  <span class="kbd">⌄</span>
+                </div>
+                <div class="panel" id="macPanel"></div>
+              </div>
+            </div>
+            <div>
+              <label>Günlük Kira (DZD)</label>
+              <input id="macDaily" readonly placeholder="0.00" />
+            </div>
+            <div>
+              <label>Gün Sayısı</label>
+              <input id="macDays" type="number" step="1" min="0" placeholder="0" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px;">
+            <div>
+              <label>Not (PK / vardiya)</label>
+              <input id="macNote" placeholder="Opsiyonel" />
+            </div>
+            <div>
+              <label>Satır Toplamı</label>
+              <input id="macLineTotal" readonly placeholder="0.00" />
+            </div>
+            <div class="actions no-print" style="margin:0">
+              <button class="btn primary" id="addMac">➕ Makineyi Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diğer gider -->
+        <div class="section" style="margin-top:12px;">
+          <div class="row" style="grid-template-columns:1fr 160px 160px;">
+            <div>
+              <label>Diğer Gider Adı</label>
+              <input id="othName" placeholder="Mazot / Nakliye / Malzeme..." />
+            </div>
+            <div>
+              <label>Birim Fiyat (DZD)</label>
+              <input id="othPrice" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal" />
+            </div>
+            <div>
+              <label>Miktar</label>
+              <input id="othQty" type="number" step="0.01" min="0" placeholder="0" inputmode="decimal" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;grid-template-columns:1fr 160px 160px;">
+            <div>
+              <label>Not</label>
+              <input id="othNote" placeholder="Fiş no / PK..." />
+            </div>
+            <div>
+              <label>Satır Toplamı</label>
+              <input id="othLineTotal" readonly placeholder="0.00" />
+            </div>
+            <div class="actions no-print" style="margin:0">
+              <button class="btn primary" id="addOth">➕ Diğer Gider Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar" style="margin-top:14px;">
+          <div>Gider Satırları</div>
+          <div id="expenseCount">0 satır</div>
+        </div>
+
+        <div style="margin-top:10px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Tip</th>
+                <th>Ad</th>
+                <th>Not</th>
+                <th class="right">B.Fiyat</th>
+                <th class="right">Miktar</th>
+                <th class="right">Toplam</th>
+                <th class="right no-print">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
+          </table>
+        </div>
+
+        <div class="actions no-print">
+          <button class="btn" id="exportAllCsv">⬇️ Excel (CSV)</button>
+          <button class="btn" id="exportJson">⬇️ JSON</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+   1) İŞ KALEMLERİ (DB)
+   - Senin paylaştığın formatı aynen kullandım.
+   - Buraya kalan 268 kalemin tamamını aynı şekilde yapıştırınca otomatik tamamlanır.
+   ========================= */
+const JOB_DB = [
+  { code: "A.1", name: "Installation et repliement / Şantiye Kurulumu", unit: "Ft", price: 1041277260.86 },
+  { code: "A.2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", price: 41644039.15 },
+  { code: "A.2.2", name: "Contrôle externe / Dış Kontrol", unit: "Ft", price: 33983960.76 },
+  { code: "A.3.1", name: "Études d'exécution / Uygulama Projeleri", unit: "Ft", price: 212842500.00 },
+  { code: "A.3.2", name: "Contrôle externe des études / Proje Kontrolü", unit: "Ft", price: 45999996.83 },
+  { code: "A.3.3", name: "Dossier de récolement / As-built", unit: "Ft", price: 33568500.00 },
+  { code: "A.3.4", name: "Étude des méthodes / Metodoloji", unit: "Ft", price: 7500069.87 },
+  { code: "A.3.5", name: "Reconnaissances géotechniques / Jeoteknik", unit: "Ft", price: 40209555.68 },
+  { code: "A.4.1", name: "Sécurité passive", unit: "Ft", price: 200000000.00 },
+  { code: "A.4.2", name: "Sécurité active", unit: "Ft", price: 400000000.00 },
+  { code: "A.5", name: "Panneau identification", unit: "U", price: 1775000.00 },
+  { code: "B.1.1", name: "Débroussaillage / Çalı Temizliği", unit: "Ha", price: 619820.41 },
+  { code: "B.1.2", name: "Abattage arbres", unit: "U", price: 1600.00 },
+  { code: "B.1.3", name: "Dépose ouvrages", unit: "Tonne", price: 944.25 },
+  { code: "B.2.1", name: "Démolition divers", unit: "m3", price: 1335.05 },
+  { code: "B.2.2", name: "Démolition béton", unit: "m3", price: 1620.22 },
+  { code: "B.2.3", name: "Démolition chaussée", unit: "m3", price: 207.70 },
+  { code: "B.3.1", name: "Rabotage <10cm", unit: "m2", price: 88.85 },
+  { code: "B.3.2", name: "Rabotage 10-20cm", unit: "m2", price: 98.62 },
+  { code: "B.4", name: "Scarification", unit: "m2", price: 28.16 },
+  { code: "C.1.1", name: "Décapage / Sıyırma", unit: "m3", price: 128.62 },
+  { code: "C.1.2", name: "Reprise stock", unit: "m3", price: 179.08 },
+  { code: "C.2.2", name: "Purges", unit: "m3", price: 2200.00 },
+  { code: "C.3.1", name: "Déblai meuble / Yumuşak Kazı", unit: "m3", price: 257.24 },
+  { code: "C.3.2", name: "Déblai semi-dur / Küskülük Kazı", unit: "m3", price: 386.32 },
+  { code: "C.3.3", name: "Déblai rocheux / Kaya Kazı", unit: "m3", price: 1308.96 },
+  { code: "C.4.1", name: "Déblai meuble dépôt", unit: "m3", price: 148.16 },
+  { code: "C.4.2", name: "Déblai semi-dur dépôt", unit: "m3", price: 307.70 },
+  { code: "C.4.3", name: "Déblai rocheux dépôt", unit: "m3", price: 893.10 },
+  { code: "C.5.1", name: "Remblai emprunt / Ariyet", unit: "m3", price: 555.63 },
+  { code: "C.6.1", name: "Assise drainante", unit: "m3", price: 1166.55 },
+  { code: "C.7.1", name: "Géotextile renfort", unit: "m2", price: 290.80 },
+  { code: "C.7.2", name: "Géotextile anti-contam", unit: "m2", price: 258.27 },
+  { code: "C.7.3", name: "Géogrille", unit: "m2", price: 418.04 },
+  { code: "C.8.1", name: "Arrondi crête", unit: "ml", price: 317.01 },
+  { code: "C.9.1", name: "Couche forme (CDF)", unit: "m3", price: 1346.55 },
+  { code: "D.1.1", name: "Fossé A", unit: "ml", price: 495.86 },
+  { code: "D.1.2", name: "Fossé B", unit: "ml", price: 594.94 },
+  { code: "D.1.3", name: "Fossé C", unit: "ml", price: 897.18 },
+  { code: "D.1.4", name: "Végétalisation", unit: "ml", price: 874.94 },
+  { code: "D.2.1", name: "Bétonnage A", unit: "ml", price: 4448.37 },
+  { code: "D.2.2", name: "Bétonnage B", unit: "ml", price: 5662.50 },
+  { code: "D.2.3", name: "Bétonnage C", unit: "ml", price: 6316.17 },
+  { code: "D.3.1", name: "Cunette végétalisée", unit: "ml", price: 3402.40 },
+  { code: "D.3.2", name: "Cunette béton", unit: "ml", price: 4304.81 },
+  { code: "D.3.3", name: "Cunette symétrique", unit: "ml", price: 4829.18 },
+  { code: "D.4.1", name: "Descente A", unit: "ml", price: 2912.86 },
+  { code: "D.4.2", name: "Descente B", unit: "ml", price: 3357.57 },
+  { code: "D.4.3", name: "Descente C", unit: "ml", price: 3634.81 },
+  { code: "D.4.4", name: "Descente D", unit: "ml", price: 4119.98 },
+  { code: "D.5.1", name: "Descente tuile A", unit: "ml", price: 2200.00 },
+  { code: "D.5.2", name: "Descente tuile B", unit: "ml", price: 3520.00 },
+  { code: "D.5.3", name: "Descente tuile C", unit: "ml", price: 4200.00 },
+  { code: "D.6.1", name: "Caniveau U 30x40", unit: "ml", price: 4800.00 },
+  { code: "D.6.2", name: "Caniveau U 40x50", unit: "ml", price: 5800.00 },
+  { code: "D.6.3", name: "Caniveau U 45x55", unit: "ml", price: 6300.00 },
+  { code: "D.7.1", name: "Caniveau fente 300", unit: "ml", price: 22200.00 },
+  { code: "D.7.2", name: "Caniveau fente 400", unit: "ml", price: 26600.00 },
+  { code: "D.7.3", name: "Caniveau fente 500", unit: "ml", price: 29300.00 },
+  { code: "D.7.4", name: "Renforcement", unit: "ml", price: 11191.83 },
+  { code: "D.8.1", name: "Demi-buse 300", unit: "ml", price: 4400.00 },
+  { code: "D.8.2", name: "Demi-buse 400", unit: "ml", price: 5700.00 },
+  { code: "D.8.3", name: "Demi-buse 500", unit: "ml", price: 7800.00 },
+  { code: "D.9.1", name: "Déblai tranchée <2m", unit: "m3", price: 217.93 },
+  { code: "D.9.2", name: "Déblai tranchée 2-4m", unit: "m3", price: 277.24 },
+  { code: "D.9.3", name: "Déblai tranchée 4-6m", unit: "m3", price: 326.55 },
+  { code: "D.9.4", name: "PV Roche tranchée", unit: "m3", price: 1500.00 },
+  { code: "D.10.1", name: "Lit sable", unit: "m3", price: 1455.51 },
+  { code: "D.10.2", name: "Lit béton", unit: "m3", price: 5962.17 },
+  { code: "D.11.1", name: "Enrobage grave", unit: "m3", price: 1437.35 },
+  { code: "D.11.2", name: "Enrobage béton", unit: "m3", price: 5593.89 },
+  { code: "D.11.3", name: "Enrobage drainant", unit: "m3", price: 1739.65 },
+  { code: "D.12.1", name: "Tuyau 400mm", unit: "ml", price: 7769.31 },
+  { code: "D.12.2", name: "Tuyau 600mm", unit: "ml", price: 9369.31 },
+  { code: "D.13.1", name: "Buse 800mm", unit: "ml", price: 15498.73 },
+  { code: "D.13.2", name: "Buse 1000mm", unit: "ml", price: 21631.72 },
+  { code: "D.13.3", name: "Buse 1200mm", unit: "ml", price: 36375.97 },
+  { code: "D.13.4", name: "Buse 1500mm", unit: "ml", price: 50775.97 },
+  { code: "D.14.1", name: "Collecteur 150mm", unit: "ml", price: 2700.00 },
+  { code: "D.17.1", name: "Tuyau PEHD 75mm", unit: "ml", price: 1236.00 },
+  { code: "D.17.2", name: "Tuyau PEHD 90mm", unit: "ml", price: 1500.00 },
+  { code: "D.18.1", name: "Chambre K1C", unit: "U", price: 112000.00 },
+  { code: "D.18.2", name: "Chambre K2C", unit: "U", price: 125000.00 },
+  { code: "D.19.1", name: "Regard 1000mm", unit: "U", price: 120000.00 },
+  { code: "D.20.1", name: "Puisard", unit: "U", price: 150000.00 },
+  { code: "D.20.2", name: "Puisard 1300", unit: "U", price: 174000.00 },
+  { code: "D.20.3", name: "Puisard 1500", unit: "U", price: 188000.00 },
+  { code: "D.20.4", name: "Puisard 1800", unit: "U", price: 215000.00 },
+  { code: "D.20.5", name: "Puisard 2000", unit: "U", price: 220000.00 },
+  { code: "D.20.6", name: "Puisard 2500", unit: "U", price: 260000.00 },
+  { code: "D.21.1", name: "Grille 700x700", unit: "U", price: 32000.00 },
+  { code: "D.21.2", name: "Grille 250x400", unit: "U", price: 26826.09 },
+  { code: "D.21.3", name: "Caillebotis 1x1m", unit: "U", price: 5400.00 },
+  { code: "D.21.4", name: "Caillebotis 1x2m", unit: "U", price: 9200.00 },
+  { code: "D.22.1", name: "Tête buse 600", unit: "U", price: 60925.34 },
+  { code: "D.22.2", name: "Tête buse 800", unit: "U", price: 68921.05 },
+  { code: "D.22.3", name: "Tête buse 1000", unit: "U", price: 76992.73 },
+  { code: "D.22.4", name: "Tête buse 1200", unit: "U", price: 90558.06 },
+  { code: "D.22.5", name: "Tête buse 1500", unit: "U", price: 125386.97 },
+  { code: "D.23.1", name: "Bourrelet", unit: "ml", price: 3000.00 },
+  { code: "D.24.1", name: "Enrochement A", unit: "m3", price: 1879.30 },
+  { code: "D.24.2", name: "Enrochement B", unit: "m3", price: 1879.30 },
+  { code: "D.24.3", name: "Enrochement C", unit: "m3", price: 1879.30 },
+  { code: "D.25.1", name: "Enrochement lié", unit: "m3", price: 2042.98 },
+  { code: "D.26.1", name: "Barbacane", unit: "ml", price: 1700.00 },
+  { code: "D.27.1", name: "Béton propreté", unit: "m3", price: 178.16 },
+  { code: "D.27.2", name: "Béton ouvrages", unit: "m3", price: 9553.28 },
+  { code: "D.27.3", name: "Coffrage", unit: "m2", price: 920.22 },
+  { code: "D.27.4", name: "Ferraillage", unit: "kg", price: 65.08 },
+  { code: "E.1.1", name: "Grave GNT / PMT", unit: "m3", price: 1922.64 },
+  { code: "E.2.1", name: "Grave Bitume GB", unit: "Tonne", price: 3390.32 },
+  { code: "E.2.2", name: "Enrobés EME 2", unit: "Tonne", price: 4782.15 },
+  { code: "E.3.1", name: "Couche BB / Aşınma", unit: "Tonne", price: 4337.90 },
+  { code: "E.4.1", name: "Imprégnation", unit: "m2", price: 95.00 },
+  { code: "E.5.1", name: "Bicouche", unit: "m2", price: 540.00 },
+  { code: "E.6.1", name: "Bordure A2", unit: "ml", price: 2000.00 },
+  { code: "F.1.1", name: "Hachures", unit: "m2", price: 680.00 },
+  { code: "F.1.2", name: "Bande 100mm", unit: "ml", price: 70.00 },
+  { code: "F.1.3", name: "Bande 150mm", unit: "ml", price: 145.00 },
+  { code: "F.1.4", name: "Bande 225mm", unit: "ml", price: 200.00 },
+  { code: "F.1.5", name: "Bande 375mm", unit: "ml", price: 340.00 },
+  { code: "F.1.6", name: "Bande 500mm", unit: "ml", price: 420.00 },
+  { code: "F.1.7", name: "Flèche rabattement", unit: "U", price: 600.00 },
+  { code: "F.1.8", name: "Flèche simple", unit: "U", price: 800.00 },
+  { code: "F.1.9", name: "Flèche double", unit: "U", price: 820.00 },
+  { code: "F.2.1", name: "Bande préfa.", unit: "ml", price: 800.00 },
+  { code: "G.1.1", name: "Panneau A/AB", unit: "U", price: 52000.00 },
+  { code: "G.5.1", name: "Poteaux < 50", unit: "ml", price: 9776.59 },
+  { code: "G.7.1", name: "Réflecteur", unit: "U", price: 1670.00 },
+  { code: "H.1.1.1", name: "Glissière GS4", unit: "ml", price: 1238.45 },
+  { code: "H.2.1.1", name: "Barrière GBA", unit: "ml", price: 3932.51 },
+  { code: "I.1.1", name: "Fouilles murs", unit: "m3", price: 178.16 },
+  { code: "I.1.3", name: "Béton propreté", unit: "m3", price: 5919.19 },
+  { code: "I.1.6", name: "Béton fondations", unit: "m3", price: 8973.98 },
+  { code: "I.3.1", name: "Panneaux antibruit", unit: "m2", price: 88750.00 },
+  { code: "I.5.3", name: "Enrochement", unit: "m3", price: 2205.85 },
+  { code: "I.6.1", name: "Séparateur hydro.", unit: "U", price: 4400000.00 },
+  { code: "I.8.1", name: "Clôtures", unit: "ml", price: 5934.02 },
+  { code: "I.9.1", name: "Plantation arbres", unit: "m2", price: 1545.17 },
+  { code: "J.1.1", name: "Mur gabions", unit: "m3", price: 3034.57 },
+  { code: "J.2.1", name: "Béton projeté", unit: "m3", price: 13478.48 },
+  { code: "J.2.3.1", name: "Clous 12m", unit: "U", price: 19236.87 },
+  { code: "J.6.1", name: "Drains", unit: "ml", price: 4700.00 },
+  { code: "J.8.1", name: "Ancrages 32mm", unit: "ml", price: 470.10 },
+  { code: "J.11", name: "Atalus", unit: "m2", price: 18500.00 },
+  { code: "J.12.1", name: "Terre Armée", unit: "m2", price: 13600.00 },
+  { code: "K.1.1", name: "Caméra", unit: "U", price: 412003.51 },
+  { code: "NP.48", name: "Déplacement cimetière", unit: "U", price: 22275.00 },
+  { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı (OA)", unit: "m3", price: 178.16 },
+  { code: "OUA.B.2.1", name: "Pieux 1200 mm / Fore Kazık", unit: "ml", price: 5404.19 },
+  { code: "OUA.B.5.2.1", name: "Béton C40 Caisson", unit: "m3", price: 21343.02 },
+  { code: "OUA.B.5.2.6", name: "Béton C35 Piles", unit: "m3", price: 12538.45 },
+  { code: "OUA.B.6.1.1", name: "Acier HA / Demir", unit: "Tonne", price: 67033.93 },
+  { code: "OUA.B.6.2", name: "Précontrainte", unit: "Tonne", price: 55688.54 },
+  { code: "OUA.B.7.1.1", name: "Appareil 2100", unit: "U", price: 260001.71 },
+  { code: "OUA.B.7.5.1", name: "Joint 240mm", unit: "ml", price: 9389.70 },
+  { code: "OUA.C.1", name: "Palplanches", unit: "m2", price: 25000.00 },
+  { code: "OUA.NP.06", name: "Isolateur sismique", unit: "U", price: 134282.61 },
+  { code: "OUA.NP.09a", name: "Tirants 45T", unit: "ml", price: 4260.00 },
+  { code: "OUA.NP.08.41", name: "Drain perforé", unit: "ml", price: 2700.00 },
+  { code: "TUN.E.1.1", name: "Fondation GNT", unit: "m3", price: 1862.41 },
+  { code: "TUN.E.1.3", name: "Enrobé EME", unit: "Tonne", price: 4812.84 },
+  { code: "TUN.C.1.2", name: "Déblais explosif", unit: "m3", price: 4883.43 },
+  { code: "TUN.C.3.1", name: "Boulons 4m", unit: "U", price: 2832.82 },
+  { code: "TUN.D.2.1", name: "Béton projeté", unit: "m3", price: 13046.21 },
+  { code: "TUN.F.2.1", name: "Ventilateurs", unit: "U", price: 459359.84 },
+  { code: "TU.E.3.1.1", name: "Panneau Tunnel", unit: "U", price: 11768.62 }
+];
+
+/* =========================
+   2) MAKİNELER (Günlük kira)
+   ========================= */
+const MACHINES = [
+  { id:"Ekskavatör", name:"Ekskavatör", daily:40000 },
+  { id:"Bulldozer", name:"Bulldozer", daily:50000 },
+  { id:"Greyder", name:"Greyder", daily:45000 },
+  { id:"Loader", name:"Loader", daily:35000 },
+  { id:"Paletli Loader", name:"Paletli Loader", daily:40000 },
+  { id:"Kompaktör", name:"Kompaktör", daily:20000 },
+  { id:"Kamyon", name:"Kamyon", daily:17000 },
+  { id:"JCB", name:"JCB", daily:10000 },
+  { id:"Tır", name:"Tır", daily:25000 },
+  { id:"Lowbed", name:"Lowbed", daily:30000 },
+  { id:"Arazöz", name:"Arazöz", daily:20000 },
+  { id:"Shotcrete Makinesi", name:"Shotcrete Makinesi", daily:40000 },
+  { id:"Enjeksiyon Makinesi", name:"Enjeksiyon Makinesi", daily:10000 }
+];
+
+/* =========================
+   STATE
+   ========================= */
+const LS_KEY = "hm_v2_state";
+const state = {
+  selectedJobCode: null,
+  selectedMachineId: null,
+  incomeLines: [],   // {name, unit, unitPrice, qty, note}
+  expenseLines: []   // {type, name, unitPrice, qty, note}
+};
+
+const el = (id)=>document.getElementById(id);
+const nf = new Intl.NumberFormat("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const money = (v)=> nf.format(Number(v||0)) + " DZD";
+const pct = (v)=> "%"+ nf.format(Number(v||0));
+const num = (v)=> { const n = Number(v); return isFinite(n)?n:0; };
+
+function toast(msg){
+  const t = el("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(toast._to);
+  toast._to = setTimeout(()=> t.style.display="none", 2200);
+}
+
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================
+   Searchable Dropdown helper
+   ========================= */
+function makeSdd({rootId, inputId, panelId, tagId, items, getText, getMeta, onSelect}){
+  const root = el(rootId);
+  const input = el(inputId);
+  const panel = el(panelId);
+  const tag = el(tagId);
+
+  function open(){ root.classList.add("open"); }
+  function close(){ root.classList.remove("open"); }
+
+  function render(q){
+    const query = (q||"").trim().toLowerCase();
+    const filtered = query
+      ? items.filter(it => getText(it).toLowerCase().includes(query))
+      : items;
+
+    panel.innerHTML = "";
+    filtered.slice(0, 80).forEach(it=>{
+      const btn = document.createElement("button");
+      btn.type="button";
+      btn.className="item";
+      btn.innerHTML = `<b>${escapeHtml(getText(it))}</b><div class="meta">${escapeHtml(getMeta(it))}</div>`;
+      btn.onclick = ()=>{
+        onSelect(it);
+        close();
+      };
+      panel.appendChild(btn);
+    });
+
+    if(filtered.length === 0){
+      const div = document.createElement("div");
+      div.style.padding="10px 12px";
+      div.className="mini";
+      div.textContent = "Sonuç yok";
+      panel.appendChild(div);
+    }
+  }
+
+  input.addEventListener("focus", ()=>{ open(); render(input.value); });
+  input.addEventListener("input", ()=>{ open(); render(input.value); });
+
+  document.addEventListener("click", (e)=>{
+    if(!e.target.closest("#"+rootId)) close();
+  });
+
+  return {
+    setSelectedLabel: (txt)=>{ tag.textContent = txt || "Seçilmedi"; }
+  };
+}
+
+/* =========================
+   JOB SDD
+   ========================= */
+const jobSdd = makeSdd({
+  rootId:"jobSdd",
+  inputId:"jobSearch",
+  panelId:"jobPanel",
+  tagId:"jobTag",
+  items: JOB_DB,
+  getText: (it)=> it.name,                 // kullanıcı istediği gibi: kod göstermiyoruz
+  getMeta: (it)=> `${it.unit} • ${money(it.price)}`,
+  onSelect: (it)=>{
+    state.selectedJobCode = it.code;
+    jobSdd.setSelectedLabel("Seçildi");
+    el("jobSearch").value = it.name;
+    el("jobUnit").value = it.unit;
+    el("jobPrice").value = money(it.price);
+    recalcJobLine();
+  }
+});
+
+/* =========================
+   MACHINE SDD
+   ========================= */
+const macSdd = makeSdd({
+  rootId:"macSdd",
+  inputId:"macSearch",
+  panelId:"macPanel",
+  tagId:"macTag",
+  items: MACHINES,
+  getText: (it)=> it.name,
+  getMeta: (it)=> `Günlük • ${money(it.daily)}`,
+  onSelect: (it)=>{
+    state.selectedMachineId = it.id;
+    macSdd.setSelectedLabel("Seçildi");
+    el("macSearch").value = it.name;
+    el("macDaily").value = money(it.daily);
+    recalcMacLine();
+  }
+});
+
+/* =========================
+   Calculations
+   ========================= */
+function getSelectedJob(){
+  return JOB_DB.find(x=>x.code === state.selectedJobCode) || null;
+}
+function getSelectedMachine(){
+  return MACHINES.find(x=>x.id === state.selectedMachineId) || null;
+}
+
+function recalcJobLine(){
+  const job = getSelectedJob();
+  const qty = num(el("jobQty").value);
+  const total = (job?num(job.price):0) * qty;
+  el("jobLineTotal").value = money(total);
+}
+function recalcMacLine(){
+  const m = getSelectedMachine();
+  const days = num(el("macDays").value);
+  const total = (m?num(m.daily):0) * days;
+  el("macLineTotal").value = money(total);
+}
+function recalcOthLine(){
+  const up = num(el("othPrice").value);
+  const qty = num(el("othQty").value);
+  el("othLineTotal").value = money(up*qty);
+}
+
+el("jobQty").addEventListener("input", recalcJobLine);
+el("macDays").addEventListener("input", recalcMacLine);
+el("othPrice").addEventListener("input", recalcOthLine);
+el("othQty").addEventListener("input", recalcOthLine);
+
+/* =========================
+   Render tables
+   ========================= */
+function render(){
+  const incomeT = el("incomeTable");
+  incomeT.innerHTML = "";
+  state.incomeLines.forEach((ln, idx)=>{
+    const total = num(ln.unitPrice)*num(ln.qty);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(ln.name)}</td>
+      <td>${escapeHtml(ln.note||"")}</td>
+      <td>${escapeHtml(ln.unit)}</td>
+      <td class="right">${money(ln.unitPrice)}</td>
+      <td class="right">${nf.format(num(ln.qty))}</td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right no-print"><button class="btn" data-del-income="${idx}">✖</button></td>
+    `;
+    incomeT.appendChild(tr);
+  });
+  el("incomeCount").textContent = `${state.incomeLines.length} satır`;
+
+  const expT = el("expenseTable");
+  expT.innerHTML = "";
+  state.expenseLines.forEach((ln, idx)=>{
+    const total = num(ln.unitPrice)*num(ln.qty);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(ln.type)}</td>
+      <td>${escapeHtml(ln.name)}</td>
+      <td>${escapeHtml(ln.note||"")}</td>
+      <td class="right">${money(ln.unitPrice)}</td>
+      <td class="right">${nf.format(num(ln.qty))}</td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right no-print"><button class="btn" data-del-exp="${idx}">✖</button></td>
+    `;
+    expT.appendChild(tr);
+  });
+  el("expenseCount").textContent = `${state.expenseLines.length} satır`;
+
+  recalcSummary();
+}
+
+function recalcSummary(){
+  const income = state.incomeLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const expense = state.expenseLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const net = income - expense;
+  const margin = income>0 ? (net/income)*100 : 0;
+
+  el("sumIncome").textContent = money(income);
+  el("sumExpense").textContent = money(expense);
+  el("sumNet").textContent = money(net);
+  el("sumMargin").textContent = pct(margin);
+
+  const box = el("sumNetBox");
+  box.classList.remove("good","bad");
+  box.classList.add(net>=0 ? "good" : "bad");
+}
+
+/* =========================
+   Add lines
+   ========================= */
+el("addJob").onclick = ()=>{
+  const job = getSelectedJob();
+  const qty = num(el("jobQty").value);
+  if(!job) return toast("Önce iş kalemi seç.");
+  if(qty<=0) return toast("Miktar 0 olamaz.");
+
+  state.incomeLines.push({
+    name: job.name,
+    unit: job.unit,
+    unitPrice: num(job.price),
+    qty: qty,
+    note: el("jobNote").value.trim()
+  });
+
+  el("jobQty").value = "";
+  el("jobNote").value = "";
+  recalcJobLine();
+  render();
+};
+
+el("clearJob").onclick = ()=>{
+  state.selectedJobCode = null;
+  jobSdd.setSelectedLabel("Seçilmedi");
+  el("jobSearch").value = "";
+  el("jobUnit").value = "-";
+  el("jobPrice").value = "0,00 DZD";
+  el("jobQty").value = "";
+  el("jobNote").value = "";
+  el("jobLineTotal").value = "0,00 DZD";
+};
+
+el("addMac").onclick = ()=>{
+  const m = getSelectedMachine();
+  const days = num(el("macDays").value);
+  if(!m) return toast("Önce makine seç.");
+  if(days<=0) return toast("Gün sayısı 0 olamaz.");
+
+  state.expenseLines.push({
+    type:"Makine",
+    name: m.name,
+    unitPrice: num(m.daily),
+    qty: days,
+    note: el("macNote").value.trim()
+  });
+
+  el("macDays").value = "";
+  el("macNote").value = "";
+  recalcMacLine();
+  render();
+};
+
+el("addOth").onclick = ()=>{
+  const name = el("othName").value.trim();
+  const up = num(el("othPrice").value);
+  const qty = num(el("othQty").value);
+  if(!name) return toast("Gider adı yaz.");
+  if(qty<=0) return toast("Miktar 0 olamaz.");
+
+  state.expenseLines.push({
+    type:"Diğer",
+    name,
+    unitPrice: up,
+    qty,
+    note: el("othNote").value.trim()
+  });
+
+  el("othName").value = "";
+  el("othPrice").value = "";
+  el("othQty").value = "";
+  el("othNote").value = "";
+  recalcOthLine();
+  render();
+};
+
+/* =========================
+   Delete handlers
+   ========================= */
+el("incomeTable").addEventListener("click",(e)=>{
+  const b = e.target.closest("[data-del-income]");
+  if(!b) return;
+  const idx = Number(b.getAttribute("data-del-income"));
+  state.incomeLines.splice(idx,1);
+  render();
+});
+el("expenseTable").addEventListener("click",(e)=>{
+  const b = e.target.closest("[data-del-exp]");
+  if(!b) return;
+  const idx = Number(b.getAttribute("data-del-exp"));
+  state.expenseLines.splice(idx,1);
+  render();
+});
+
+/* =========================
+   Theme / Print / Save-Load / Reset
+   ========================= */
+const themePref = localStorage.getItem("hm_theme");
+if(themePref === "dark") document.body.classList.add("dark");
+
+el("toggleTheme").onclick = ()=>{
+  document.body.classList.toggle("dark");
+  localStorage.setItem("hm_theme", document.body.classList.contains("dark") ? "dark" : "light");
+};
+
+el("printBtn").onclick = ()=> window.print();
+
+el("saveBtn").onclick = ()=>{
+  localStorage.setItem(LS_KEY, JSON.stringify({
+    v:2,
+    savedAt: new Date().toISOString(),
+    state
+  }));
+  toast("Kaydedildi ✅");
+};
+
+el("loadBtn").onclick = ()=>{
+  const raw = localStorage.getItem(LS_KEY);
+  if(!raw) return toast("Kayıt bulunamadı.");
+  try{
+    const payload = JSON.parse(raw);
+    if(!payload?.state) throw 0;
+    state.selectedJobCode = payload.state.selectedJobCode || null;
+    state.selectedMachineId = payload.state.selectedMachineId || null;
+    state.incomeLines = Array.isArray(payload.state.incomeLines) ? payload.state.incomeLines : [];
+    state.expenseLines = Array.isArray(payload.state.expenseLines) ? payload.state.expenseLines : [];
+    // UI reset fields
+    el("jobQty").value=""; el("jobNote").value=""; el("macDays").value=""; el("macNote").value="";
+    el("othName").value=""; el("othPrice").value=""; el("othQty").value=""; el("othNote").value="";
+    recalcOthLine();
+    // restore selected displays (optional)
+    if(state.selectedJobCode){
+      const job = getSelectedJob();
+      if(job){
+        jobSdd.setSelectedLabel("Seçildi");
+        el("jobSearch").value = job.name;
+        el("jobUnit").value = job.unit;
+        el("jobPrice").value = money(job.price);
+      }
+    }
+    if(state.selectedMachineId){
+      const m = getSelectedMachine();
+      if(m){
+        macSdd.setSelectedLabel("Seçildi");
+        el("macSearch").value = m.name;
+        el("macDaily").value = money(m.daily);
+      }
+    }
+    render();
+    toast("Yüklendi 📥");
+  }catch{
+    toast("Kayıt bozuk görünüyor.");
+  }
+};
+
+el("resetBtn").onclick = ()=>{
+  if(!confirm("Her şeyi sıfırlayayım mı?")) return;
+  state.selectedJobCode = null;
+  state.selectedMachineId = null;
+  state.incomeLines = [];
+  state.expenseLines = [];
+  localStorage.removeItem(LS_KEY);
+  // clear UI
+  el("clearJob").click();
+  macSdd.setSelectedLabel("Seçilmedi");
+  el("macSearch").value="";
+  el("macDaily").value="0,00 DZD";
+  el("macDays").value="";
+  el("macNote").value="";
+  el("macLineTotal").value="0,00 DZD";
+  el("othName").value=""; el("othPrice").value=""; el("othQty").value=""; el("othNote").value="";
+  recalcOthLine();
+  render();
+  toast("Sıfırlandı 🧹");
+};
+
+/* =========================
+   Export: CSV/JSON
+   ========================= */
+function downloadFile(filename, content, type){
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportCsv(scope){
+  const rows = [];
+  rows.push(["BOLUM","TIP","AD","NOT","BIRIM","BIRIM_FIYAT","MIKTAR","TOPLAM"]);
+  if(scope==="income" || scope==="all"){
+    state.incomeLines.forEach(ln=>{
+      rows.push(["GELIR","İş Kalemi", ln.name, ln.note||"", ln.unit, ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+    });
+  }
+  if(scope==="expense" || scope==="all"){
+    state.expenseLines.forEach(ln=>{
+      rows.push(["GIDER", ln.type, ln.name, ln.note||"", "", ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+    });
+  }
+
+  // totals
+  const income = state.incomeLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const expense = state.expenseLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  rows.push(["TOPLAM","","GELIR","","","", "", income]);
+  rows.push(["TOPLAM","","GIDER","","","", "", expense]);
+  rows.push(["TOPLAM","","NET","","","", "", income-expense]);
+
+  const csv = rows.map(r=> r.map(x=>{
+    const s = String(x ?? "");
+    return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+  }).join(",")).join("\n");
+
+  downloadFile(
+    scope==="income" ? "gelir.csv" : scope==="expense" ? "gider.csv" : "hakedis_maliyet.csv",
+    csv,
+    "text/csv;charset=utf-8"
+  );
+  toast("CSV indirildi ⬇️ (Excel açar)");
+}
+
+el("exportIncomeCsv").onclick = ()=> exportCsv("income");
+el("exportAllCsv").onclick = ()=> exportCsv("all");
+
+el("exportJson").onclick = ()=>{
+  const payload = {
+    generatedAt: new Date().toISOString(),
+    currency:"DZD",
+    income: state.incomeLines,
+    expense: state.expenseLines,
+    totals: {
+      income: state.incomeLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0),
+      expense: state.expenseLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0)
+    }
+  };
+  payload.totals.net = payload.totals.income - payload.totals.expense;
+  downloadFile("hakedis_maliyet.json", JSON.stringify(payload,null,2), "application/json");
+  toast("JSON indirildi ⬇️");
+};
+
+/* =========================
+   Init
+   ========================= */
+function init(){
+  // defaults
+  el("jobUnit").value = "-";
+  el("jobPrice").value = "0,00 DZD";
+  el("jobLineTotal").value = "0,00 DZD";
+  el("macDaily").value = "0,00 DZD";
+  el("macLineTotal").value = "0,00 DZD";
+  el("othLineTotal").value = "0,00 DZD";
+
+  // hint: sort job db by name for nicer browsing
+  JOB_DB.sort((a,b)=> a.name.localeCompare(b.name, "tr"));
+
+  render();
+}
+init();
+</script>
+</body>
+</html>
