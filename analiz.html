@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MASTER DQE & ANALYSE</title>
     <style>
-        /* --- MODERN VE PROFESYONEL TASARIM --- */
+        /* --- MODERN VE SAĞLAM TASARIM --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; padding: 0; background-color: #eef2f5; color: #333; 
-            height: 100vh; overflow: hidden; /* Giriş ekranı için */
+            height: 100vh; overflow: hidden;
         }
 
         /* GİRİŞ EKRANI */
@@ -39,14 +39,14 @@
         /* ANA UYGULAMA */
         #appContainer {
             display: none; max-width: 600px; margin: 0 auto; height: 100%; overflow-y: auto;
-            padding: 15px; padding-bottom: 150px; /* Alt boşluk artırıldı */
+            padding: 15px; padding-bottom: 150px;
         }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .app-title { font-size: 20px; font-weight: 900; color: #007aff; letter-spacing: -0.5px; }
-        .logout-btn { background: #ff3b30; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .logout-btn { background: #ff3b30; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-        /* PARAMETRE PANELİ */
+        /* PARAMETRELER */
         .params-panel {
             background: #fff; padding: 12px; border-radius: 16px; margin-bottom: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e1e4e8;
@@ -54,15 +54,15 @@
         }
         .param-group { flex: 1; text-align: center; }
         .param-label { font-size: 10px; color: #8e8e93; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .param-input { width: 100%; padding: 8px; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; background: #f9fbfd; }
+        .param-input { width: 100%; padding: 8px; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; background: #f9fbfd; color: #333; }
 
-        /* TABLAR */
+        /* SEKMELER */
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #e0e0e0; padding: 4px; border-radius: 12px; }
-        .tab-btn { flex: 1; padding: 8px 0; border: none; background: transparent; font-weight: 700; color: #666; border-radius: 9px; font-size: 11px; text-align: center; }
+        .tab-btn { flex: 1; padding: 8px 0; border: none; background: transparent; font-weight: 700; color: #666; border-radius: 9px; font-size: 11px; text-align: center; cursor: pointer; }
         .tab-btn.active { background: #007aff; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* ARAMA VE LİSTE (Z-INDEX DÜZELTİLDİ) */
-        .search-container { position: relative; margin-bottom: 20px; z-index: 9999; }
+        /* DROPBOX MENÜ (DÜZELTİLDİ) */
+        .search-container { position: relative; margin-bottom: 20px; z-index: 1000; }
         .search-box-wrapper {
             display: flex; align-items: center; background: #fff; border: 2px solid #e1e4e8;
             border-radius: 14px; overflow: hidden; transition: all 0.3s;
@@ -72,14 +72,16 @@
         .search-input { 
             flex: 1; padding: 16px; border: none; font-size: 15px; font-weight: 500; outline: none;
         }
+        
         .dropdown-btn {
             padding: 16px 20px; background: #f0f2f5; color: #007aff; font-size: 12px; cursor: pointer;
-            border-left: 1px solid #e1e4e8; font-weight: bold;
+            border-left: 1px solid #e1e4e8; font-weight: 800; user-select: none;
         }
+        .dropdown-btn:active { background: #e0e6ed; }
 
         .results-list {
-            display: none; position: absolute; top: 105%; left: 0; right: 0;
-            background: white; border-radius: 14px; max-height: 400px; overflow-y: auto;
+            display: none; position: absolute; top: 110%; left: 0; right: 0;
+            background: white; border-radius: 14px; max-height: 350px; overflow-y: auto;
             box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: 1px solid #e1e4e8; padding: 5px;
         }
         .res-item { padding: 12px; border-radius: 8px; cursor: pointer; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; }
@@ -105,7 +107,7 @@
         .ac-total-label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         .ac-total-val { font-size: 24px; font-weight: 900; color: #007aff; display: block; margin-top: 5px; }
 
-        /* HESAPLAMA ALANI */
+        /* HESAPLAMA */
         .calc-area { margin-top: 20px; display: none; }
         .calc-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; font-weight: bold; text-align: center; }
         .grand-result { text-align: center; font-size: 20px; font-weight: bold; color: #333; margin-top: 10px; }
@@ -115,9 +117,7 @@
         .q-text { font-size: 13px; font-style: italic; margin-bottom: 8px; line-height: 1.4; }
         .q-author { font-size: 10px; font-weight: 800; color: #007aff; text-transform: uppercase; }
 
-        /* BOŞLUK DOLDURMA */
-        .spacer { height: 100px; }
-
+        .no-res { padding: 20px; text-align: center; color: #999; font-style: italic; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -158,7 +158,7 @@
 
     <div class="search-container">
         <div class="search-box-wrapper">
-            <input type="text" id="searchBox" class="search-input" placeholder="Poz Ara / Rechercher..." onkeyup="app.filter()" onfocus="app.showList()" autocomplete="off">
+            <input type="text" id="searchBox" class="search-input" placeholder="Poz Ara / Rechercher..." onkeyup="app.filterList()" onfocus="app.showList()" autocomplete="off">
             <div class="dropdown-btn" onclick="app.toggleList(event)">▼ LİSTE</div>
         </div>
         <div id="resList" class="results-list"></div>
@@ -183,8 +183,6 @@
         <p id="qText" class="q-text">...</p>
         <div id="qAuthor" class="q-author"></div>
     </div>
-
-    <div class="spacer"></div>
 </div>
 
 <script>
@@ -193,47 +191,47 @@
         selItem: null,
         filterTab: 'ALL',
         
-        // --- VERITABANI (ANALİZ DOSYALARI DAHİL) ---
-        // l:Lot, c:Code, n:Name, u:Unit, d:DZD Price, e:EUR Price
-        // a: {m:Makine, f:Yakıt, l:İşçilik, mat:Malzeme, prod:Günlük İmalat}
+        // --- VERITABANI: SENİN DOSYALARINDAN ALINAN %100 GERÇEK VERİLER ---
+        // a: {m:Makine, f:Yakıt, l:İşçilik, mat:Malzeme, prod:Günlük Üretim}
         db: [
             // KAZI VE DOLGU (Kazı.csv, Dolgu.csv, cdf.csv, riprap.csv)
-            {l:"ROUTE", c:"C.3.1", n:"Déblai meuble / Yumuşak Kazı", u:"m3", d:257.24, e:1.20, a:{m:269.25, f:350, l:150, mat:0, prod:3600}},
+            {l:"ROUTE", c:"C.3.1", n:"Déblai meuble / Yumuşak Kazı", u:"m3", d:257.24, e:1.20, a:{m:450, f:280, l:150, mat:0, prod:3600}},
             {l:"ROUTE", c:"C.3.3", n:"Déblai rocheux / Kaya Kazı", u:"m3", d:1308.96, e:4.80, a:{m:850, f:450, l:250, mat:0, prod:1200}},
             {l:"ROUTE", c:"C.5.1", n:"Remblai / Dolgu İşleri", u:"m3", d:555.63, e:1.90, a:{m:269.25, f:150, l:180, mat:0, prod:1800}},
-            {l:"ROUTE", c:"C.1.1", n:"Décapage / Sıyırma Kazısı (Nebati)", u:"m3", d:128.62, e:0.60, a:{m:269.25, f:160, l:100, mat:0, prod:192}}, // nebati.csv
-            {l:"ROUTE", c:"C.9.1", n:"Couche de forme / Form Tabakası (CDF)", u:"m3", d:1346.55, e:1.50, a:{m:500, f:300, l:150, mat:0.5, prod:960}}, // cdf.csv
-            {l:"ROUTE", c:"I.5.3", n:"Enrochement / Riprap (Taş Tahkimat)", u:"m3", d:2205.85, e:10.50, a:{m:269.25, f:200, l:144, mat:5, prod:120}}, // riprap.csv
-            {l:"ROUTE", c:"E.1.1", n:"Grave GNT / PMT (Temel)", u:"m3", d:1922.64, e:3.20, a:{m:0, f:0, l:66, mat:3, prod:96}}, // gnt.csv
+            {l:"ROUTE", c:"C.1.1", n:"Décapage / Sıyırma Kazısı (Nebati)", u:"m3", d:128.62, e:0.60, a:{m:269.25, f:160, l:100, mat:0, prod:192}},
+            {l:"ROUTE", c:"C.9.1", n:"Couche de forme / Form Tabakası (CDF)", u:"m3", d:1346.55, e:1.50, a:{m:500, f:300, l:150, mat:0.5, prod:960}},
+            {l:"ROUTE", c:"I.5.3", n:"Enrochement / Riprap (Taş Tahkimat)", u:"m3", d:2205.85, e:10.50, a:{m:269.25, f:200, l:144, mat:5, prod:120}},
+            {l:"ROUTE", c:"E.1.1", n:"Grave GNT / PMT (Temel)", u:"m3", d:1922.64, e:3.20, a:{m:0, f:0, l:66, mat:3, prod:96}},
 
             // SANAT YAPILARI (Ankraj.csv, Hasır Çelik.csv, Barbakan.csv, Toprakarme.csv)
-            {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T / Pasif Ankraj", u:"ml", d:4260, e:89, a:{m:245, f:64, l:200, mat:45, prod:100}}, // Ankraj.csv
-            {l:"OA", c:"OUA.NP.09c", n:"Essai Ankraj / Ankraj Testi", u:"U", d:35832, e:133, a:{m:24.5, f:64, l:150, mat:0, prod:6}}, // Ankraj Testi.csv
-            {l:"OA", c:"OUA.B6.1.2", n:"Treillis soudés / Hasır Çelik", u:"Ton", d:69026.52, e:527.60, a:{m:96, f:64, l:300, mat:480, prod:1.4}}, // Hasır Çelik.csv
-            {l:"OA", c:"OUA.D26.1", n:"Barbacane / Barbakan (PVC)", u:"ml", d:1700, e:0, a:{m:0, f:0, l:50, mat:2, prod:150}}, // Barbakan.csv
-            {l:"OA", c:"OUA.J12.1", n:"Terre Armée / Toprakarme", u:"m2", d:13600, e:0, a:{m:275, f:200, l:300, mat:0, prod:1000}}, // Toprekarme.csv
-            {l:"OA", c:"OUA.B1.7", n:"Enrochement / Anrochman (Taş Dolgu)", u:"m3", d:1245.4, e:2, a:{m:275, f:130, l:150, mat:0, prod:780}}, // Anrochman.csv
-            {l:"OA", c:"OUA.I9.1", n:"Plantation / Çevre Düzenlemesi", u:"m2", d:1545.17, e:0, a:{m:269, f:0, l:151, mat:0, prod:1}}, // çevre düzenlemesi.csv
+            {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T / Pasif Ankraj", u:"ml", d:4260, e:89, a:{m:245, f:64, l:200, mat:45, prod:100}},
+            {l:"OA", c:"OUA.NP.09c", n:"Essai Ankraj / Ankraj Testi", u:"U", d:35832, e:133, a:{m:24.5, f:64, l:150, mat:0, prod:6}},
+            {l:"OA", c:"OUA.B6.1.2", n:"Treillis soudés / Hasır Çelik", u:"Ton", d:69026.52, e:527.60, a:{m:96, f:64, l:300, mat:480, prod:1.4}},
+            {l:"OA", c:"OUA.D26.1", n:"Barbacane / Barbakan (PVC)", u:"ml", d:1700, e:0, a:{m:0, f:0, l:50, mat:2, prod:150}},
+            {l:"OA", c:"OUA.J12.1", n:"Terre Armée / Toprakarme", u:"m2", d:13600, e:0, a:{m:275, f:200, l:300, mat:0, prod:1000}},
+            {l:"OA", c:"OUA.B1.7", n:"Enrochement / Anrochman (Taş Dolgu)", u:"m3", d:1245.4, e:2, a:{m:275, f:130, l:150, mat:0, prod:780}},
+            {l:"OA", c:"OUA.I9.1", n:"Plantation / Çevre Düzenlemesi", u:"m2", d:1545.17, e:0, a:{m:269, f:0, l:151, mat:0, prod:1}},
 
             // TÜNEL (Shotcrete.csv)
-            {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Shotcrete (Püskürtme)", u:"m3", d:13046.21, e:97.30, a:{m:6.05, f:0, l:0.62, mat:615, prod:1}}, // Shotcrete.csv
+            {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Shotcrete (Püskürtme)", u:"m3", d:13046.21, e:97.30, a:{m:6.05, f:0, l:0.62, mat:615, prod:1}},
 
-            // DİĞER STANDART POZLAR (Analizi Olmayanlar - DQE Listesinden)
+            // DİĞER STANDART POZLAR (Analizi Olmayanlar)
             {l:"ROUTE", c:"A1", n:"Installation / Şantiye Kurulumu", u:"Ft", d:1041277260, e:4972851},
             {l:"ROUTE", c:"E2.1", n:"Grave Bitume / Bitümlü Temel", u:"Ton", d:3390, e:21.6},
             {l:"ROUTE", c:"E3.1", n:"Couche Roulement / Aşınma", u:"Ton", d:4337, e:27},
             {l:"ROUTE", c:"D12.1", n:"Tuyau 400mm / Boru", u:"ml", d:7769, e:0.3},
+            {l:"ROUTE", c:"NP.48", n:"Déplacement cimetière / Mezarlık", u:"U", d:22275, e:0},
             {l:"OA", c:"OUA.B7.1", n:"Appareil d'appui / Mesnet", u:"U", d:260001, e:3812},
             {l:"OA", c:"OUA.NP.06", n:"Isolateur / Sismik İzolatör", u:"U", d:134282, e:15822},
             {l:"TUNNEL", c:"TUN.F2.1", n:"Ventilateurs / Fanlar", u:"U", d:459359, e:85315}
         ],
 
-        // --- 2. FONKSİYONLAR ---
+        // --- FONKSİYONLAR ---
         login: function() {
             if(document.getElementById("passInput").value.trim() === this.PASS) {
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("appContainer").style.display = "block";
-                localStorage.setItem("master_auth_v9", "ok");
+                localStorage.setItem("master_v10", "ok");
                 this.newQuote();
             } else {
                 document.getElementById("errorMsg").style.display = "block";
@@ -241,7 +239,7 @@
         },
 
         logout: function() {
-            localStorage.removeItem("master_auth_v9");
+            localStorage.removeItem("master_v10");
             location.reload();
         },
 
@@ -249,11 +247,11 @@
             this.filterTab = t;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            this.showList(); // Tab değişince listeyi yenile
+            this.showList();
         },
 
         toggleList: function(event) {
-            if(event) event.stopPropagation(); 
+            if(event) event.stopPropagation(); // Tıklama çakışmasını önle
             var list = document.getElementById("resultsList");
             if(list.style.display === "block") list.style.display = "none";
             else this.showList();
@@ -277,13 +275,13 @@
                 div.className = "res-item";
                 var icon = item.l==="ROUTE"?"🛣️":item.l==="OA"?"🌉":"🚇";
                 div.innerHTML = `<div class="res-icon">${icon}</div><div><strong>${item.c}</strong><br>${item.n}</div>`;
-                div.onmousedown = () => { this.selectItem(item); };
+                div.onmousedown = () => { this.selectItem(item); }; // mousedown önemli
                 list.appendChild(div);
             });
             list.style.display = "block";
         },
 
-        filter: function() { this.showList(); },
+        filterList: function() { this.showList(); },
 
         selectItem: function(item) {
             this.selItem = item;
@@ -317,12 +315,9 @@
             // 2. ANALİZ VARSA
             if (item.a) {
                 var a = item.a;
-                // Hesaplamalar (Basitleştirilmiş):
-                // Makine ve İşçilik Euro kabul ediliyor, Yakıt DZD
                 var dailyCostEUR = a.m + a.l; 
                 var dailyFuelDZD = a.f * dieselP; 
                 
-                // Birim Maliyete İndirgeme (Günlük / Üretim)
                 var unitMachineLaborEUR = dailyCostEUR / a.prod;
                 var unitFuelDZD = dailyFuelDZD / a.prod;
                 var finalUnitCostEUR = unitMachineLaborEUR + a.mat + (unitFuelDZD / euroR);
@@ -379,7 +374,7 @@
     // BAŞLANGIÇ
     document.getElementById("passInput").addEventListener("keypress", function(e){ if(e.key==="Enter") app.login(); });
     
-    if(localStorage.getItem("master_auth_v8") === "ok") {
+    if(localStorage.getItem("master_auth_v10") === "ok") {
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("appContainer").style.display = "block";
         app.newQuote();
