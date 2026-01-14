@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hakediş & Maliyet</title>
+  <style>
+    :root{
+      --bg:#f4f6f8; --card:#ffffff; --text:#101828; --muted:#667085;
+      --border:#e5e7eb; --shadow:0 12px 30px rgba(16,24,40,.08);
+      --primary:#2d7ff9; --danger:#ef4444; --warn:#f59e0b; --good:#16a34a;
+      --radius:18px;
+    }
+    body.dark{
+      --bg:#0b1220; --card:#0f1a2e; --text:#e5e7eb; --muted:#94a3b8;
+      --border:#22314d; --shadow:0 12px 30px rgba(0,0,0,.35);
+      --primary:#4ea1ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:1100px; margin:22px auto; padding:0 14px 40px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom:14px;
+    }
+    h1{font-size:28px; margin:0; letter-spacing:.3px}
+    .btn{
+      border:1px solid var(--border); background:var(--card); color:var(--text);
+      padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn.primary{background:var(--primary); border-color:transparent; color:white;}
+    .btn.danger{background:var(--danger); border-color:transparent; color:white;}
+    .btn.ghost{background:transparent;}
+    .btn:active{transform:translateY(1px)}
+    .pill{
+      border:1px solid var(--border); background:rgba(45,127,249,.08);
+      padding:7px 10px; border-radius:999px; font-weight:700;
+    }
+    .grid{display:grid; grid-template-columns:1.2fr .8fr; gap:14px;}
+    @media (max-width: 960px){ .grid{grid-template-columns:1fr;}}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      box-shadow:var(--shadow); padding:16px;
+    }
+    .card h2{margin:0 0 12px; font-size:18px; color:var(--muted); letter-spacing:.2px}
+    .row{display:grid; grid-template-columns:1fr 160px 160px; gap:10px; align-items:end;}
+    @media (max-width: 720px){ .row{grid-template-columns:1fr;}}
+    label{font-size:12px; color:var(--muted); font-weight:700; display:block; margin-bottom:6px}
+    input, select{
+      width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:12px;
+      background:transparent; color:var(--text); outline:none;
+    }
+    input[readonly]{opacity:.85}
+    .muted{color:var(--muted)}
+    .section-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .sticky-summary{
+      position:sticky; top:10px; z-index:20;
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .sum{
+      flex:1; min-width:220px;
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:12px 14px; box-shadow:var(--shadow);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .sum b{font-size:12px; color:var(--muted); letter-spacing:.2px}
+    .sum strong{font-size:16px}
+    .sum.good strong{color:var(--good)}
+    .sum.bad strong{color:var(--danger)}
+    table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden}
+    th,td{padding:10px 10px; border-bottom:1px solid var(--border); text-align:left; font-size:13px}
+    th{color:var(--muted); font-weight:800; font-size:12px}
+    tr:last-child td{border-bottom:none}
+    .right{text-align:right}
+    .mini{font-size:12px; color:var(--muted)}
+    .totalbar{
+      margin-top:10px; padding:14px; border-radius:16px; background:var(--primary);
+      color:white; display:flex; justify-content:space-between; align-items:center; gap:12px;
+      font-weight:900;
+    }
+    .split{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between}
+    .searchbox{position:relative}
+    .results{
+      position:absolute; top:100%; left:0; right:0; margin-top:8px;
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      box-shadow:var(--shadow); max-height:240px; overflow:auto; display:none;
+      z-index:50;
+    }
+    .results button{
+      width:100%; text-align:left; padding:10px 12px; border:none; background:transparent; cursor:pointer;
+      color:var(--text);
+    }
+    .results button:hover{background:rgba(45,127,249,.10)}
+    .chipline{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 0}
+    .chip{
+      border:1px dashed var(--border); padding:8px 10px; border-radius:999px; cursor:pointer;
+      color:var(--muted); font-weight:700; background:transparent;
+    }
+    .toast{
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:var(--card); border:1px solid var(--border); box-shadow:var(--shadow);
+      padding:10px 12px; border-radius:14px; display:none; z-index:100;
+      max-width:min(720px, 92vw);
+    }
+    @media print{
+      .topbar,.sticky-summary,.section-actions,.chipline,.btn-print-hide{display:none!important}
+      body{background:white}
+      .card{box-shadow:none}
+      .wrap{max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>HAKEDİŞ & MALİYET</h1>
+      <div class="split">
+        <button class="btn" id="toggleDark">🌙 Dark</button>
+        <button class="btn btn-print-hide" id="printBtn">🖨️ Yazdır</button>
+      </div>
+    </div>
+
+    <div class="sticky-summary" aria-live="polite">
+      <div class="sum"><div><b>TOPLAM GELİR</b><div class="mini">Hakediş satırları toplamı</div></div><strong id="sumIncome">0,00 DZD</strong></div>
+      <div class="sum"><div><b>TOPLAM GİDER</b><div class="mini">Gerçekleşen giderler</div></div><strong id="sumExpense">0,00 DZD</strong></div>
+      <div class="sum" id="sumNetBox"><div><b>NET</b><div class="mini">Gelir - Gider</div></div><strong id="sumNet">0,00 DZD</strong></div>
+      <div class="sum"><div><b>MARJ</b><div class="mini">Net / Gelir</div></div><strong id="sumMargin">%0,00</strong></div>
+    </div>
+
+    <div class="grid">
+      <!-- GELIR -->
+      <div class="card">
+        <h2>1) Hakediş Hesabı (Gelir)</h2>
+
+        <div class="row">
+          <div class="searchbox">
+            <label>İş Kalemi Ara / Seç</label>
+            <input id="itemSearch" placeholder="Yazın (örn: Nakliye, Kazı, GNT...)" autocomplete="off" />
+            <div class="results" id="itemResults"></div>
+            <div class="chipline" id="favChips"></div>
+          </div>
+
+          <div>
+            <label>Birim</label>
+            <input id="revUnit" readonly placeholder="-" />
+          </div>
+
+          <div>
+            <label>Birim Fiyat (DZD)</label>
+            <input id="revUnitPrice" type="number" step="0.01" min="0" placeholder="0.00" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px; grid-template-columns:1fr 160px 160px;">
+          <div>
+            <label>Seçilen Kalem</label>
+            <input id="revItemName" readonly placeholder="-" />
+          </div>
+          <div>
+            <label>Yapılan Miktar</label>
+            <input id="revQty" type="number" step="0.01" min="0" placeholder="0" inputmode="decimal" />
+          </div>
+          <div>
+            <label>Satır Toplamı</label>
+            <input id="revLineTotal" readonly placeholder="0.00" />
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <button class="btn primary" id="addRevenue">➕ Gelire Ekle</button>
+          <button class="btn" id="clearRevenueForm">Temizle</button>
+        </div>
+
+        <div class="totalbar" style="margin-top:14px">
+          <div>Gelir Satırları</div>
+          <div id="incomeBadge">0 satır</div>
+        </div>
+
+        <div style="margin-top:10px; overflow:auto">
+          <table aria-label="Gelir satırları">
+            <thead>
+              <tr>
+                <th>Kalem</th>
+                <th>Birim</th>
+                <th class="right">Birim Fiyat</th>
+                <th class="right">Miktar</th>
+                <th class="right">Toplam</th>
+                <th class="right">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="revTable"></tbody>
+          </table>
+        </div>
+
+        <div class="section-actions">
+          <button class="btn" id="saveDraft">💾 Kaydet</button>
+          <button class="btn" id="loadDraft">📥 Yükle</button>
+          <button class="btn danger" id="resetAll">🧹 Sıfırla</button>
+        </div>
+      </div>
+
+      <!-- GIDER -->
+      <div class="card">
+        <h2>2) Gerçekleşen Maliyet (Gider)</h2>
+
+        <div class="chipline" style="margin-top:0">
+          <button class="chip" data-template="Mazot">⛽ Mazot</button>
+          <button class="chip" data-template="Nakliye">🚚 Nakliye</button>
+          <button class="chip" data-template="İşçilik">👷 İşçilik</button>
+          <button class="chip" data-template="Bakım/Onarım">🛠️ Bakım</button>
+          <button class="chip" data-template="Malzeme">🧱 Malzeme</button>
+        </div>
+
+        <div class="section-actions" style="margin-top:12px">
+          <button class="btn primary" id="addExpenseRow">➕ Yeni Gider Ekle</button>
+          <button class="btn" id="exportJson">⬇️ JSON</button>
+          <button class="btn" id="exportCsv">⬇️ CSV</button>
+        </div>
+
+        <div style="margin-top:10px; overflow:auto">
+          <table aria-label="Gider satırları">
+            <thead>
+              <tr>
+                <th>Gider Adı</th>
+                <th class="right">Miktar</th>
+                <th class="right">B. Fiyat</th>
+                <th class="right">Toplam</th>
+                <th class="right">Sil</th>
+              </tr>
+            </thead>
+            <tbody id="expTable"></tbody>
+          </table>
+        </div>
+
+        <div class="totalbar" style="margin-top:12px">
+          <div>Toplam Gider</div>
+          <div id="expenseBadge">0,00 DZD</div>
+        </div>
+
+        <p class="muted" style="margin:12px 0 0; text-align:center; font-style:italic">
+          “Planlama yoksa, başarısızlık planlanmıştır.”
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/** ---------------------------
+ *  DEMO DATA: gelir kalemleri
+ *  (senin listene göre özelleştiririz)
+ * --------------------------- */
+const ITEMS = [
+  { id:"kazı", name:"Kazı (Terrassement)", unit:"m³", unitPrice: 230 },
+  { id:"dolgu", name:"Dolgu (Remblai)", unit:"m³", unitPrice: 185 },
+  { id:"nakliye", name:"Nakliye (Malzeme)", unit:"ton", unitPrice: 325 },
+  { id:"gnt", name:"GNT Serimi", unit:"m³", unitPrice: 0 },
+  { id:"beton", name:"Gro Beton", unit:"m³", unitPrice: 0 },
+  { id:"shotcrete", name:"Püskürtme Beton", unit:"m²", unitPrice: 0 },
+];
+
+const FAVS = ["nakliye","kazı","dolgu"];
+
+const LS_KEY = "hakedis_maliyet_v1";
+
+const state = {
+  selectedItemId: null,
+  revenueLines: [], // {id,name,unit,unitPrice,qty}
+  expenseLines: []  // {name,qty,unitPrice}
+};
+
+const el = (id)=>document.getElementById(id);
+
+const nf = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function money(v){
+  const n = Number(v||0);
+  return nf.format(isFinite(n)?n:0) + " DZD";
+}
+function pct(v){
+  const n = Number(v||0);
+  return "%"+ nf.format(isFinite(n)?n:0);
+}
+function num(v){
+  const n = Number(v);
+  return isFinite(n)?n:0;
+}
+
+function toast(msg){
+  const t = el("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(toast._to);
+  toast._to = setTimeout(()=> t.style.display="none", 2200);
+}
+
+/** ---------------------------
+ *  Gelir: arama/sonuç listesi
+ * --------------------------- */
+function renderFavs(){
+  const box = el("favChips");
+  box.innerHTML = "";
+  FAVS.forEach(id=>{
+    const item = ITEMS.find(x=>x.id===id);
+    if(!item) return;
+    const b = document.createElement("button");
+    b.className="chip";
+    b.textContent = "⭐ " + item.name;
+    b.onclick = ()=>selectItem(item.id);
+    box.appendChild(b);
+  });
+}
+
+function showResults(list){
+  const r = el("itemResults");
+  r.innerHTML = "";
+  if(list.length === 0){
+    r.style.display = "none";
+    return;
+  }
+  list.slice(0,30).forEach(item=>{
+    const b = document.createElement("button");
+    b.type="button";
+    b.innerHTML = `<b>${item.name}</b><div class="mini">${item.unit} • ${money(item.unitPrice)}</div>`;
+    b.onclick = ()=>selectItem(item.id);
+    r.appendChild(b);
+  });
+  r.style.display = "block";
+}
+
+function selectItem(id){
+  const item = ITEMS.find(x=>x.id===id);
+  if(!item) return;
+  state.selectedItemId = id;
+  el("revItemName").value = item.name;
+  el("revUnit").value = item.unit;
+  el("revUnitPrice").value = item.unitPrice ?? 0;
+  el("itemSearch").value = item.name;
+  el("itemResults").style.display = "none";
+  recalcRevenueLine();
+}
+
+function recalcRevenueLine(){
+  const up = num(el("revUnitPrice").value);
+  const qty = num(el("revQty").value);
+  el("revLineTotal").value = money(up * qty);
+}
+
+el("itemSearch").addEventListener("input", (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){ el("itemResults").style.display="none"; return; }
+  const list = ITEMS.filter(it => it.name.toLowerCase().includes(q));
+  showResults(list);
+});
+
+document.addEventListener("click", (e)=>{
+  const sb = e.target.closest(".searchbox");
+  if(!sb) el("itemResults").style.display="none";
+});
+
+el("revUnitPrice").addEventListener("input", recalcRevenueLine);
+el("revQty").addEventListener("input", recalcRevenueLine);
+
+el("clearRevenueForm").onclick = ()=>{
+  state.selectedItemId = null;
+  el("itemSearch").value = "";
+  el("revItemName").value = "";
+  el("revUnit").value = "-";
+  el("revUnitPrice").value = "";
+  el("revQty").value = "";
+  el("revLineTotal").value = "";
+  el("itemResults").style.display = "none";
+};
+
+/** ---------------------------
+ *  Gelir: tablo
+ * --------------------------- */
+function renderRevenueTable(){
+  const tb = el("revTable");
+  tb.innerHTML = "";
+  state.revenueLines.forEach((ln, idx)=>{
+    const tr = document.createElement("tr");
+    const total = num(ln.unitPrice) * num(ln.qty);
+    tr.innerHTML = `
+      <td>${ln.name}</td>
+      <td>${ln.unit}</td>
+      <td class="right">${money(ln.unitPrice)}</td>
+      <td class="right">${nf.format(num(ln.qty))}</td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right"><button class="btn" data-del-rev="${idx}" title="Sil">✖</button></td>
+    `;
+    tb.appendChild(tr);
+  });
+  el("incomeBadge").textContent = `${state.revenueLines.length} satır`;
+}
+
+el("addRevenue").onclick = ()=>{
+  const item = ITEMS.find(x=>x.id===state.selectedItemId);
+  const qty = num(el("revQty").value);
+  const up = num(el("revUnitPrice").value);
+
+  if(!item){
+    toast("Önce bir iş kalemi seç.");
+    return;
+  }
+  if(qty <= 0){
+    toast("Miktar 0 olamaz.");
+    return;
+  }
+
+  state.revenueLines.push({
+    id:item.id, name:item.name, unit:item.unit,
+    unitPrice: up, qty: qty
+  });
+
+  // favori gibi davran: bir sonraki giriş için qty sıfırla
+  el("revQty").value = "";
+  recalcRevenueLine();
+  renderRevenueTable();
+  recalcAll();
+};
+
+el("revTable").addEventListener("click", (e)=>{
+  const btn = e.target.closest("[data-del-rev]");
+  if(!btn) return;
+  const idx = Number(btn.getAttribute("data-del-rev"));
+  state.revenueLines.splice(idx,1);
+  renderRevenueTable();
+  recalcAll();
+});
+
+/** ---------------------------
+ *  Gider: satır ekleme / tablo
+ * --------------------------- */
+function addExpenseLine(prefillName=""){
+  state.expenseLines.push({ name: prefillName, qty: 0, unitPrice: 0 });
+  renderExpenseTable();
+  recalcAll();
+}
+
+function renderExpenseTable(){
+  const tb = el("expTable");
+  tb.innerHTML = "";
+  state.expenseLines.forEach((ln, idx)=>{
+    const total = num(ln.qty) * num(ln.unitPrice);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input data-exp-name="${idx}" value="${escapeHtml(ln.name)}" placeholder="Gider Adı (örn: Mazot)" /></td>
+      <td class="right"><input data-exp-qty="${idx}" type="number" step="0.01" min="0" value="${ln.qty ?? 0}" inputmode="decimal" /></td>
+      <td class="right"><input data-exp-up="${idx}" type="number" step="0.01" min="0" value="${ln.unitPrice ?? 0}" inputmode="decimal" /></td>
+      <td class="right"><b>${money(total)}</b></td>
+      <td class="right"><button class="btn" data-del-exp="${idx}" title="Sil">✖</button></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+el("addExpenseRow").onclick = ()=> addExpenseLine("");
+
+document.querySelectorAll("[data-template]").forEach(b=>{
+  b.addEventListener("click", ()=> addExpenseLine(b.getAttribute("data-template")));
+});
+
+el("expTable").addEventListener("input", (e)=>{
+  const t = e.target;
+  const nameIdx = t.getAttribute("data-exp-name");
+  const qtyIdx  = t.getAttribute("data-exp-qty");
+  const upIdx   = t.getAttribute("data-exp-up");
+
+  if(nameIdx !== null){
+    state.expenseLines[Number(nameIdx)].name = t.value;
+  }
+  if(qtyIdx !== null){
+    state.expenseLines[Number(qtyIdx)].qty = num(t.value);
+  }
+  if(upIdx !== null){
+    state.expenseLines[Number(upIdx)].unitPrice = num(t.value);
+  }
+  renderExpenseTable(); // satır toplamını güncelle
+  recalcAll();
+});
+
+el("expTable").addEventListener("click", (e)=>{
+  const btn = e.target.closest("[data-del-exp]");
+  if(!btn) return;
+  const idx = Number(btn.getAttribute("data-del-exp"));
+  state.expenseLines.splice(idx,1);
+  renderExpenseTable();
+  recalcAll();
+});
+
+/** ---------------------------
+ *  Toplamlar
+ * --------------------------- */
+function totals(){
+  const income = state.revenueLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const expense = state.expenseLines.reduce((a,ln)=> a + num(ln.unitPrice)*num(ln.qty), 0);
+  const net = income - expense;
+  const margin = income > 0 ? (net / income) * 100 : 0;
+  return { income, expense, net, margin };
+}
+
+function recalcAll(){
+  const t = totals();
+  el("sumIncome").textContent = money(t.income);
+  el("sumExpense").textContent = money(t.expense);
+  el("sumNet").textContent = money(t.net);
+  el("sumMargin").textContent = pct(t.margin);
+  el("expenseBadge").textContent = money(t.expense);
+
+  const box = el("sumNetBox");
+  box.classList.remove("good","bad");
+  if(t.net >= 0) box.classList.add("good"); else box.classList.add("bad");
+}
+
+/** ---------------------------
+ *  Kaydet / Yükle
+ * --------------------------- */
+function saveDraft(){
+  const payload = {
+    v:1,
+    updatedAt: new Date().toISOString(),
+    state
+  };
+  localStorage.setItem(LS_KEY, JSON.stringify(payload));
+  toast("Kaydedildi ✅");
+}
+
+function loadDraft(){
+  const raw = localStorage.getItem(LS_KEY);
+  if(!raw){ toast("Kayıt bulunamadı."); return; }
+  try{
+    const payload = JSON.parse(raw);
+    if(!payload?.state) throw new Error("bad");
+    state.selectedItemId = payload.state.selectedItemId ?? null;
+    state.revenueLines = Array.isArray(payload.state.revenueLines) ? payload.state.revenueLines : [];
+    state.expenseLines = Array.isArray(payload.state.expenseLines) ? payload.state.expenseLines : [];
+    renderRevenueTable();
+    renderExpenseTable();
+    recalcAll();
+    toast("Yüklendi 📥");
+  }catch{
+    toast("Kayıt bozuk görünüyor.");
+  }
+}
+
+el("saveDraft").onclick = saveDraft;
+el("loadDraft").onclick = loadDraft;
+
+el("resetAll").onclick = ()=>{
+  if(!confirm("Her şeyi sıfırlayayım mı?")) return;
+  state.selectedItemId = null;
+  state.revenueLines = [];
+  state.expenseLines = [];
+  localStorage.removeItem(LS_KEY);
+  el("clearRevenueForm").click();
+  renderRevenueTable();
+  renderExpenseTable();
+  recalcAll();
+  toast("Sıfırlandı 🧹");
+};
+
+/** ---------------------------
+ *  Export
+ * --------------------------- */
+function downloadFile(filename, content, type){
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+el("exportJson").onclick = ()=>{
+  const payload = {
+    generatedAt: new Date().toISOString(),
+    currency: "DZD",
+    revenue: state.revenueLines,
+    expenses: state.expenseLines,
+    totals: totals()
+  };
+  downloadFile("hakedis_maliyet.json", JSON.stringify(payload,null,2), "application/json");
+  toast("JSON indirildi ⬇️");
+};
+
+el("exportCsv").onclick = ()=>{
+  const t = totals();
+  const rows = [];
+  rows.push(["BOLUM","KALEM","BIRIM","BIRIM_FIYAT","MIKTAR","TOPLAM"]);
+  state.revenueLines.forEach(ln=>{
+    rows.push(["GELIR", ln.name, ln.unit, ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+  });
+  state.expenseLines.forEach(ln=>{
+    rows.push(["GIDER", ln.name, "", ln.unitPrice, ln.qty, num(ln.unitPrice)*num(ln.qty)]);
+  });
+  rows.push(["TOPLAM","GELIR","","","",""+t.income]);
+  rows.push(["TOPLAM","GIDER","","","",""+t.expense]);
+  rows.push(["TOPLAM","NET","","","",""+t.net]);
+
+  const csv = rows.map(r=> r.map(x=>{
+    const s = String(x ?? "");
+    return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+  }).join(",")).join("\n");
+
+  downloadFile("hakedis_maliyet.csv", csv, "text/csv;charset=utf-8");
+  toast("CSV indirildi ⬇️");
+};
+
+/** ---------------------------
+ *  Dark mode + Print
+ * --------------------------- */
+const darkPref = localStorage.getItem("hm_dark");
+if(darkPref === "1") document.body.classList.add("dark");
+
+el("toggleDark").onclick = ()=>{
+  document.body.classList.toggle("dark");
+  localStorage.setItem("hm_dark", document.body.classList.contains("dark") ? "1" : "0");
+};
+
+el("printBtn").onclick = ()=> window.print();
+
+/** init */
+renderFavs();
+renderRevenueTable();
+renderExpenseTable();
+recalcAll();
+
+// İstersen otomatik yükle:
+// loadDraft();
+</script>
+</body>
+</html>
