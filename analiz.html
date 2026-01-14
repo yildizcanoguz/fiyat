@@ -114,6 +114,9 @@
         .quote-card { margin-top: 30px; padding: 20px; background: white; border-radius: 16px; text-align: center; border-bottom: 4px solid #007aff; cursor: pointer; color: #555; }
         .q-text { font-size: 13px; font-style: italic; margin-bottom: 8px; line-height: 1.4; }
         .q-author { font-size: 10px; font-weight: 800; color: #007aff; text-transform: uppercase; }
+        
+        /* Hata Mesajı */
+        .no-result { padding: 15px; text-align: center; color: #888; font-style: italic; }
 
     </style>
 </head>
@@ -190,36 +193,32 @@
         filterTab: 'ALL',
         
         // --- 1. VERİTABANI (DQE + ANALİZLER BİRLEŞİK) ---
-        // l: Lot, c: Kod, n: İsim, u: Birim, d: DZD Fiyat, e: Euro Fiyat
-        // a: {m:Makine, f:Yakıt(Lt), l:İşçilik, mat:Malzeme, prod:Günlük Üretim} (ANALİZ VERİSİ)
+        // 'a': Analiz verisi (Varsa). m: Makine (günlük €), f: Yakıt (litre/gün), l: İşçilik (günlük €), mat: Malzeme (birim €), prod: Günlük üretim
         db: [
-            // KAZI VE TOPRAK İŞLERİ (Kazı.csv, Dolgu.csv verilerinden)
+            // KAZI VE TOPRAK İŞLERİ (Kazı.csv, Dolgu.csv verileri)
             {l:"ROUTE", c:"C.3.1", n:"Déblai meuble / Yumuşak Kazı", u:"m3", d:257.24, e:1.20, a:{m:450, f:280, l:150, mat:0, prod:3600}},
             {l:"ROUTE", c:"C.3.3", n:"Déblai rocheux / Kaya Kazı", u:"m3", d:1308.96, e:4.80, a:{m:850, f:400, l:200, mat:0, prod:1200}},
             {l:"ROUTE", c:"C.5.1", n:"Remblai / Dolgu İşleri", u:"m3", d:555.63, e:1.90, a:{m:600, f:350, l:180, mat:0, prod:1800}},
             {l:"ROUTE", c:"C.9.1", n:"Couche de forme / Form Tabakası", u:"m3", d:1346.55, e:1.50, a:{m:500, f:300, l:150, mat:0.5, prod:1500}},
             {l:"ROUTE", c:"C.1.1", n:"Décapage / Sıyırma Kazısı", u:"m3", d:128.62, e:0.60, a:{m:300, f:150, l:100, mat:0, prod:4000}},
             
-            // SANAT YAPILARI (Ankraj.csv, Hasır Çelik.csv verilerinden)
+            // SANAT YAPILARI (Ankraj.csv, Hasır Çelik.csv verileri)
             {l:"OA", c:"OUA.B1.1", n:"Déblais fouilles / Temel Kazısı", u:"m3", d:178.16, e:0.80, a:{m:400, f:200, l:150, mat:0, prod:800}},
-            {l:"OA", c:"OUA.B6.1.1", n:"Acier HA / Demir Donatı", u:"Ton", d:67033.93, e:380.90, a:{m:50, f:20, l:400, mat:350, prod:10}},
+            {l:"OA", c:"OUA.B6.1.1", n:"Acier HA / Demir Donatı", u:"Ton", d:67033.93, e:380.90, a:{m:50, f:20, l:400, mat:350, prod:10}}, // Demir malzeme ağırlıklı
             {l:"OA", c:"OUA.B6.1.2", n:"Treillis soudés / Hasır Çelik", u:"Ton", d:69026.52, e:527.60, a:{m:40, f:15, l:300, mat:480, prod:12}},
-            {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T / Ankraj 45T", u:"ml", d:4260, e:89, a:{m:350, f:100, l:250, mat:45, prod:40}},
+            {l:"OA", c:"OUA.NP.09a", n:"Tirants 45T / Ankraj 45T", u:"ml", d:4260, e:89, a:{m:350, f:100, l:250, mat:45, prod:40}}, // Delgi makinesi, enjeksiyon
             {l:"OA", c:"OUA.NP.09b", n:"Tirants 75T / Ankraj 75T", u:"ml", d:4310, e:103, a:{m:400, f:120, l:250, mat:55, prod:35}},
             
-            // TÜNEL VE BETON (Shotcrete.csv verilerinden)
-            {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Püskürtme Beton", u:"m3", d:13046.21, e:97.30, a:{m:650, f:250, l:300, mat:65, prod:80}}, 
+            // TÜNEL VE BETON (Shotcrete.csv verileri)
+            {l:"TUNNEL", c:"TUN.D2.1", n:"Béton projeté / Püskürtme Beton (Shotcrete)", u:"m3", d:13046.21, e:97.30, a:{m:650, f:250, l:300, mat:65, prod:80}}, 
             {l:"TUNNEL", c:"TUN.B1", n:"Déblais Tunnel / Tünel Kazısı", u:"m3", d:1126.54, e:4.62, a:{m:1200, f:600, l:500, mat:1.5, prod:600}},
+            {l:"OA", c:"OUA.D26.1", n:"Barbacane / Barbakan", u:"ml", d:1700, e:0, a:{m:50, f:10, l:80, mat:2, prod:50}},
             
-            // DİĞER STANDART POZLAR (Analizi olmayanlar)
+            // DİĞER (Örnek DQE verileri - Analizi olmayanlar sadece fiyat gösterir)
             {l:"ROUTE", c:"A1", n:"Installation / Şantiye Kurulumu", u:"Ft", d:1041277260, e:4972851},
             {l:"ROUTE", c:"E2.1", n:"Grave Bitume / Bitümlü Temel", u:"Ton", d:3390, e:21.6},
             {l:"ROUTE", c:"E3.1", n:"Couche Roulement / Aşınma", u:"Ton", d:4337, e:27},
             {l:"ROUTE", c:"D12.1", n:"Tuyau 400mm / Boru", u:"ml", d:7769, e:0.3},
-            {l:"ROUTE", c:"D13.1", n:"Buse 800mm / Büz", u:"ml", d:15498, e:4.9},
-            {l:"OA", c:"OUA.B7.1", n:"Appareil d'appui / Mesnet", u:"U", d:260001, e:3812},
-            {l:"OA", c:"OUA.NP.06", n:"Isolateur / Sismik İzolatör", u:"U", d:134282, e:15822},
-            {l:"TUNNEL", c:"TUN.F2.1", n:"Ventilateurs / Fanlar", u:"U", d:459359, e:85315},
             {l:"ROUTE", c:"NP.48", n:"Déplacement cimetière / Mezarlık", u:"U", d:22275, e:0}
         ],
 
@@ -228,8 +227,7 @@
             if(document.getElementById("passInput").value.trim() === this.PASS) {
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("appContainer").style.display = "block";
-                localStorage.setItem("master_auth_v6", "ok");
-                document.body.style.overflow = "auto";
+                localStorage.setItem("master_auth", "ok");
                 this.newQuote();
             } else {
                 document.getElementById("errorMsg").style.display = "block";
@@ -237,7 +235,7 @@
         },
 
         logout: function() {
-            localStorage.removeItem("master_auth_v6");
+            localStorage.removeItem("master_auth");
             location.reload();
         },
 
@@ -245,10 +243,7 @@
             this.filterTab = t;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            this.resetUI();
-        },
-        
-        resetUI: function() {
+            
             document.getElementById("searchBox").value = "";
             document.getElementById("resultsList").style.display = "none";
             document.getElementById("analysisCard").style.display = "none";
@@ -301,7 +296,7 @@
             var euroR = parseFloat(document.getElementById("euroRate").value);
 
             document.getElementById("acName").innerText = item.n;
-            document.getElementById("acCode").innerText = item.c + " | " + item.u;
+            document.getElementById("acCode").innerText = "KOD: " + item.c + " | BİRİM: " + item.u;
             card.style.display = "block";
             document.getElementById("calcSec").style.display = "block";
 
@@ -333,8 +328,10 @@
 
                 htmlContent += `
                     <div class="ac-row"><span class="ac-label">Günlük İmalat:</span> <span class="ac-val">${a.prod} ${item.u}</span></div>
-                    <div class="ac-row"><span class="ac-label">Yakıt (${a.f} Lt):</span> <span class="ac-val">${this.fmt(dailyFuelDZD)} DZD</span></div>
-                    <div class="ac-row"><span class="ac-label">Makine+İşçilik:</span> <span class="ac-val">${this.fmt(dailyCostEUR)} €</span></div>
+                    <div class="ac-row"><span class="ac-label">Makine (Gün):</span> <span class="ac-val">${a.m} €</span></div>
+                    <div class="ac-row"><span class="ac-label">Yakıt (${a.f} Lt):</span> <span class="ac-val">${this.fmt(a.f * dieselP)} DZD</span></div>
+                    <div class="ac-row"><span class="ac-label">İşçilik (Gün):</span> <span class="ac-val">${a.l} €</span></div>
+                    <div class="ac-row"><span class="ac-label">Malzeme (Birim):</span> <span class="ac-val">${a.mat} €</span></div>
                     
                     <div class="ac-total" style="background:#eaf3ff; border-color:#007aff;">
                         <span class="ac-total-label">ANALİZ EDİLEN MALİYET</span>
@@ -371,7 +368,8 @@
             {t:"İşleyen demir ışıldar.", a:"Atasözü"},
             {t:"Yol medeniyettir.", a:"Atasözü"},
             {t:"Şantiyede güvenlik, hızdan önce gelir.", a:"Kural"},
-            {t:"Kalite bir eylem değil, bir alışkanlıktır.", a:"Aristoteles"}
+            {t:"Kalite bir eylem değil, bir alışkanlıktır.", a:"Aristoteles"},
+            {t:"Zor yollar, genellikle güzel yerlere çıkar.", a:"Anonim"}
         ],
         newQuote: function() {
             var r = this.quotes[Math.floor(Math.random() * this.quotes.length)];
@@ -383,13 +381,13 @@
     // BAŞLANGIÇ
     document.getElementById("passInput").addEventListener("keypress", function(e){ if(e.key==="Enter") app.login(); });
     
-    if(localStorage.getItem("master_auth_v6") === "ok") {
+    if(localStorage.getItem("master_auth") === "ok") {
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("appContainer").style.display = "block";
-        document.body.style.overflow = "auto"; // Scroll aç
         app.newQuote();
     }
     
+    // Tıklama ile liste kapat
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.search-container')) document.getElementById("resultsList").style.display = "none";
     });
