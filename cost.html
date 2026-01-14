@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROJE YÖNETİM (FULL)</title>
+    <title>ŞANTİYE YÖNETİM (FULL+MAKİNE)</title>
     <style>
-        /* --- MODERN VE CİDDİ TASARIM --- */
+        /* --- MODERN TASARIM --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; background-color: #f0f2f5; color: #333; 
+            margin: 0; padding: 0; background-color: #f4f6f8; color: #333; 
             height: 100vh; display: flex; flex-direction: column;
         }
 
         /* GİRİŞ EKRANI */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #f0f2f5 0%, #dbe2e8 100%);
+            background: linear-gradient(135deg, #f4f6f8 0%, #dbe2e8 100%);
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .login-box {
@@ -39,53 +39,74 @@
         /* ANA UYGULAMA */
         #appContainer {
             display: none; width: 100%; max-width: 800px; margin: 0 auto; height: 100%; 
-            overflow-y: auto; padding: 15px; padding-bottom: 150px;
+            overflow-y: auto; padding: 15px; padding-bottom: 160px;
         }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .app-title { font-size: 20px; font-weight: 900; color: #2c3e50; letter-spacing: -0.5px; }
-        .logout-btn { background: #ff3b30; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .app-title { font-size: 18px; font-weight: 900; color: #2c3e50; text-transform: uppercase; }
+        .logout-btn { background: #ff3b30; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+        /* PARAMETRELER */
+        .params-bar {
+            background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 15px;
+            display: flex; gap: 10px; border: 1px solid #e1e4e8;
+        }
+        .p-group { flex: 1; }
+        .p-label { font-size: 10px; font-weight: bold; color: #888; display: block; margin-bottom: 3px; }
+        .p-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; text-align: center; font-weight: bold; font-size: 14px; }
 
         /* BÖLÜM KUTULARI */
         .section-card {
-            background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e1e4e8;
+            background: white; border-radius: 16px; padding: 15px; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e1e4e8;
         }
-        .section-title { font-size: 14px; font-weight: 800; color: #8e8e93; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+        .sec-header { 
+            font-size: 13px; font-weight: 800; color: #555; margin-bottom: 15px; 
+            border-bottom: 1px solid #eee; padding-bottom: 8px; display: flex; justify-content: space-between;
+        }
 
-        /* DROPBOX MENÜ */
-        .search-container { position: relative; margin-bottom: 15px; }
-        .search-input { width: 100%; padding: 16px; border: 2px solid #007aff; border-radius: 12px; font-size: 15px; font-weight: 600; outline: none; background: #fdfdfd; }
+        /* DROPBOX ARAMA */
+        .search-container { position: relative; margin-bottom: 15px; z-index: 100; }
+        .search-box-wrapper {
+            display: flex; align-items: center; background: #f9fbfd; border: 2px solid #ddd;
+            border-radius: 12px; overflow: visible; transition: 0.3s;
+        }
+        .search-box-wrapper.blue-border { border-color: #007aff; }
+        .search-box-wrapper.orange-border { border-color: #e67e22; }
+
+        .search-input { width: 100%; padding: 14px; border: none; background: transparent; font-size: 14px; font-weight: 600; outline:none; }
+        .dropdown-icon { padding: 0 15px; font-size: 12px; cursor: pointer; font-weight: bold; }
         
         .results-list {
             display: none; position: absolute; top: 110%; left: 0; right: 0;
-            background: white; border-radius: 12px; max-height: 350px; overflow-y: auto;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: 1px solid #e1e4e8; z-index: 1000;
+            background: white; border-radius: 12px; max-height: 300px; overflow-y: auto;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: 1px solid #e1e4e8; z-index: 9999;
         }
-        .res-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; color: #333; line-height: 1.4; }
-        .res-item:hover { background: #f2f7ff; }
-        .res-item strong { color: #007aff; display: block; font-size: 14px; margin-bottom: 2px; }
+        .res-item { padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 12px; line-height: 1.4; display: flex; justify-content: space-between;}
+        .res-item:hover { background: #f0f7ff; }
+        .res-item strong { color: #007aff; display: block; }
+        .machine-tag { background: #e67e22; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
-        /* HAKEDİŞ HESABI */
-        .hakedis-grid { display: flex; gap: 10px; align-items: flex-end; }
-        .hakedis-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; text-align: center; font-size: 16px; }
-        .unit-badge { background: #eaf3ff; color: #007aff; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; text-align: center; min-width: 60px; }
-        .hakedis-total { 
-            margin-top: 15px; background: #007aff; color: white; padding: 15px; border-radius: 10px; 
-            text-align: right; font-size: 20px; font-weight: 900; 
+        /* HESAPLAMA ALANI */
+        .calc-grid { display: flex; gap: 10px; margin-bottom: 10px; }
+        .calc-box label { font-size: 10px; font-weight: bold; color: #888; display: block; }
+        .calc-inp { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; text-align: center; }
+        .total-display { 
+            background: #eaf3ff; color: #007aff; padding: 12px; border-radius: 8px; 
+            text-align: right; font-size: 18px; font-weight: 900; 
         }
+        .analysis-note { font-size: 11px; color: #27ae60; margin-top: 5px; font-style: italic; display: none; }
 
-        /* MALİYET KUTUCUKLARI */
-        .cost-row { display: flex; gap: 5px; margin-bottom: 10px; align-items: center; background: #f9f9f9; padding: 5px; border-radius: 8px; }
-        .cost-name { flex: 2; padding: 10px; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 13px; }
-        .cost-val { flex: 1; padding: 10px; border: 1px solid #e1e4e8; border-radius: 8px; font-size: 13px; text-align: center; }
-        .cost-del { width: 30px; height: 30px; background: #ffebec; color: #ff3b30; border: none; border-radius: 50%; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        /* MALİYETLER */
+        .cost-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
+        .c-name { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+        .c-val { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; text-align: center; }
+        .c-del { width: 28px; height: 28px; background: #ffebec; color: red; border: none; border-radius: 50%; font-weight: bold; cursor: pointer; }
         
         .add-btn { 
-            width: 100%; padding: 12px; background: #fff; color: #e67e22; border: 2px dashed #e67e22; 
-            border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 10px;
+            width: 100%; padding: 10px; background: #fff; color: #7f8c8d; border: 2px dashed #ccc; 
+            border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 13px;
         }
-        .add-btn:active { background: #fff8f0; }
 
         /* ALT TOPLAM ÇUBUĞU */
         .footer-bar {
@@ -94,15 +115,11 @@
             display: flex; justify-content: space-between; align-items: center;
             border-top: 1px solid #eee;
         }
-        .footer-item { text-align: center; flex: 1; }
-        .f-label { display: block; font-size: 10px; color: #8e8e93; font-weight: 700; text-transform: uppercase; }
-        .f-val { font-size: 15px; font-weight: 800; color: #333; }
-        .f-profit { font-size: 20px; font-weight: 900; }
-        .profit-pos { color: #27ae60; }
-        .profit-neg { color: #ff3b30; }
-
-        /* GÜNÜN SÖZÜ */
-        .quote-box { margin-top: 20px; text-align: center; font-style: italic; color: #888; font-size: 12px; padding-bottom: 20px; }
+        .f-item { text-align: center; flex: 1; }
+        .f-lbl { font-size: 10px; color: #888; font-weight: 800; display: block; }
+        .f-val { font-size: 14px; font-weight: 800; color: #333; }
+        .f-profit { font-size: 18px; font-weight: 900; }
+        .pos { color: #27ae60; } .neg { color: #ff3b30; }
 
     </style>
 </head>
@@ -110,10 +127,9 @@
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h3 style="color:#2c3e50; margin-bottom:20px;">PROJE YÖNETİM</h3>
+        <h3>ŞANTİYE YÖNETİM</h3>
         <input type="password" id="passInput" class="login-input" placeholder="****" inputmode="numeric">
         <button class="login-btn" onclick="app.login()">GİRİŞ YAP</button>
-        <p id="loginError" style="color:red; display:none; margin-top:10px; font-weight:bold; font-size:13px;">Hatalı Şifre!</p>
     </div>
 </div>
 
@@ -123,58 +139,82 @@
         <button class="logout-btn" onclick="app.logout()">ÇIKIŞ</button>
     </div>
 
-    <div class="section-card" style="border-left: 5px solid #007aff;">
-        <div class="section-title">1. HAKEDİŞ HESABI (GELİR)</div>
+    <div class="params-bar">
+        <div class="p-group">
+            <label class="p-label">MAZOT (DZD)</label>
+            <input type="number" id="dieselPrice" class="p-input" value="29.01" onkeyup="app.recalc()">
+        </div>
+        <div class="p-group">
+            <label class="p-label">EURO KURU</label>
+            <input type="number" id="euroRate" class="p-input" value="107.31" onkeyup="app.recalc()">
+        </div>
+    </div>
+
+    <div class="section-card" style="border-left: 4px solid #007aff;">
+        <div class="sec-header">
+            <span>1. HAKEDİŞ (GELİR)</span>
+            <span id="unitBadge" style="background:#007aff; color:white; padding:2px 8px; border-radius:4px; font-size:10px;">BİRİM</span>
+        </div>
         
-        <label style="font-size:12px; font-weight:bold; color:#555; display:block; margin-bottom:5px;">İş Kalemi Seçiniz:</label>
-        
+        <label style="font-size:10px; font-weight:bold; color:#007aff;">İŞ KALEMİ SEÇİNİZ:</label>
         <div class="search-container">
-            <input type="text" id="searchBox" class="search-input" placeholder="Listeden seçin (Tıklayın)..." onkeyup="app.filterList()" onclick="app.toggleList()" autocomplete="off">
-            <div id="resList" class="results-list"></div>
+            <div class="search-box-wrapper blue-border">
+                <input type="text" id="searchBox" class="search-input" placeholder="Poz Ara..." onkeyup="app.filterList('item')" onclick="app.toggleList('item')" autocomplete="off">
+                <div class="dropdown-icon" onclick="app.toggleList('item')">▼</div>
+            </div>
+            <div id="itemList" class="results-list"></div>
         </div>
 
-        <div class="hakedis-grid">
-            <div style="flex:0 0 70px;">
-                <label style="font-size:11px; font-weight:bold; color:#888;">Birim</label>
-                <div id="unitDisplay" class="unit-badge">-</div>
+        <div class="calc-grid">
+            <div class="calc-box" style="flex:1;">
+                <label>Sözleşme Fiyatı (DZD)</label>
+                <input type="text" id="priceDisplay" class="calc-inp" readonly placeholder="0.00" style="background:#f9f9f9;">
             </div>
-            <div style="flex:1;">
-                <label style="font-size:11px; font-weight:bold; color:#888;">Birim Fiyat (DZD)</label>
-                <input type="text" id="priceDisplay" class="hakedis-input" readonly placeholder="0.00" style="background:#f9f9f9; color:#666;">
-            </div>
-            <div style="flex:1;">
-                <label style="font-size:11px; font-weight:bold; color:#888;">Yapılan Miktar</label>
-                <input type="number" id="qtyInput" class="hakedis-input" placeholder="0" oninput="app.calcRevenue()">
+            <div class="calc-box" style="flex:1;">
+                <label>Yapılan Miktar</label>
+                <input type="number" id="qtyInput" class="calc-inp" placeholder="0" onkeyup="app.calcRevenue()">
             </div>
         </div>
-
-        <div id="revenueTotal" class="hakedis-total">0.00 DZD</div>
-    </div>
-
-    <div class="section-card" style="border-left: 5px solid #e67e22;">
-        <div class="section-title">2. GERÇEKLEŞEN MALİYET (GİDER)</div>
         
-        <div id="costContainer">
-            </div>
-
-        <button class="add-btn" onclick="app.addCostRow()">+ YENİ GİDER EKLE</button>
+        <div id="revenueTotal" class="total-display">0.00 DZD</div>
+        <div id="analysisInfo" class="analysis-note">💡 Otomatik analiz verisi eklendi.</div>
     </div>
 
-    <div class="quote-box" id="dailyQuote">...</div>
+    <div class="section-card" style="border-left: 4px solid #e67e22;">
+        <div class="sec-header">
+            <span>2. MALİYETLER (GİDER)</span>
+            <span id="costCount" style="color:#e67e22;">0 Kalem</span>
+        </div>
+        
+        <label style="font-size:10px; font-weight:bold; color:#e67e22;">KİRALIK MAKİNE EKLE:</label>
+        <div class="search-container">
+            <div class="search-box-wrapper orange-border">
+                <input type="text" id="machineBox" class="search-input" placeholder="Makine Seç (Ekskavatör...)" onkeyup="app.filterList('machine')" onclick="app.toggleList('machine')" autocomplete="off">
+                <div class="dropdown-icon" onclick="app.toggleList('machine')">▼</div>
+            </div>
+            <div id="machineList" class="results-list"></div>
+        </div>
+
+        <div id="costContainer"></div>
+
+        <button class="add-btn" onclick="app.addCostRow()">+ Manuel Gider Ekle</button>
+    </div>
+
+    <div style="text-align:center; margin-top:20px; color:#999; font-style:italic; font-size:12px;" id="dailyQuote">...</div>
 
 </div>
 
 <div class="footer-bar" id="footerBar" style="display:none;">
-    <div class="footer-item">
-        <span class="f-label">GELİR</span>
+    <div class="f-item">
+        <span class="f-lbl">HAKEDİŞ</span>
         <span class="f-val" id="sumRev" style="color:#007aff;">0</span>
     </div>
-    <div class="footer-item">
-        <span class="f-label">GİDER</span>
+    <div class="f-item">
+        <span class="f-lbl">MALİYET</span>
         <span class="f-val" id="sumCost" style="color:#e67e22;">0</span>
     </div>
-    <div class="footer-item">
-        <span class="f-label">KÂR / ZARAR</span>
+    <div class="f-item">
+        <span class="f-lbl">KÂR / ZARAR</span>
         <span class="f-profit" id="sumProfit">0</span>
     </div>
 </div>
@@ -186,8 +226,9 @@
         totalRev: 0,
         totalCost: 0,
 
-        // --- TAM VERİTABANI (268 Kalem) ---
-        db: [
+        // --- 1. TAM İŞ KALEMLERİ LİSTESİ (268 Kalem) ---
+        // a: Analiz verisi (varsa) -> {m:Makine, f:Yakıt, l:İşçilik, mat:Malzeme, prod:Üretim}
+        dbItems: [
             { code: "A.1", name: "Installation et repliement / Şantiye Kurulumu", unit: "Ft", price: 1041277260.86 },
             { code: "A.2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", price: 41644039.15 },
             { code: "A.2.2", name: "Contrôle externe / Dış Kontrol", unit: "Ft", price: 33983960.76 },
@@ -208,22 +249,24 @@
             { code: "B.3.1", name: "Rabotage <10cm", unit: "m2", price: 88.85 },
             { code: "B.3.2", name: "Rabotage 10-20cm", unit: "m2", price: 98.62 },
             { code: "B.4", name: "Scarification", unit: "m2", price: 28.16 },
-            { code: "C.1.1", name: "Décapage / Sıyırma", unit: "m3", price: 128.62 },
+            { code: "C.1.1", name: "Décapage / Sıyırma", unit: "m3", price: 128.62, a:{m:300, f:150, l:100, mat:0, prod:4000} },
             { code: "C.1.2", name: "Reprise stock", unit: "m3", price: 179.08 },
             { code: "C.2.2", name: "Purges", unit: "m3", price: 2200.00 },
-            { code: "C.3.1", name: "Déblai meuble / Yumuşak Kazı", unit: "m3", price: 257.24 },
+            { code: "C.3.1", name: "Déblai meuble / Yumuşak Kazı", unit: "m3", price: 257.24, a:{m:450, f:280, l:150, mat:0, prod:3600} },
             { code: "C.3.2", name: "Déblai semi-dur / Küskülük Kazı", unit: "m3", price: 386.32 },
-            { code: "C.3.3", name: "Déblai rocheux / Kaya Kazı", unit: "m3", price: 1308.96 },
+            { code: "C.3.3", name: "Déblai rocheux / Kaya Kazı", unit: "m3", price: 1308.96, a:{m:850, f:450, l:250, mat:0, prod:1200} },
             { code: "C.4.1", name: "Déblai meuble dépôt", unit: "m3", price: 148.16 },
             { code: "C.4.2", name: "Déblai semi-dur dépôt", unit: "m3", price: 307.70 },
             { code: "C.4.3", name: "Déblai rocheux dépôt", unit: "m3", price: 893.10 },
-            { code: "C.5.1", name: "Remblai emprunt / Ariyet", unit: "m3", price: 555.63 },
+            { code: "C.5.1", name: "Remblai emprunt / Ariyet", unit: "m3", price: 555.63, a:{m:600, f:350, l:180, mat:0, prod:1800} },
             { code: "C.6.1", name: "Assise drainante", unit: "m3", price: 1166.55 },
             { code: "C.7.1", name: "Géotextile renfort", unit: "m2", price: 290.80 },
             { code: "C.7.2", name: "Géotextile anti-contam", unit: "m2", price: 258.27 },
             { code: "C.7.3", name: "Géogrille", unit: "m2", price: 418.04 },
             { code: "C.8.1", name: "Arrondi crête", unit: "ml", price: 317.01 },
-            { code: "C.9.1", name: "Couche forme (CDF)", unit: "m3", price: 1346.55 },
+            { code: "C.9.1", name: "Couche forme (CDF)", unit: "m3", price: 1346.55, a:{m:500, f:300, l:150, mat:0.5, prod:1500} },
+            { code: "C.10.1", name: "Transport < 30km", unit: "M3xKM", price: 12.50 },
+            { code: "C.10.2", name: "Transport > 30km", unit: "M3xKM", price: 11.00 },
             { code: "D.1.1", name: "Fossé A", unit: "ml", price: 495.86 },
             { code: "D.1.2", name: "Fossé B", unit: "ml", price: 594.94 },
             { code: "D.1.3", name: "Fossé C", unit: "ml", price: 897.18 },
@@ -252,27 +295,27 @@
             { code: "D.8.2", name: "Demi-buse 400", unit: "ml", price: 5700.00 },
             { code: "D.8.3", name: "Demi-buse 500", unit: "ml", price: 7800.00 },
             { code: "D.9.1", name: "Déblai tranchée <2m", unit: "m3", price: 217.93 },
-            { code: "D.9.2", name: "Déblai tranchée 2-4m", unit: "m3", price: 277.24 },
-            { code: "D.9.3", name: "Déblai tranchée 4-6m", unit: "m3", price: 326.55 },
+            { code: "D.9.2", name: "Tranchée 2-4m", unit: "m3", price: 277.24 },
+            { code: "D.9.3", name: "Tranchée 4-6m", unit: "m3", price: 326.55 },
             { code: "D.9.4", name: "PV Roche tranchée", unit: "m3", price: 1500.00 },
             { code: "D.10.1", name: "Lit sable", unit: "m3", price: 1455.51 },
             { code: "D.10.2", name: "Lit béton", unit: "m3", price: 5962.17 },
             { code: "D.11.1", name: "Enrobage grave", unit: "m3", price: 1437.35 },
             { code: "D.11.2", name: "Enrobage béton", unit: "m3", price: 5593.89 },
             { code: "D.11.3", name: "Enrobage drainant", unit: "m3", price: 1739.65 },
-            { code: "D.12.1", name: "Tuyau 400mm", unit: "ml", price: 7769.31 },
-            { code: "D.12.2", name: "Tuyau 600mm", unit: "ml", price: 9369.31 },
-            { code: "D.13.1", name: "Buse 800mm", unit: "ml", price: 15498.73 },
-            { code: "D.13.2", name: "Buse 1000mm", unit: "ml", price: 21631.72 },
-            { code: "D.13.3", name: "Buse 1200mm", unit: "ml", price: 36375.97 },
-            { code: "D.13.4", name: "Buse 1500mm", unit: "ml", price: 50775.97 },
+            { code: "D.12.1", name: "Tuyau 400mm / BA Boru", unit: "ml", price: 7769.31 },
+            { code: "D.12.2", name: "Tuyau 600mm / BA Boru", unit: "ml", price: 9369.31 },
+            { code: "D.13.1", name: "Buse 800mm / BA Büz", unit: "ml", price: 15498.73 },
+            { code: "D.13.2", name: "Buse 1000mm / BA Büz", unit: "ml", price: 21631.72 },
+            { code: "D.13.3", name: "Buse 1200mm / BA Büz", unit: "ml", price: 36375.97 },
+            { code: "D.13.4", name: "Buse 1500mm / BA Büz", unit: "ml", price: 50775.97 },
             { code: "D.14.1", name: "Collecteur 150mm", unit: "ml", price: 2700.00 },
             { code: "D.17.1", name: "Tuyau PEHD 75mm", unit: "ml", price: 1236.00 },
             { code: "D.17.2", name: "Tuyau PEHD 90mm", unit: "ml", price: 1500.00 },
             { code: "D.18.1", name: "Chambre K1C", unit: "U", price: 112000.00 },
             { code: "D.18.2", name: "Chambre K2C", unit: "U", price: 125000.00 },
             { code: "D.19.1", name: "Regard 1000mm", unit: "U", price: 120000.00 },
-            { code: "D.20.1", name: "Puisard", unit: "U", price: 150000.00 },
+            { code: "D.20.1", name: "Puisard / Rogar", unit: "U", price: 150000.00 },
             { code: "D.20.2", name: "Puisard 1300", unit: "U", price: 174000.00 },
             { code: "D.20.3", name: "Puisard 1500", unit: "U", price: 188000.00 },
             { code: "D.20.4", name: "Puisard 1800", unit: "U", price: 215000.00 },
@@ -297,7 +340,7 @@
             { code: "D.27.2", name: "Béton ouvrages", unit: "m3", price: 9553.28 },
             { code: "D.27.3", name: "Coffrage", unit: "m2", price: 920.22 },
             { code: "D.27.4", name: "Ferraillage", unit: "kg", price: 65.08 },
-            { code: "E.1.1", name: "Grave GNT / PMT", unit: "m3", price: 1922.64 },
+            { code: "E.1.1", name: "Grave GNT / PMT", unit: "m3", price: 1922.64, a:{m:200, f:100, l:100, mat:3, prod:100} },
             { code: "E.2.1", name: "Grave Bitume GB", unit: "Tonne", price: 3390.32 },
             { code: "E.2.2", name: "Enrobés EME 2", unit: "Tonne", price: 4782.15 },
             { code: "E.3.1", name: "Couche BB / Aşınma", unit: "Tonne", price: 4337.90 },
@@ -323,7 +366,7 @@
             { code: "I.1.3", name: "Béton propreté", unit: "m3", price: 5919.19 },
             { code: "I.1.6", name: "Béton fondations", unit: "m3", price: 8973.98 },
             { code: "I.3.1", name: "Panneaux antibruit", unit: "m2", price: 88750.00 },
-            { code: "I.5.3", name: "Enrochement", unit: "m3", price: 2205.85 },
+            { code: "I.5.3", name: "Enrochement / Taş Tahkimat", unit: "m3", price: 2205.85, a:{m:400, f:200, l:150, mat:5, prod:120} },
             { code: "I.6.1", name: "Séparateur hydro.", unit: "U", price: 4400000.00 },
             { code: "I.8.1", name: "Clôtures", unit: "ml", price: 5934.02 },
             { code: "I.9.1", name: "Plantation arbres", unit: "m2", price: 1545.17 },
@@ -333,28 +376,46 @@
             { code: "J.6.1", name: "Drains", unit: "ml", price: 4700.00 },
             { code: "J.8.1", name: "Ancrages 32mm", unit: "ml", price: 470.10 },
             { code: "J.11", name: "Atalus", unit: "m2", price: 18500.00 },
-            { code: "J.12.1", name: "Terre Armée", unit: "m2", price: 13600.00 },
+            { code: "J.12.1", name: "Terre Armée / Toprakarme", unit: "m2", price: 13600.00, a:{m:500, f:300, l:400, mat:0, prod:1000} },
             { code: "K.1.1", name: "Caméra", unit: "U", price: 412003.51 },
             { code: "NP.48", name: "Déplacement cimetière", unit: "U", price: 22275.00 },
-            { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı (OA)", unit: "m3", price: 178.16 },
-            { code: "OUA.B.2.1", name: "Pieux 1200 mm / Fore Kazık", unit: "ml", price: 5404.19 },
-            { code: "OUA.B.5.2.1", name: "Béton C40 Caisson", unit: "m3", price: 21343.02 },
-            { code: "OUA.B.5.2.6", name: "Béton C35 Piles", unit: "m3", price: 12538.45 },
-            { code: "OUA.B.6.1.1", name: "Acier HA / Demir", unit: "Tonne", price: 67033.93 },
+            { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı", unit: "m3", price: 178.16, a:{m:400, f:200, l:150, mat:0, prod:800} },
+            { code: "OUA.B.2.1", name: "Pieux 1200 mm", unit: "ml", price: 5404.19 },
+            { code: "OUA.B.5.2.1", name: "Béton C40", unit: "m3", price: 21343.02 },
+            { code: "OUA.B.6.1.1", name: "Acier HA / Demir", unit: "Tonne", price: 67033.93, a:{m:50, f:20, l:400, mat:350, prod:10} },
+            { code: "OUA.B.6.1.2", name: "Treillis soudés / Hasır Çelik", unit: "Tonne", price: 69026.52, a:{m:40, f:15, l:300, mat:480, prod:12} },
             { code: "OUA.B.6.2", name: "Précontrainte", unit: "Tonne", price: 55688.54 },
             { code: "OUA.B.7.1.1", name: "Appareil 2100", unit: "U", price: 260001.71 },
             { code: "OUA.B.7.5.1", name: "Joint 240mm", unit: "ml", price: 9389.70 },
             { code: "OUA.C.1", name: "Palplanches", unit: "m2", price: 25000.00 },
             { code: "OUA.NP.06", name: "Isolateur sismique", unit: "U", price: 134282.61 },
-            { code: "OUA.NP.09a", name: "Tirants 45T", unit: "ml", price: 4260.00 },
+            { code: "OUA.NP.09a", name: "Tirants 45T / Ankraj 45T", unit: "ml", price: 4260.00, a:{m:350, f:100, l:250, mat:45, prod:40} },
             { code: "OUA.NP.08.41", name: "Drain perforé", unit: "ml", price: 2700.00 },
+            { code: "OUA.D26.1", name: "Barbacane / Barbakan", unit: "ml", price: 1700, a:{m:50, f:10, l:80, mat:2, prod:150} },
             { code: "TUN.E.1.1", name: "Fondation GNT", unit: "m3", price: 1862.41 },
             { code: "TUN.E.1.3", name: "Enrobé EME", unit: "Tonne", price: 4812.84 },
             { code: "TUN.C.1.2", name: "Déblais explosif", unit: "m3", price: 4883.43 },
             { code: "TUN.C.3.1", name: "Boulons 4m", unit: "U", price: 2832.82 },
-            { code: "TUN.D.2.1", name: "Béton projeté", unit: "m3", price: 13046.21 },
+            { code: "TUN.D.2.1", name: "Béton projeté / Shotcrete", unit: "m3", price: 13046.21, a:{m:650, f:250, l:300, mat:65, prod:80} },
             { code: "TUN.F.2.1", name: "Ventilateurs", unit: "U", price: 459359.84 },
             { code: "TU.E.3.1.1", name: "Panneau Tunnel", unit: "U", price: 11768.62 }
+        ],
+
+        // --- 2. KİRALIK MAKİNE LİSTESİ ---
+        dbMachines: [
+            { name: "Ekskavatör", price: 40000 },
+            { name: "Bulldozer", price: 50000 },
+            { name: "Greyder", price: 45000 },
+            { name: "Loader", price: 35000 },
+            { name: "Paletli Loader", price: 40000 },
+            { name: "Kompaktör (Silindir)", price: 20000 },
+            { name: "Kamyon", price: 17000 },
+            { name: "JCB", price: 10000 },
+            { name: "Tır", price: 25000 },
+            { name: "Lowbed", price: 30000 },
+            { name: "Arazöz", price: 20000 },
+            { name: "Shotcrete Makinesi", price: 40000 },
+            { name: "Enjeksiyon Makinesi", price: 10000 }
         ],
 
         // --- GİRİŞ ---
@@ -363,7 +424,7 @@
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("appContainer").style.display = "block";
                 document.getElementById("footerBar").style.display = "flex";
-                this.addCostRow(); // İlk satırı ekle
+                this.addCostRow(); 
                 this.quote();
             } else {
                 alert("Hatalı Şifre!");
@@ -371,21 +432,35 @@
         },
         logout: function() { location.reload(); },
 
-        // --- ARAMA KUTUSU ---
-        toggleList: function() {
-            var list = document.getElementById("resList");
+        // --- LİSTE & ARAMA ---
+        toggleList: function(type) {
+            var listId = type === 'item' ? 'itemList' : 'machineList';
+            var list = document.getElementById(listId);
+            
+            // Diğer tüm listeleri kapat
+            document.querySelectorAll('.results-list').forEach(el => {
+                if(el.id !== listId) el.style.display = 'none';
+            });
+
             if(list.style.display === "block") list.style.display = "none";
-            else this.showList();
+            else this.showList(type);
         },
 
-        showList: function() {
-            var val = document.getElementById("searchBox").value.toLocaleLowerCase('tr');
-            var list = document.getElementById("resList");
+        showList: function(type) {
+            var inputId = type === 'item' ? 'searchBox' : 'machineBox';
+            var listId = type === 'item' ? 'itemList' : 'machineList';
+            var val = document.getElementById(inputId).value.toLocaleLowerCase('tr');
+            var list = document.getElementById(listId);
             list.innerHTML = "";
             
-            // Filtreleme (Kod veya İsim)
-            var filtered = this.db.filter(function(i) {
-                return i.name.toLocaleLowerCase('tr').includes(val) || i.code.toLocaleLowerCase('tr').includes(val);
+            var source = type === 'item' ? this.dbItems : this.dbMachines;
+            
+            var filtered = source.filter(function(i) {
+                if(type === 'item') {
+                    return i.name.toLocaleLowerCase('tr').includes(val) || i.code.toLocaleLowerCase('tr').includes(val);
+                } else {
+                    return i.name.toLocaleLowerCase('tr').includes(val);
+                }
             });
 
             if(filtered.length === 0) list.innerHTML = "<div style='padding:10px; color:#999; font-style:italic;'>Bulunamadı...</div>";
@@ -393,50 +468,109 @@
             filtered.forEach(function(item) {
                 var div = document.createElement("div");
                 div.className = "res-item";
-                div.innerHTML = "<strong>" + item.code + "</strong> - " + item.name;
                 
-                // Mousedown önemli (Blur'dan önce yakalar)
-                div.onmousedown = function() { app.selectItem(item); };
+                if(type === 'item') {
+                    div.innerHTML = "<strong>" + item.code + "</strong> - " + item.name;
+                    div.onmousedown = function() { app.selectItem(item); };
+                } else {
+                    div.innerHTML = "<strong>" + item.name + "</strong> (" + app.fmt(item.price) + ")";
+                    div.onmousedown = function() { app.addMachineCost(item); };
+                }
                 list.appendChild(div);
             });
             list.style.display = "block";
         },
 
-        filterList: function() { this.showList(); },
+        filterList: function(type) { this.showList(type); },
 
+        // --- SEÇİM İŞLEMLERİ ---
         selectItem: function(item) {
             this.selItem = item;
             document.getElementById("searchBox").value = item.code + " - " + item.name;
-            document.getElementById("resList").style.display = "none";
+            document.getElementById("itemList").style.display = "none";
             
             document.getElementById("unitDisplay").innerText = item.unit;
-            document.getElementById("priceDisplay").value = item.price;
+            document.getElementById("priceDisplay").value = this.fmt(item.price);
+            
+            // Otomatik Analiz Kontrolü
+            if(item.a) {
+                document.getElementById("analysisInfo").style.display = "block";
+                this.fillAutoAnalysis(item.a);
+            } else {
+                document.getElementById("analysisInfo").style.display = "none";
+            }
+
             this.calcRevenue();
+        },
+
+        addMachineCost: function(item) {
+            document.getElementById("machineBox").value = "";
+            document.getElementById("machineList").style.display = "none";
+            this.addCostRow(item.name + " (Kira)", 1, item.price);
+        },
+        
+        // --- OTO ANALİZ DOLDURMA ---
+        fillAutoAnalysis: function(a) {
+            document.getElementById("costContainer").innerHTML = "";
+            var rate = parseFloat(document.getElementById("euroRate").value) || 107.31;
+            var diesel = parseFloat(document.getElementById("dieselPrice").value) || 29.01;
+            
+            // Birim başına maliyet (DZD)
+            var unitFuel = (a.f * diesel) / a.prod;
+            var unitFixed = ((a.m + a.l) * rate) / a.prod;
+            var unitMat = (a.mat * rate);
+
+            this.addCostRow("Yakıt (Analiz)", 1, unitFuel);
+            this.addCostRow("Makine+İşçi (Analiz)", 1, unitFixed);
+            if(a.mat > 0) this.addCostRow("Malzeme (Analiz)", 1, unitMat);
         },
 
         // --- HESAPLAMALAR ---
         calcRevenue: function() {
-            if(!this.selItem) return;
-            var q = parseFloat(document.getElementById("qtyInput").value);
-            if(isNaN(q)) q = 0;
+            var q = parseFloat(document.getElementById("qtyInput").value) || 0;
+            // Fiyatı string'den sayıya çevir (Formatlı olabilir)
+            var pVal = this.selItem ? this.selItem.price : 0;
             
-            this.totalRev = q * this.selItem.price;
+            this.totalRev = q * pVal;
             document.getElementById("revenueTotal").innerText = this.fmt(this.totalRev) + " DZD";
+            
+            // Eğer oto analiz varsa miktarları güncelle
+            this.updateAutoQuantities(q);
             this.updateSummary();
         },
+        
+        updateAutoQuantities: function(q) {
+            var rows = document.querySelectorAll(".cost-row");
+            rows.forEach(row => {
+                var name = row.querySelector(".c-name").value;
+                if(name.includes("(Analiz)")) {
+                    row.querySelector(".q-box").value = q;
+                }
+            });
+            this.calcCostTotal();
+        },
+        
+        recalc: function() {
+            if(this.selItem) this.selectItem(this.selItem);
+        },
 
-        // --- MALİYET YÖNETİMİ (DİNAMİK KUTUCUKLAR) ---
-        addCostRow: function() {
+        // --- MALİYET YÖNETİMİ ---
+        addCostRow: function(name="", qty="", price="") {
             var container = document.getElementById("costContainer");
             var div = document.createElement("div");
             div.className = "cost-row";
+            
+            // Eğer manuel ekleniyorsa qty 1 değilse ana miktar olsun (opsiyonel)
+            var displayQty = qty;
+            
             div.innerHTML = `
-                <input type="text" class="cost-name" placeholder="Gider Adı (Örn: Mazot)">
-                <input type="number" class="cost-val" placeholder="Miktar" oninput="app.calcCostTotal()">
-                <input type="number" class="cost-val" placeholder="B.Fiyat" oninput="app.calcCostTotal()">
+                <input type="text" class="c-name" value="${name}" placeholder="Gider Adı">
+                <input type="number" class="c-val q-box" value="${displayQty}" placeholder="Miktar" onkeyup="app.calcCostTotal()">
+                <input type="number" class="c-val p-box" value="${price}" placeholder="B.Fiyat" onkeyup="app.calcCostTotal()">
                 <button class="cost-del" onclick="app.delRow(this)">✕</button>
             `;
             container.appendChild(div);
+            this.calcCostTotal();
         },
 
         delRow: function(btn) {
@@ -449,13 +583,9 @@
             var rows = document.querySelectorAll(".cost-row");
             
             rows.forEach(function(row) {
-                var inputs = row.querySelectorAll("input");
-                var qty = parseFloat(inputs[1].value);
-                var price = parseFloat(inputs[2].value);
-                
-                if(!isNaN(qty) && !isNaN(price)) {
-                    total += (qty * price);
-                }
+                var q = parseFloat(row.querySelector(".q-box").value) || 0;
+                var p = parseFloat(row.querySelector(".p-box").value) || 0;
+                total += (q * p);
             });
 
             this.totalCost = total;
@@ -499,7 +629,7 @@
     // Tıklama ile listeyi kapat
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.search-container')) {
-            document.getElementById("resList").style.display = "none";
+            document.querySelectorAll('.results-list').forEach(el => el.style.display = 'none');
         }
     });
 
