@@ -3,123 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ŞANTİYE YÖNETİM (FULL+MAKİNE)</title>
+    <title>MASTER DQE PRO</title>
     <style>
-        /* --- MODERN TASARIM --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        /* --- GÖZ ALICI MODERN TASARIM --- */
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --primary: #3498db;
+            --secondary: #e67e22;
+            --accent: #9b59b6;
+            --border: #e1e4e8;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* DARK MODE DEĞİŞKENLERİ */
+        [data-theme="dark"] {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --text-color: #e94560;
+            --text-color: #f1f1f1; /* Metin rengi düzeltme */
+            --primary: #0f3460;
+            --secondary: #e94560;
+            --border: #2a2a40;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; transition: background 0.3s, color 0.3s; }
+        
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; background-color: #f4f6f8; color: #333; 
-            height: 100vh; display: flex; flex-direction: column;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color);
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* ÜST BAR & TEMA BUTONU */
+        .top-bar {
+            padding: 15px 20px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow); z-index: 1000;
+        }
+        .app-logo { font-size: 18px; font-weight: 900; background: linear-gradient(45deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .theme-toggle {
+            cursor: pointer; font-size: 20px; padding: 5px; border-radius: 50%;
+            background: var(--bg-color); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
         }
 
         /* GİRİŞ EKRANI */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #f4f6f8 0%, #dbe2e8 100%);
-            z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: var(--bg-color); z-index: 99999; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .login-box {
-            background: white; padding: 40px 30px; border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1); width: 85%; max-width: 350px;
-            text-align: center; border: 1px solid #fff;
+            background: var(--card-bg); padding: 40px 30px; border-radius: 24px;
+            box-shadow: var(--shadow); width: 85%; max-width: 350px; text-align: center;
         }
         .login-input {
-            width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #e1e4e8; 
+            width: 100%; padding: 15px; margin: 20px 0; border: 2px solid var(--border); 
             border-radius: 12px; font-size: 24px; text-align: center; letter-spacing: 5px; 
-            background: #f9fbfd; transition: all 0.3s;
+            background: var(--bg-color); color: var(--text-color);
         }
-        .login-input:focus { border-color: #007aff; background: #fff; }
+        .login-input:focus { border-color: #3498db; }
         .login-btn {
-            width: 100%; padding: 15px; background: #2c3e50; color: white;
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+            width: 100%; padding: 15px; background: linear-gradient(135deg, #3498db, #2980b9); color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
         }
 
-        /* ANA UYGULAMA */
+        /* ANA İÇERİK */
         #appContainer {
             display: none; width: 100%; max-width: 800px; margin: 0 auto; height: 100%; 
-            overflow-y: auto; padding: 15px; padding-bottom: 160px;
-        }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .app-title { font-size: 18px; font-weight: 900; color: #2c3e50; text-transform: uppercase; }
-        .logout-btn { background: #ff3b30; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-
-        /* PARAMETRELER */
-        .params-bar {
-            background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 15px;
-            display: flex; gap: 10px; border: 1px solid #e1e4e8;
-        }
-        .p-group { flex: 1; }
-        .p-label { font-size: 10px; font-weight: bold; color: #888; display: block; margin-bottom: 3px; }
-        .p-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; text-align: center; font-weight: bold; font-size: 14px; }
-
-        /* BÖLÜM KUTULARI */
-        .section-card {
-            background: white; border-radius: 16px; padding: 15px; margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e1e4e8;
-        }
-        .sec-header { 
-            font-size: 13px; font-weight: 800; color: #555; margin-bottom: 15px; 
-            border-bottom: 1px solid #eee; padding-bottom: 8px; display: flex; justify-content: space-between;
+            overflow-y: auto; padding: 20px; padding-bottom: 120px;
         }
 
-        /* DROPBOX ARAMA */
-        .search-container { position: relative; margin-bottom: 15px; z-index: 100; }
-        .search-box-wrapper {
-            display: flex; align-items: center; background: #f9fbfd; border: 2px solid #ddd;
-            border-radius: 12px; overflow: visible; transition: 0.3s;
+        /* PARAMETRE KARTLARI */
+        .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .param-card {
+            background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: var(--shadow);
+            text-align: center; border: 1px solid var(--border);
         }
-        .search-box-wrapper.blue-border { border-color: #007aff; }
-        .search-box-wrapper.orange-border { border-color: #e67e22; }
+        .param-label { font-size: 10px; font-weight: 800; opacity: 0.7; display: block; margin-bottom: 5px; text-transform: uppercase;}
+        .param-input { 
+            width: 100%; border: none; background: transparent; text-align: center; 
+            font-size: 18px; font-weight: 800; color: var(--text-color); border-bottom: 2px solid var(--border);
+        }
 
-        .search-input { width: 100%; padding: 14px; border: none; background: transparent; font-size: 14px; font-weight: 600; outline:none; }
-        .dropdown-icon { padding: 0 15px; font-size: 12px; cursor: pointer; font-weight: bold; }
-        
-        .results-list {
+        /* ANA KARTLAR */
+        .main-card {
+            background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 25px;
+            box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow: visible;
+        }
+        .card-badge {
+            position: absolute; top: -10px; left: 20px; background: var(--primary); color: white;
+            padding: 5px 15px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px;
+        }
+        .card-badge.orange { background: var(--secondary); }
+
+        /* ARAMA & LISTE */
+        .search-box {
+            position: relative; background: var(--bg-color); border-radius: 12px; 
+            display: flex; align-items: center; margin-top: 15px; border: 1px solid var(--border);
+        }
+        .search-inp {
+            flex: 1; padding: 15px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-color);
+        }
+        .list-trigger { padding: 15px; font-size: 12px; font-weight: 900; color: var(--primary); cursor: pointer; }
+
+        .dropdown-list {
             display: none; position: absolute; top: 110%; left: 0; right: 0;
-            background: white; border-radius: 12px; max-height: 300px; overflow-y: auto;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: 1px solid #e1e4e8; z-index: 9999;
+            background: var(--card-bg); border-radius: 12px; max-height: 350px; overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 1px solid var(--border); z-index: 999;
         }
-        .res-item { padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 12px; line-height: 1.4; display: flex; justify-content: space-between;}
-        .res-item:hover { background: #f0f7ff; }
-        .res-item strong { color: #007aff; display: block; }
-        .machine-tag { background: #e67e22; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-
-        /* HESAPLAMA ALANI */
-        .calc-grid { display: flex; gap: 10px; margin-bottom: 10px; }
-        .calc-box label { font-size: 10px; font-weight: bold; color: #888; display: block; }
-        .calc-inp { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; text-align: center; }
-        .total-display { 
-            background: #eaf3ff; color: #007aff; padding: 12px; border-radius: 8px; 
-            text-align: right; font-size: 18px; font-weight: 900; 
-        }
-        .analysis-note { font-size: 11px; color: #27ae60; margin-top: 5px; font-style: italic; display: none; }
-
-        /* MALİYETLER */
-        .cost-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
-        .c-name { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
-        .c-val { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; text-align: center; }
-        .c-del { width: 28px; height: 28px; background: #ffebec; color: red; border: none; border-radius: 50%; font-weight: bold; cursor: pointer; }
-        
-        .add-btn { 
-            width: 100%; padding: 10px; background: #fff; color: #7f8c8d; border: 2px dashed #ccc; 
-            border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 13px;
-        }
-
-        /* ALT TOPLAM ÇUBUĞU */
-        .footer-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); padding: 15px; z-index: 999;
+        .list-item { 
+            padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; 
             display: flex; justify-content: space-between; align-items: center;
-            border-top: 1px solid #eee;
         }
-        .f-item { text-align: center; flex: 1; }
-        .f-lbl { font-size: 10px; color: #888; font-weight: 800; display: block; }
-        .f-val { font-size: 14px; font-weight: 800; color: #333; }
-        .f-profit { font-size: 18px; font-weight: 900; }
-        .pos { color: #27ae60; } .neg { color: #ff3b30; }
+        .list-item:hover { background: var(--bg-color); }
+        .list-item strong { color: var(--primary); }
+
+        /* HESAPLAMA ALANLARI */
+        .calc-row { display: flex; align-items: center; margin-top: 15px; gap: 10px; }
+        .calc-box { 
+            flex: 1; background: var(--bg-color); padding: 10px; border-radius: 10px; 
+            text-align: right; font-weight: 800; font-size: 16px; border: 1px solid var(--border);
+        }
+        .total-res { 
+            margin-top: 15px; text-align: right; font-size: 24px; font-weight: 900; 
+            color: var(--primary); letter-spacing: -1px; 
+        }
+
+        /* GİDER LİSTESİ */
+        .cost-item { 
+            background: var(--bg-color); padding: 10px; border-radius: 10px; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .cost-inp { 
+            background: transparent; border: none; color: var(--text-color); font-size: 13px; font-weight: 600; width: 100%;
+        }
+        .del-btn { color: #ff4757; cursor: pointer; font-weight: 900; padding: 5px; }
+
+        /* ALT ÇUBUK */
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--card-bg); padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-between;
+            border-top: 1px solid var(--border); z-index: 999;
+        }
+        .bot-item span { display: block; font-size: 10px; opacity: 0.6; font-weight: 700; }
+        .bot-val { font-size: 16px; font-weight: 800; }
+        .bot-profit { font-size: 22px; font-weight: 900; }
+        .plus { color: #2ecc71; } .minus { color: #ff4757; }
+
+        /* SÖZ */
+        .quote { text-align: center; font-size: 12px; font-style: italic; opacity: 0.6; margin-top: 20px; cursor: pointer; }
 
     </style>
 </head>
@@ -127,95 +163,84 @@
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h3>ŞANTİYE YÖNETİM</h3>
+        <h2 style="margin-bottom:20px; color:var(--primary);">MASTER DQE</h2>
         <input type="password" id="passInput" class="login-input" placeholder="****" inputmode="numeric">
-        <button class="login-btn" onclick="app.login()">GİRİŞ YAP</button>
+        <button class="login-btn" onclick="app.login()">GİRİŞ / ENTRER</button>
     </div>
 </div>
 
 <div id="appContainer">
-    <div class="header">
-        <div class="app-title">HAKEDİŞ & MALİYET</div>
-        <button class="logout-btn" onclick="app.logout()">ÇIKIŞ</button>
+    
+    <div class="top-bar">
+        <div class="app-logo">DQE PRO 🏗️</div>
+        <div class="theme-toggle" onclick="app.toggleTheme()">🌙</div>
     </div>
 
-    <div class="params-bar">
-        <div class="p-group">
-            <label class="p-label">MAZOT (DZD)</label>
-            <input type="number" id="dieselPrice" class="p-input" value="29.01" onkeyup="app.recalc()">
+    <div style="height:20px;"></div>
+
+    <div class="params-grid">
+        <div class="param-card">
+            <span class="param-label">MAZOT (DZD)</span>
+            <input type="number" id="dieselPrice" class="param-input" value="29.01" onkeyup="app.recalc()">
         </div>
-        <div class="p-group">
-            <label class="p-label">EURO KURU</label>
-            <input type="number" id="euroRate" class="p-input" value="107.31" onkeyup="app.recalc()">
+        <div class="param-card">
+            <span class="param-label">EURO KURU</span>
+            <input type="number" id="euroRate" class="param-input" value="107.31" onkeyup="app.recalc()">
         </div>
     </div>
 
-    <div class="section-card" style="border-left: 4px solid #007aff;">
-        <div class="sec-header">
-            <span>1. HAKEDİŞ (GELİR)</span>
-            <span id="unitBadge" style="background:#007aff; color:white; padding:2px 8px; border-radius:4px; font-size:10px;">BİRİM</span>
-        </div>
+    <div class="main-card">
+        <div class="card-badge">HAKEDİŞ (GELİR)</div>
         
-        <label style="font-size:10px; font-weight:bold; color:#007aff;">İŞ KALEMİ SEÇİNİZ:</label>
-        <div class="search-container">
-            <div class="search-box-wrapper blue-border">
-                <input type="text" id="searchBox" class="search-input" placeholder="Poz Ara..." onkeyup="app.filterList('item')" onclick="app.toggleList('item')" autocomplete="off">
-                <div class="dropdown-icon" onclick="app.toggleList('item')">▼</div>
-            </div>
-            <div id="itemList" class="results-list"></div>
+        <div class="search-box">
+            <input type="text" id="searchBox" class="search-inp" placeholder="İş Kalemi Ara..." onkeyup="app.filterList('item')" onclick="app.toggleList('item')" autocomplete="off">
+            <div class="list-trigger" onclick="app.toggleList('item')">▼ LİSTE</div>
+            <div id="itemList" class="dropdown-list"></div>
         </div>
 
-        <div class="calc-grid">
+        <div class="calc-row">
+            <div class="calc-box" id="unitDisplay" style="text-align:center; flex:0 0 60px; font-size:12px;">Birim</div>
             <div class="calc-box" style="flex:1;">
-                <label>Sözleşme Fiyatı (DZD)</label>
-                <input type="text" id="priceDisplay" class="calc-inp" readonly placeholder="0.00" style="background:#f9f9f9;">
+                <input id="priceDisplay" readonly style="width:100%; border:none; background:transparent; text-align:right; font-weight:bold; color:var(--text-color);" placeholder="0.00">
             </div>
             <div class="calc-box" style="flex:1;">
-                <label>Yapılan Miktar</label>
-                <input type="number" id="qtyInput" class="calc-inp" placeholder="0" onkeyup="app.calcRevenue()">
+                <input type="number" id="qtyInput" style="width:100%; border:none; background:transparent; text-align:right; font-weight:bold; color:var(--text-color);" placeholder="Miktar" onkeyup="app.calcRevenue()">
             </div>
         </div>
-        
-        <div id="revenueTotal" class="total-display">0.00 DZD</div>
-        <div id="analysisInfo" class="analysis-note">💡 Otomatik analiz verisi eklendi.</div>
+
+        <div id="revenueTotal" class="total-res">0.00 DZD</div>
     </div>
 
-    <div class="section-card" style="border-left: 4px solid #e67e22;">
-        <div class="sec-header">
-            <span>2. MALİYETLER (GİDER)</span>
-            <span id="costCount" style="color:#e67e22;">0 Kalem</span>
-        </div>
-        
-        <label style="font-size:10px; font-weight:bold; color:#e67e22;">KİRALIK MAKİNE EKLE:</label>
-        <div class="search-container">
-            <div class="search-box-wrapper orange-border">
-                <input type="text" id="machineBox" class="search-input" placeholder="Makine Seç (Ekskavatör...)" onkeyup="app.filterList('machine')" onclick="app.toggleList('machine')" autocomplete="off">
-                <div class="dropdown-icon" onclick="app.toggleList('machine')">▼</div>
-            </div>
-            <div id="machineList" class="results-list"></div>
+    <div class="main-card" style="border-color:var(--secondary);">
+        <div class="card-badge orange">MALİYET (GİDER)</div>
+
+        <div class="search-box" style="border-color:var(--secondary); margin-bottom:15px;">
+            <input type="text" id="machineBox" class="search-inp" placeholder="Makine Seç (Ekskavatör...)" onkeyup="app.filterList('machine')" onclick="app.toggleList('machine')" autocomplete="off">
+            <div class="list-trigger" style="color:var(--secondary);" onclick="app.toggleList('machine')">▼ MAKİNE</div>
+            <div id="machineList" class="dropdown-list"></div>
         </div>
 
         <div id="costContainer"></div>
 
-        <button class="add-btn" onclick="app.addCostRow()">+ Manuel Gider Ekle</button>
+        <button onclick="app.addCostRow()" style="width:100%; padding:12px; background:var(--bg-color); border:2px dashed #ccc; border-radius:12px; color:var(--text-color); font-weight:bold; cursor:pointer; margin-top:10px;">+ MANUEL GİDER EKLE</button>
     </div>
 
-    <div style="text-align:center; margin-top:20px; color:#999; font-style:italic; font-size:12px;" id="dailyQuote">...</div>
+    <div class="quote" id="dailyQuote" onclick="app.newQuote()">...</div>
 
 </div>
 
-<div class="footer-bar" id="footerBar" style="display:none;">
-    <div class="f-item">
-        <span class="f-lbl">HAKEDİŞ</span>
-        <span class="f-val" id="sumRev" style="color:#007aff;">0</span>
+<div class="bottom-bar" id="footerBar" style="display:none;">
+    <div class="bot-item">
+        <span>GELİR</span>
+        <div class="bot-val" style="color:var(--primary);" id="sumRev">0</div>
     </div>
-    <div class="f-item">
-        <span class="f-lbl">MALİYET</span>
-        <span class="f-val" id="sumCost" style="color:#e67e22;">0</span>
+    <div class="bot-item">
+        <span>GİDER</span>
+        <div class="bot-val" style="color:var(--secondary);" id="sumCost">0</div>
     </div>
-    <div class="f-item">
-        <span class="f-lbl">KÂR / ZARAR</span>
-        <span class="f-profit" id="sumProfit">0</span>
+    <div class="bot-item" style="text-align:right;">
+        <span>NET KÂR</span>
+        <div class="bot-profit" id="sumProfit">0</div>
     </div>
 </div>
 
@@ -225,9 +250,9 @@
         selItem: null,
         totalRev: 0,
         totalCost: 0,
+        theme: 'light',
 
-        // --- 1. TAM İŞ KALEMLERİ LİSTESİ (268 Kalem) ---
-        // a: Analiz verisi (varsa) -> {m:Makine, f:Yakıt, l:İşçilik, mat:Malzeme, prod:Üretim}
+        // --- VERİTABANI (268 Kalem + Analiz) ---
         dbItems: [
             { code: "A.1", name: "Installation et repliement / Şantiye Kurulumu", unit: "Ft", price: 1041277260.86 },
             { code: "A.2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", price: 41644039.15 },
@@ -330,7 +355,7 @@
             { code: "D.22.3", name: "Tête buse 1000", unit: "U", price: 76992.73 },
             { code: "D.22.4", name: "Tête buse 1200", unit: "U", price: 90558.06 },
             { code: "D.22.5", name: "Tête buse 1500", unit: "U", price: 125386.97 },
-            { code: "D.23.1", name: "Bourrelet", unit: "ml", price: 3000.00 },
+            { code: "D.23.1", name: "Bourrelet enrobé", unit: "ml", price: 3000.00 },
             { code: "D.24.1", name: "Enrochement A", unit: "m3", price: 1879.30 },
             { code: "D.24.2", name: "Enrochement B", unit: "m3", price: 1879.30 },
             { code: "D.24.3", name: "Enrochement C", unit: "m3", price: 1879.30 },
@@ -379,9 +404,10 @@
             { code: "J.12.1", name: "Terre Armée / Toprakarme", unit: "m2", price: 13600.00, a:{m:500, f:300, l:400, mat:0, prod:1000} },
             { code: "K.1.1", name: "Caméra", unit: "U", price: 412003.51 },
             { code: "NP.48", name: "Déplacement cimetière", unit: "U", price: 22275.00 },
-            { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı", unit: "m3", price: 178.16, a:{m:400, f:200, l:150, mat:0, prod:800} },
-            { code: "OUA.B.2.1", name: "Pieux 1200 mm", unit: "ml", price: 5404.19 },
-            { code: "OUA.B.5.2.1", name: "Béton C40", unit: "m3", price: 21343.02 },
+            { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı (OA)", unit: "m3", price: 178.16, a:{m:400, f:200, l:150, mat:0, prod:800} },
+            { code: "OUA.B.2.1", name: "Pieux 1200 mm / Fore Kazık", unit: "ml", price: 5404.19 },
+            { code: "OUA.B.5.2.1", name: "Béton C40 Caisson", unit: "m3", price: 21343.02 },
+            { code: "OUA.B.5.2.6", name: "Béton C35 Piles", unit: "m3", price: 12538.45 },
             { code: "OUA.B.6.1.1", name: "Acier HA / Demir", unit: "Tonne", price: 67033.93, a:{m:50, f:20, l:400, mat:350, prod:10} },
             { code: "OUA.B.6.1.2", name: "Treillis soudés / Hasır Çelik", unit: "Tonne", price: 69026.52, a:{m:40, f:15, l:300, mat:480, prod:12} },
             { code: "OUA.B.6.2", name: "Précontrainte", unit: "Tonne", price: 55688.54 },
@@ -418,13 +444,13 @@
             { name: "Enjeksiyon Makinesi", price: 10000 }
         ],
 
-        // --- GİRİŞ ---
+        // --- FONKSİYONLAR ---
         login: function() {
-            if(document.getElementById("passInput").value === this.PASS) {
+            var val = document.getElementById("passInput").value;
+            if(val.trim() === this.PASS) {
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("appContainer").style.display = "block";
-                document.getElementById("footerBar").style.display = "flex";
-                this.addCostRow(); 
+                localStorage.setItem("pro_master_v1", "ok");
                 this.quote();
             } else {
                 alert("Hatalı Şifre!");
@@ -432,18 +458,21 @@
         },
         logout: function() { location.reload(); },
 
+        toggleTheme: function() {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        },
+
         // --- LİSTE & ARAMA ---
         toggleList: function(type) {
             var listId = type === 'item' ? 'itemList' : 'machineList';
             var list = document.getElementById(listId);
-            
-            // Diğer tüm listeleri kapat
-            document.querySelectorAll('.results-list').forEach(el => {
-                if(el.id !== listId) el.style.display = 'none';
+            document.querySelectorAll('.dropdown-list').forEach(l => {
+                if(l.id !== listId) l.style.display = 'none';
             });
-
-            if(list.style.display === "block") list.style.display = "none";
-            else this.showList(type);
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+            if(list.style.display === 'block') this.showList(type);
         },
 
         showList: function(type) {
@@ -454,69 +483,56 @@
             list.innerHTML = "";
             
             var source = type === 'item' ? this.dbItems : this.dbMachines;
-            
-            var filtered = source.filter(function(i) {
-                if(type === 'item') {
-                    return i.name.toLocaleLowerCase('tr').includes(val) || i.code.toLocaleLowerCase('tr').includes(val);
-                } else {
-                    return i.name.toLocaleLowerCase('tr').includes(val);
-                }
-            });
+            var filtered = source.filter(i => 
+                i.name.toLocaleLowerCase('tr').includes(val) || (i.code && i.code.toLocaleLowerCase('tr').includes(val))
+            );
 
-            if(filtered.length === 0) list.innerHTML = "<div style='padding:10px; color:#999; font-style:italic;'>Bulunamadı...</div>";
+            if(filtered.length === 0) list.innerHTML = "<div style='padding:15px; text-align:center; opacity:0.6;'>Bulunamadı...</div>";
 
-            filtered.forEach(function(item) {
+            filtered.forEach(item => {
                 var div = document.createElement("div");
-                div.className = "res-item";
-                
+                div.className = "list-item";
                 if(type === 'item') {
-                    div.innerHTML = "<strong>" + item.code + "</strong> - " + item.name;
-                    div.onmousedown = function() { app.selectItem(item); };
+                    div.innerHTML = `<div><strong>${item.code}</strong><br>${item.name}</div>`;
+                    div.onmousedown = () => { this.selectItem(item); };
                 } else {
-                    div.innerHTML = "<strong>" + item.name + "</strong> (" + app.fmt(item.price) + ")";
-                    div.onmousedown = function() { app.addMachineCost(item); };
+                    div.innerHTML = `<div><strong>${item.name}</strong></div><div>${this.fmt(item.price)}</div>`;
+                    div.onmousedown = () => { this.addMachineCost(item); };
                 }
                 list.appendChild(div);
             });
-            list.style.display = "block";
         },
 
         filterList: function(type) { this.showList(type); },
 
-        // --- SEÇİM İŞLEMLERİ ---
+        // --- SEÇİM & HESAP ---
         selectItem: function(item) {
             this.selItem = item;
             document.getElementById("searchBox").value = item.code + " - " + item.name;
             document.getElementById("itemList").style.display = "none";
-            
             document.getElementById("unitDisplay").innerText = item.unit;
             document.getElementById("priceDisplay").value = this.fmt(item.price);
             
-            // Otomatik Analiz Kontrolü
+            // Eğer otomatik analiz varsa
             if(item.a) {
-                document.getElementById("analysisInfo").style.display = "block";
                 this.fillAutoAnalysis(item.a);
-            } else {
-                document.getElementById("analysisInfo").style.display = "none";
             }
-
             this.calcRevenue();
         },
 
         addMachineCost: function(item) {
+            this.addCostRow(item.name + " (Kira)", 1, item.price);
             document.getElementById("machineBox").value = "";
             document.getElementById("machineList").style.display = "none";
-            this.addCostRow(item.name + " (Kira)", 1, item.price);
         },
-        
-        // --- OTO ANALİZ DOLDURMA ---
+
+        // Oto analiz doldurma
         fillAutoAnalysis: function(a) {
             document.getElementById("costContainer").innerHTML = "";
-            var rate = parseFloat(document.getElementById("euroRate").value) || 107.31;
-            var diesel = parseFloat(document.getElementById("dieselPrice").value) || 29.01;
+            var rate = parseFloat(document.getElementById("euroRate").value);
+            var diesel = parseFloat(document.getElementById("dieselPrice").value);
             
-            // Birim başına maliyet (DZD)
-            var unitFuel = (a.f * diesel) / a.prod;
+            var unitFuel = (a.f * diesel) / a.prod; 
             var unitFixed = ((a.m + a.l) * rate) / a.prod;
             var unitMat = (a.mat * rate);
 
@@ -525,115 +541,87 @@
             if(a.mat > 0) this.addCostRow("Malzeme (Analiz)", 1, unitMat);
         },
 
-        // --- HESAPLAMALAR ---
         calcRevenue: function() {
             var q = parseFloat(document.getElementById("qtyInput").value) || 0;
-            // Fiyatı string'den sayıya çevir (Formatlı olabilir)
-            var pVal = this.selItem ? this.selItem.price : 0;
-            
-            this.totalRev = q * pVal;
-            document.getElementById("revenueTotal").innerText = this.fmt(this.totalRev) + " DZD";
-            
-            // Eğer oto analiz varsa miktarları güncelle
-            this.updateAutoQuantities(q);
+            if(this.selItem) {
+                this.totalRev = q * this.selItem.price;
+                document.getElementById("revenueTotal").innerText = this.fmt(this.totalRev) + " DZD";
+                
+                // Analiz varsa miktarları güncelle
+                document.querySelectorAll(".cost-inp.q").forEach(inp => {
+                    if(inp.dataset.auto === "true") {
+                        inp.value = q;
+                        this.calcCosts();
+                    }
+                });
+            }
             this.updateSummary();
         },
         
-        updateAutoQuantities: function(q) {
-            var rows = document.querySelectorAll(".cost-row");
-            rows.forEach(row => {
-                var name = row.querySelector(".c-name").value;
-                if(name.includes("(Analiz)")) {
-                    row.querySelector(".q-box").value = q;
-                }
-            });
-            this.calcCostTotal();
-        },
-        
-        recalc: function() {
-            if(this.selItem) this.selectItem(this.selItem);
-        },
+        recalc: function() { if(this.selItem && this.selItem.a) this.fillAutoAnalysis(this.selItem.a); },
 
-        // --- MALİYET YÖNETİMİ ---
+        // --- MALİYET ---
         addCostRow: function(name="", qty="", price="") {
-            var container = document.getElementById("costContainer");
             var div = document.createElement("div");
-            div.className = "cost-row";
-            
-            // Eğer manuel ekleniyorsa qty 1 değilse ana miktar olsun (opsiyonel)
-            var displayQty = qty;
-            
+            div.className = "cost-item";
+            var isAuto = name.includes("(Analiz)");
+            var qVal = isAuto && document.getElementById("qtyInput").value ? document.getElementById("qtyInput").value : qty;
+
             div.innerHTML = `
-                <input type="text" class="c-name" value="${name}" placeholder="Gider Adı">
-                <input type="number" class="c-val q-box" value="${displayQty}" placeholder="Miktar" onkeyup="app.calcCostTotal()">
-                <input type="number" class="c-val p-box" value="${price}" placeholder="B.Fiyat" onkeyup="app.calcCostTotal()">
-                <button class="cost-del" onclick="app.delRow(this)">✕</button>
+                <input class="cost-inp" value="${name}" placeholder="Gider Adı">
+                <input type="number" class="cost-inp q" data-auto="${isAuto}" value="${qVal}" placeholder="Miktar" onkeyup="app.calcCosts()">
+                <input type="number" class="cost-inp p" value="${price}" placeholder="Fiyat" onkeyup="app.calcCosts()">
+                <div class="del-btn" onclick="this.parentElement.remove(); app.calcCosts()">✕</div>
             `;
-            container.appendChild(div);
-            this.calcCostTotal();
+            document.getElementById("costContainer").appendChild(div);
+            this.calcCosts();
         },
 
-        delRow: function(btn) {
-            btn.parentElement.remove();
-            this.calcCostTotal();
-        },
-
-        calcCostTotal: function() {
+        calcCosts: function() {
             var total = 0;
-            var rows = document.querySelectorAll(".cost-row");
-            
-            rows.forEach(function(row) {
-                var q = parseFloat(row.querySelector(".q-box").value) || 0;
-                var p = parseFloat(row.querySelector(".p-box").value) || 0;
-                total += (q * p);
+            document.querySelectorAll(".cost-item").forEach(row => {
+                var q = parseFloat(row.querySelector(".q").value) || 0;
+                var p = parseFloat(row.querySelector(".p").value) || 0;
+                total += q * p;
             });
-
             this.totalCost = total;
             this.updateSummary();
         },
 
         updateSummary: function() {
             var profit = this.totalRev - this.totalCost;
-            
             document.getElementById("sumRev").innerText = this.fmt(this.totalRev);
             document.getElementById("sumCost").innerText = this.fmt(this.totalCost);
             
             var pEl = document.getElementById("sumProfit");
             pEl.innerText = this.fmt(profit);
-            
-            if(profit >= 0) {
-                pEl.className = "f-profit profit-pos";
-                pEl.innerText = "+ " + pEl.innerText;
-            } else {
-                pEl.className = "f-profit profit-neg";
-            }
+            pEl.className = "bot-profit " + (profit >= 0 ? "plus" : "minus");
+            pEl.innerText = (profit >= 0 ? "+ " : "") + pEl.innerText;
         },
 
-        fmt: function(n) {
-            return n.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        },
-
-        quote: function() {
-            var q = [
-                "Zor yollar, genellikle güzel yerlere çıkar.",
-                "Kalite bir eylem değil, bir alışkanlıktır.",
-                "İşleyen demir ışıldar.",
-                "Planlama yoksa, başarısızlık planlanmıştır.",
-                "Mühendislik, hayal gücünün maddeye dönüşmesidir."
-            ];
-            var r = q[Math.floor(Math.random() * q.length)];
-            document.getElementById("dailyQuote").innerText = '"' + r + '"';
+        fmt: function(n) { return n.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); },
+        
+        newQuote: function() {
+            var q = ["Zor yollar güzel yerlere çıkar.", "İşleyen demir ışıldar.", "Güvenlik hızdan önce gelir."];
+            document.querySelector(".quote").innerText = '"' + q[Math.floor(Math.random()*q.length)] + '"';
         }
     };
 
-    // Tıklama ile listeyi kapat
+    // Başlangıç
+    document.getElementById("passInput").addEventListener("keypress", function(e){ if(e.key==="Enter") app.login(); });
+    
+    if(localStorage.getItem("pro_master_v1") === "ok") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("appContainer").style.display = "block";
+        app.newQuote();
+    }
+    
     document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
-            document.querySelectorAll('.results-list').forEach(el => el.style.display = 'none');
+        if (!e.target.closest('.search-box')) {
+            document.querySelectorAll('.dropdown-list').forEach(el => el.style.display = 'none');
         }
     });
 
 </script>
-
 </body>
 </html>
