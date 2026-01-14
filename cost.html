@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HAKEDİŞ & MALİYET ANALİZİ</title>
+    <title>PROJE YÖNETİM (FULL)</title>
     <style>
         /* --- MODERN VE CİDDİ TASARIM --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -21,7 +21,7 @@
         }
         .login-box {
             background: white; padding: 40px 30px; border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1); width: 90%; max-width: 350px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1); width: 85%; max-width: 350px;
             text-align: center; border: 1px solid #fff;
         }
         .login-input {
@@ -157,7 +157,7 @@
         <div id="costContainer">
             </div>
 
-        <button class="add-btn" onclick="app.addCostRow()">+ GİDER EKLE</button>
+        <button class="add-btn" onclick="app.addCostRow()">+ YENİ GİDER EKLE</button>
     </div>
 
     <div class="quote-box" id="dailyQuote">...</div>
@@ -186,8 +186,7 @@
         totalRev: 0,
         totalCost: 0,
 
-        // --- VERİTABANI (Sadece 268 Kalemlik Liste) ---
-        // Not: Kod uzunluğunu aşmamak için listeyi sıkıştırdım ama arama motoru hepsini bulur.
+        // --- TAM VERİTABANI (268 Kalem) ---
         db: [
             { code: "A.1", name: "Installation et repliement / Şantiye Kurulumu", unit: "Ft", price: 1041277260.86 },
             { code: "A.2.1", name: "Laboratoire de chantier / Şantiye Laboratuvarı", unit: "Ft", price: 41644039.15 },
@@ -228,9 +227,10 @@
             { code: "D.1.1", name: "Fossé A", unit: "ml", price: 495.86 },
             { code: "D.1.2", name: "Fossé B", unit: "ml", price: 594.94 },
             { code: "D.1.3", name: "Fossé C", unit: "ml", price: 897.18 },
-            { code: "D.2.1", name: "Bétonnage fossé A", unit: "ml", price: 4448.37 },
-            { code: "D.2.2", name: "Bétonnage fossé B", unit: "ml", price: 5662.50 },
-            { code: "D.2.3", name: "Bétonnage fossé C", unit: "ml", price: 6316.17 },
+            { code: "D.1.4", name: "Végétalisation", unit: "ml", price: 874.94 },
+            { code: "D.2.1", name: "Bétonnage A", unit: "ml", price: 4448.37 },
+            { code: "D.2.2", name: "Bétonnage B", unit: "ml", price: 5662.50 },
+            { code: "D.2.3", name: "Bétonnage C", unit: "ml", price: 6316.17 },
             { code: "D.3.1", name: "Cunette végétalisée", unit: "ml", price: 3402.40 },
             { code: "D.3.2", name: "Cunette béton", unit: "ml", price: 4304.81 },
             { code: "D.3.3", name: "Cunette symétrique", unit: "ml", price: 4829.18 },
@@ -239,10 +239,21 @@
             { code: "D.4.3", name: "Descente C", unit: "ml", price: 3634.81 },
             { code: "D.4.4", name: "Descente D", unit: "ml", price: 4119.98 },
             { code: "D.5.1", name: "Descente tuile A", unit: "ml", price: 2200.00 },
+            { code: "D.5.2", name: "Descente tuile B", unit: "ml", price: 3520.00 },
+            { code: "D.5.3", name: "Descente tuile C", unit: "ml", price: 4200.00 },
             { code: "D.6.1", name: "Caniveau U 30x40", unit: "ml", price: 4800.00 },
+            { code: "D.6.2", name: "Caniveau U 40x50", unit: "ml", price: 5800.00 },
+            { code: "D.6.3", name: "Caniveau U 45x55", unit: "ml", price: 6300.00 },
             { code: "D.7.1", name: "Caniveau fente 300", unit: "ml", price: 22200.00 },
+            { code: "D.7.2", name: "Caniveau fente 400", unit: "ml", price: 26600.00 },
+            { code: "D.7.3", name: "Caniveau fente 500", unit: "ml", price: 29300.00 },
+            { code: "D.7.4", name: "Renforcement", unit: "ml", price: 11191.83 },
             { code: "D.8.1", name: "Demi-buse 300", unit: "ml", price: 4400.00 },
+            { code: "D.8.2", name: "Demi-buse 400", unit: "ml", price: 5700.00 },
+            { code: "D.8.3", name: "Demi-buse 500", unit: "ml", price: 7800.00 },
             { code: "D.9.1", name: "Déblai tranchée <2m", unit: "m3", price: 217.93 },
+            { code: "D.9.2", name: "Déblai tranchée 2-4m", unit: "m3", price: 277.24 },
+            { code: "D.9.3", name: "Déblai tranchée 4-6m", unit: "m3", price: 326.55 },
             { code: "D.9.4", name: "PV Roche tranchée", unit: "m3", price: 1500.00 },
             { code: "D.10.1", name: "Lit sable", unit: "m3", price: 1455.51 },
             { code: "D.10.2", name: "Lit béton", unit: "m3", price: 5962.17 },
@@ -250,6 +261,7 @@
             { code: "D.11.2", name: "Enrobage béton", unit: "m3", price: 5593.89 },
             { code: "D.11.3", name: "Enrobage drainant", unit: "m3", price: 1739.65 },
             { code: "D.12.1", name: "Tuyau 400mm", unit: "ml", price: 7769.31 },
+            { code: "D.12.2", name: "Tuyau 600mm", unit: "ml", price: 9369.31 },
             { code: "D.13.1", name: "Buse 800mm", unit: "ml", price: 15498.73 },
             { code: "D.13.2", name: "Buse 1000mm", unit: "ml", price: 21631.72 },
             { code: "D.13.3", name: "Buse 1200mm", unit: "ml", price: 36375.97 },
@@ -261,11 +273,20 @@
             { code: "D.18.2", name: "Chambre K2C", unit: "U", price: 125000.00 },
             { code: "D.19.1", name: "Regard 1000mm", unit: "U", price: 120000.00 },
             { code: "D.20.1", name: "Puisard", unit: "U", price: 150000.00 },
+            { code: "D.20.2", name: "Puisard 1300", unit: "U", price: 174000.00 },
+            { code: "D.20.3", name: "Puisard 1500", unit: "U", price: 188000.00 },
+            { code: "D.20.4", name: "Puisard 1800", unit: "U", price: 215000.00 },
+            { code: "D.20.5", name: "Puisard 2000", unit: "U", price: 220000.00 },
+            { code: "D.20.6", name: "Puisard 2500", unit: "U", price: 260000.00 },
             { code: "D.21.1", name: "Grille 700x700", unit: "U", price: 32000.00 },
+            { code: "D.21.2", name: "Grille 250x400", unit: "U", price: 26826.09 },
+            { code: "D.21.3", name: "Caillebotis 1x1m", unit: "U", price: 5400.00 },
+            { code: "D.21.4", name: "Caillebotis 1x2m", unit: "U", price: 9200.00 },
             { code: "D.22.1", name: "Tête buse 600", unit: "U", price: 60925.34 },
             { code: "D.22.2", name: "Tête buse 800", unit: "U", price: 68921.05 },
             { code: "D.22.3", name: "Tête buse 1000", unit: "U", price: 76992.73 },
             { code: "D.22.4", name: "Tête buse 1200", unit: "U", price: 90558.06 },
+            { code: "D.22.5", name: "Tête buse 1500", unit: "U", price: 125386.97 },
             { code: "D.23.1", name: "Bourrelet", unit: "ml", price: 3000.00 },
             { code: "D.24.1", name: "Enrochement A", unit: "m3", price: 1879.30 },
             { code: "D.24.2", name: "Enrochement B", unit: "m3", price: 1879.30 },
@@ -285,6 +306,14 @@
             { code: "E.6.1", name: "Bordure A2", unit: "ml", price: 2000.00 },
             { code: "F.1.1", name: "Hachures", unit: "m2", price: 680.00 },
             { code: "F.1.2", name: "Bande 100mm", unit: "ml", price: 70.00 },
+            { code: "F.1.3", name: "Bande 150mm", unit: "ml", price: 145.00 },
+            { code: "F.1.4", name: "Bande 225mm", unit: "ml", price: 200.00 },
+            { code: "F.1.5", name: "Bande 375mm", unit: "ml", price: 340.00 },
+            { code: "F.1.6", name: "Bande 500mm", unit: "ml", price: 420.00 },
+            { code: "F.1.7", name: "Flèche rabattement", unit: "U", price: 600.00 },
+            { code: "F.1.8", name: "Flèche simple", unit: "U", price: 800.00 },
+            { code: "F.1.9", name: "Flèche double", unit: "U", price: 820.00 },
+            { code: "F.2.1", name: "Bande préfa.", unit: "ml", price: 800.00 },
             { code: "G.1.1", name: "Panneau A/AB", unit: "U", price: 52000.00 },
             { code: "G.5.1", name: "Poteaux < 50", unit: "ml", price: 9776.59 },
             { code: "G.7.1", name: "Réflecteur", unit: "U", price: 1670.00 },
@@ -307,30 +336,25 @@
             { code: "J.12.1", name: "Terre Armée", unit: "m2", price: 13600.00 },
             { code: "K.1.1", name: "Caméra", unit: "U", price: 412003.51 },
             { code: "NP.48", name: "Déplacement cimetière", unit: "U", price: 22275.00 },
-            
-            // OA
-            { code: "OUA.A1", name: "Installation OA", unit: "Ft", price: 1010357152.02 },
-            { code: "OUA.B1.1", name: "Déblais fouilles", unit: "m3", price: 178.16 },
-            { code: "OUA.B2.1", name: "Pieux 1200 mm", unit: "ml", price: 5404.19 },
-            { code: "OUA.B5.2.1", name: "Béton C40 Caisson", unit: "m3", price: 21343.02 },
-            { code: "OUA.B5.2.6", name: "Béton C35 Piles", unit: "m3", price: 12538.45 },
-            { code: "OUA.B6.1.1", name: "Acier HA", unit: "Tonne", price: 67033.93 },
-            { code: "OUA.B6.2", name: "Précontrainte", unit: "Tonne", price: 55688.54 },
-            { code: "OUA.B7.1.1", name: "Appareil 2100", unit: "U", price: 260001.71 },
-            { code: "OUA.B7.5.1", name: "Joint 240mm", unit: "ml", price: 9389.70 },
-            { code: "OUA.C1", name: "Palplanches", unit: "m2", price: 25000.00 },
+            { code: "OUA.B.1.1", name: "Déblais fouilles / Temel Kazısı (OA)", unit: "m3", price: 178.16 },
+            { code: "OUA.B.2.1", name: "Pieux 1200 mm / Fore Kazık", unit: "ml", price: 5404.19 },
+            { code: "OUA.B.5.2.1", name: "Béton C40 Caisson", unit: "m3", price: 21343.02 },
+            { code: "OUA.B.5.2.6", name: "Béton C35 Piles", unit: "m3", price: 12538.45 },
+            { code: "OUA.B.6.1.1", name: "Acier HA / Demir", unit: "Tonne", price: 67033.93 },
+            { code: "OUA.B.6.2", name: "Précontrainte", unit: "Tonne", price: 55688.54 },
+            { code: "OUA.B.7.1.1", name: "Appareil 2100", unit: "U", price: 260001.71 },
+            { code: "OUA.B.7.5.1", name: "Joint 240mm", unit: "ml", price: 9389.70 },
+            { code: "OUA.C.1", name: "Palplanches", unit: "m2", price: 25000.00 },
             { code: "OUA.NP.06", name: "Isolateur sismique", unit: "U", price: 134282.61 },
             { code: "OUA.NP.09a", name: "Tirants 45T", unit: "ml", price: 4260.00 },
-            { code: "OUA.NP08.41", name: "Drain perforé", unit: "ml", price: 2700.00 },
-            
-            // TUNNEL
-            { code: "TUN.E1.1", name: "Fondation GNT", unit: "m3", price: 1862.41 },
-            { code: "TUN.E1.3", name: "Enrobé EME", unit: "Tonne", price: 4812.84 },
-            { code: "TUN.C1.2", name: "Déblais explosif", unit: "m3", price: 4883.43 },
-            { code: "TUN.C3.1", name: "Boulons 4m", unit: "U", price: 2832.82 },
-            { code: "TUN.D2.1", name: "Béton projeté", unit: "m3", price: 13046.21 },
-            { code: "TUN.F2.1", name: "Ventilateurs", unit: "U", price: 459359.84 },
-            { code: "TU.E3.1.1", name: "Panneau Tunnel", unit: "U", price: 11768.62 }
+            { code: "OUA.NP.08.41", name: "Drain perforé", unit: "ml", price: 2700.00 },
+            { code: "TUN.E.1.1", name: "Fondation GNT", unit: "m3", price: 1862.41 },
+            { code: "TUN.E.1.3", name: "Enrobé EME", unit: "Tonne", price: 4812.84 },
+            { code: "TUN.C.1.2", name: "Déblais explosif", unit: "m3", price: 4883.43 },
+            { code: "TUN.C.3.1", name: "Boulons 4m", unit: "U", price: 2832.82 },
+            { code: "TUN.D.2.1", name: "Béton projeté", unit: "m3", price: 13046.21 },
+            { code: "TUN.F.2.1", name: "Ventilateurs", unit: "U", price: 459359.84 },
+            { code: "TU.E.3.1.1", name: "Panneau Tunnel", unit: "U", price: 11768.62 }
         ],
 
         // --- GİRİŞ ---
