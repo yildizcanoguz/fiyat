@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    
     <title>MASTER DQE (FR/TR)</title>
     <style>
         /* MODERN FERAH TEMA (White & Blue) */
@@ -15,6 +19,7 @@
             min-height: 100vh;
         }
 
+        /* Başlangıçta içeriği gizliyoruz (Google botları render ettiğinde boş sayfa görsün diye) */
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
@@ -23,6 +28,7 @@
             border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             border: 1px solid #e1e4e8;
+            display: none; /* ŞİFRE GİRİLENE KADAR GİZLİ */
         }
 
         /* Sekmeler (Tabs) */
@@ -131,7 +137,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container" id="mainAppContainer">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2 style="margin:0;">PROJET MASTER<br><span style="font-size:0.6em; color:#7f8c8d;">PROJE MASTER</span></h2>
         <button class="logout-btn" onclick="logout()">Déconnexion<br>Çıkış</button>
@@ -199,6 +205,8 @@
         if(input === APP_PASSWORD) {
             localStorage.setItem("isLoggedIn", "true");
             document.getElementById("loginOverlay").style.display = "none";
+            // Şifre doğruysa ana konteyneri göster
+            document.getElementById("mainAppContainer").style.display = "block";
         } else {
             errorMsg.style.display = "block";
         }
@@ -212,6 +220,10 @@
     window.onload = function() {
         if(localStorage.getItem("isLoggedIn") === "true") {
             document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("mainAppContainer").style.display = "block";
+        } else {
+            // Giriş yapılmadıysa ana ekranı gizle (güvenlik + görsel temizlik için)
+            document.getElementById("mainAppContainer").style.display = "none";
         }
     }
 
@@ -762,4 +774,3 @@
 
 </body>
 </html>
-
